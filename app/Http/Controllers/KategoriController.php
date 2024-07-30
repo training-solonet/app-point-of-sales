@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class KategoriController extends Controller
@@ -11,6 +12,9 @@ class KategoriController extends Controller
      */
     public function index()
     {
+        $kategori = Kategori::latest()->paginate(10);
+        return view('master.kategori.index', compact('kategori'))
+                    ->with('i', (request()->input('page', 1)-1)*5);
         //
     }
 
@@ -19,6 +23,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
+        return view('master.kategori.index');
         //
     }
 
@@ -27,6 +32,12 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
+        $kategori = new Kategori();
+
+        $kategori->nama = $request->nama;
+        $kategori->keterangan = $request->keterangan;
+
+        return redirect('master.kategori.index');
         //
     }
 
@@ -35,6 +46,8 @@ class KategoriController extends Controller
      */
     public function show(string $id)
     {
+        $kategori = Kategori::with('nama', 'keterangan')->find($id);
+        return view('master.kategori.index')->with(compact('kategori'));
         //
     }
 
@@ -43,6 +56,8 @@ class KategoriController extends Controller
      */
     public function edit(string $id)
     {
+        $kategori = Kategori::find($id);
+        return response()->json($kategori);
         //
     }
 
@@ -51,6 +66,14 @@ class KategoriController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $kategori = Kategori::find($id);
+
+        $kategori->nama = $request->nama;
+        $kategori->keterangan = $request->keterangan;
+
+        $kategori->save();
+
+        return redirect('master.kategori.index');
         //
     }
 
@@ -59,6 +82,8 @@ class KategoriController extends Controller
      */
     public function destroy(string $id)
     {
+        Kategori::find($id)->delete();
+        return redirect()->route('master.kategori.index')->with('success', 'barang deleted');
         //
     }
 }

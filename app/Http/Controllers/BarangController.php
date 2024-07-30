@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -11,7 +12,10 @@ class BarangController extends Controller
      */
     public function index()
     {
-        return view('master.barang.index');
+        $barang = Barang::latest()->paginate(1086);
+        return view('master.barang.index', compact('barang'))
+                    ->with('i', (request()->input('page', 1)-1)*5);
+        // return view('master.barang.index');
     }
 
     /**
@@ -27,6 +31,19 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
+        // Barang::updateOrCreate(
+        //     ['id' => $request->barang_id],
+        //     [
+        //         'kode' => $request->kode,
+        //         'part_number' => $request->part_number,
+        //         'nama' => $request->nama,
+        //         'id_kategori' => $request->id_kategori,
+        //         'id_satuan' => $request->id_satuan,
+        //         'stok' => $request->stok,
+        //     ]
+        // );
+
+        // return response()->json(['success'=>'Barang saved successfully']);
         //
     }
 
@@ -35,6 +52,8 @@ class BarangController extends Controller
      */
     public function show(string $id)
     {
+        $barang = Barang::with('kategori', 'satuan')->find($id);
+        return response()->json($barang);
         //
     }
 
@@ -43,6 +62,8 @@ class BarangController extends Controller
      */
     public function edit(string $id)
     {
+        $barang = Barang::find($id);
+        return response()->json($barang);
         //
     }
 
@@ -59,6 +80,8 @@ class BarangController extends Controller
      */
     public function destroy(string $id)
     {
+        Barang::find($id)->delete();
+        return redirect()->route('master.barang.index')->with('success', 'barang deleted successfully');
         //
     }
 }
