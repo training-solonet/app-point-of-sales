@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
+
 
 class CustomerController extends Controller
 {
@@ -11,7 +13,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customer = customer::all();
+        return view('master.customer.index', ['data' => $customer]);
     }
 
     /**
@@ -19,7 +22,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('master.customer.index');
     }
 
     /**
@@ -27,7 +30,8 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        customer::create($request->all());
+        return redirect('/master/customer');
     }
 
     /**
@@ -41,24 +45,31 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        // $customer = customer::find($id);
+        // return view('siswa.edit', ['data' => $customer]);
+        dd($id);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $customer = customer::find($id);
+        $customer->update($request->except('_token', 'proses'));
+        return redirect('/master/customer');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $customer = customer::find($id);
+        $customer->delete();
+        return redirect('/master/customer');
     }
 }
