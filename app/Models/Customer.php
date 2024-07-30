@@ -14,6 +14,6 @@ class Customer extends Model
     protected $fillable = [
         'nama',
         'alamat',
-        'no_hp'
+        'no_hp',
     ];
 }

@@ -17,16 +17,16 @@ class Barang extends Model
         'nama',
         'id_kategori',
         'id_satuan',
-        'stok'
+        'stok',
     ];
 
     public function kategori()
     {
-        return $this->BelongsTo(Kategori::class,'id_kategori');
+        return $this->BelongsTo(Kategori::class, 'id_kategori');
     }
 
     public function satuan()
     {
-        return $this->BelongsTo(Satuan::class,'id_satuan');
+        return $this->BelongsTo(Satuan::class, 'id_satuan');
     }
 }
