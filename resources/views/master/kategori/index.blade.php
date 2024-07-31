@@ -59,13 +59,13 @@
                                         <td>{{ $k->nama }}</td>
                                         <td>{{ $k->keterangan }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn btn-primary" data-id="{{ $k->id }}"
-                                                id="editKategori">Edit</a>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#UpModal"> Edit</button>
                                             <form action="{{ route('master.kategori.destroy', $k->id) }}"
                                                 style="display: inline;" method="post">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -83,33 +83,70 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Default Modal Heading</h5>
+                    <h5 class="modal-title" id="myModalLabel">Tambah Kategorir</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
-                    <form action="/master/kategori" method="post">
-                    @method('POST')
-                    @csrf
-                        <div class="row mb-4">
-                            <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Nama Kategori</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="horizontal-firstname-input"
-                                    placeholder="Masukkan Kategori ">
-                            </div>
+                    <form action="/master/kategori" method="POST">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama"
+                                placeholder="Masukkan nama kategori">
                         </div>
-                        <div class="row mb-4">
-                            <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Keterangan</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="horizontal-firstname-input"
-                                    placeholder="Masukkan keterangan(opsional) " >
-                            </div>
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="keterangan" name="keterangan"
+                                placeholder="Masukkan keterangan(opsional)">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan
+                                Data</button>
+                        </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary waves-effect waves-light">Save changes</button>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    {{-- Modal Update --}}
+    <div id="UpModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Perbarui Data Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/master/kategori" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Barang"
+                                value="{{$k->nama}}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="keterangan" name="keterangan"
+                                placeholder="Masukkan Keterangan" value="{{$k->keterangan}}">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan
+                                Data</button>
+                        </div>
+                    </form>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

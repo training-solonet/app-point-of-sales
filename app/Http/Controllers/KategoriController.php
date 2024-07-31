@@ -32,12 +32,8 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        $kategori = new Kategori();
-
-        $kategori->nama = $request->nama;
-        $kategori->keterangan = $request->keterangan;
-
-        return redirect('master.kategori.index');
+        Kategori::create($request->all());
+        return redirect('/master/kategori');
         //
     }
 
@@ -56,8 +52,9 @@ class KategoriController extends Controller
      */
     public function edit(string $id)
     {
-        $kategori = Kategori::find($id);
-        return response()->json($kategori);
+        dd($id);
+        // $kategori = Kategori::find($id);
+        // return response()->json($kategori);
         //
     }
 
@@ -67,13 +64,8 @@ class KategoriController extends Controller
     public function update(Request $request, string $id)
     {
         $kategori = Kategori::find($id);
-
-        $kategori->nama = $request->nama;
-        $kategori->keterangan = $request->keterangan;
-
-        $kategori->save();
-
-        return redirect('master.kategori.index');
+        $kategori->update($request->except('_token', 'proses'));
+        return redirect('master/kategori');
         //
     }
 
@@ -83,7 +75,7 @@ class KategoriController extends Controller
     public function destroy(string $id)
     {
         Kategori::find($id)->delete();
-        return redirect()->route('master.kategori.index')->with('success', 'barang deleted');
+        return redirect()->route('master.kategori.index')->with('success', 'kategori deleted');
         //
     }
 }

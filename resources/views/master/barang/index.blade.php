@@ -93,14 +93,14 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Create New Barang</h5>
+                    <h5 class="modal-title" id="myModalLabel">Tambah Barang</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
-                <div class="modal-body">
-                    <div class="modal-body">
-                    <form action="{{ route('master.barang.store') }}" id="barangForm" name="barangForm">
+                    <form action="/master/barang" method="POST">
                         @csrf
+
                         <input type="hidden" name="barang_id" id="barang_id">
                         <div class="mb-3">
                             <label for="kode" class="form-label">Kode</label>
@@ -131,9 +131,69 @@
                             <label for="stok" class="form-label">Stok</label>
                             <input type="number" class="form-control" id="stok" name="stok" placeholder="Enter Stok">
                         </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan
+                                Data</button>
+                        </div>
                     </form>
                 </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    {{-- modal --}}
+    <!-- sample modal content -->
+    <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Create New Barang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="modal-body">
+                            <form action="{{ route('master.barang.store') }}" id="barangForm" name="barangForm">
+                                @csrf
+                                <input type="hidden" name="barang_id" id="barang_id">
+                                <div class="mb-3">
+                                    <label for="kode" class="form-label">Kode</label>
+                                    <input type="text" class="form-control" id="kode" name="kode"
+                                        placeholder="Enter Kode">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="part_number" class="form-label">Part Number</label>
+                                    <input type="text" class="form-control" id="part_number" name="part_number"
+                                        placeholder="Enter Part Number">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nama" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="nama" name="nama"
+                                        placeholder="Enter Nama">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_kategori" class="form-label">Kategori</label>
+                                    <select class="form-select" id="id_kategori" name="id_kategori">
+                                        <option selected>Choose...</option>
+                                        <option value="1">Alat Jaringan</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_satuan" class="form-label">Satuan</label>
+                                    <select class="form-select" id="id_satuan" name="id_satuan">
+                                        <option selected>Choose...</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stok" class="form-label">Stok</label>
+                                    <input type="number" class="form-control" id="stok" name="stok"
+                                        placeholder="Enter Stok">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
