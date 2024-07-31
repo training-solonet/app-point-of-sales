@@ -2,63 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Satuan;
 use Illuminate\Http\Request;
 
 class SatuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $satuan = Satuan::all();
+        return view('master.satuan.index', compact('satuan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('master.satuan.index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        Satuan::create($request->except('_token', 'proses'));
+        return redirect('/master/satuan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $satuan = Satuan::find($id);
+        return view('master.satuan.index', compact('satuan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    public function show(string $id)
+    {
+        // Implementasi jika diperlukan
+    }
+
     public function update(Request $request, string $id)
     {
-        //
+        $satuan = Satuan::find($id);
+        $satuan->update($request->except('_token', 'proses'));
+        return redirect('/master/satuan');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $satuan = Satuan::find($id);
+        $satuan->delete();
+        return redirect('/master/satuan');
     }
 }
