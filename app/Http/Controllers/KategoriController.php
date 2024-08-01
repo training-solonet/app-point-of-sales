@@ -7,11 +7,24 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = Kategori::latest()->paginate(10);
-        return view('master.kategori.index', compact('kategori'))
-                    ->with('i', (request()->input('page', 1)-1)*5);
+        $kategori = Kategori::orderBy('id', 'asc');
+
+        if ($request->ajax()) {
+            return datatables()->of($kategori)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+                    $button = '<button type="button" class="btn btn-primary btn-sm" data-id="'. $data->id .'"data-bs-toggle="modal" data-bs-target="#UpModal"> Edit</button>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<button type="submit" class="btn btn-danger btn-sm" id="btn-delete" data-id="'. $data->id .'">Delete</button>';
+                    return $button;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('master.kategori.index', compact('kategori'));
     }
 
     public function create()
@@ -21,8 +34,12 @@ class KategoriController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'nama' => 'required',
+        ]);
+
         Kategori::create($request->all());
-        return redirect('/master/kategori');
+        return redirect('/master/kategori')->with('success', 'kategori berhasil dibuat');
     }
 
     public function show(string $id)
@@ -33,7 +50,7 @@ class KategoriController extends Controller
 
     public function edit(string $id)
     {
-        $kategori=Kategori::find($id);
+        $kategori = Kategori::find($id);
         return view('master.kategori.index', compact('kategori'));
     }
 
@@ -44,9 +61,18 @@ class KategoriController extends Controller
         return redirect('/master/kategori');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
-        Kategori::find($id)->delete();
-        return redirect()->route('master.kategori.index')->with('success', 'kategori deleted');
+        $kategori = Kategori::findOrFail($id);
+        $kategori->delete();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kategori berhasil dihapus'
+            ]);
+        }
+
+        return redirect('/master/kategori')->with('success', 'Kategori berhasil dihapus');
     }
 }
