@@ -31,6 +31,7 @@
     </div>
 
     <div class="row">
+
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -40,7 +41,8 @@
                             <p class="card-title-desc">Kelola semua data costumer disini.</p>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary waves-effect waves-light float-md-end" data-bs-toggle="modal" data-bs-target="#myModal">
+                            <button type="button" class="btn btn-primary waves-effect waves-light float-md-end"
+                                data-bs-toggle="modal" data-bs-target="#myModal">
                                 <i class="fas fa-plus"></i> Tambah Costumer</button>
                         </div>
                     </div>
@@ -56,66 +58,84 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($customer as $c)
-                            <tr>
-                                <td>{{$loop->iteration }}</td>
-                                <td>{{$c->nama}}</td>
-                                <td>{{$c->alamat}}</td>
-                                <td>{{$c->no_hp}}</td>
-                                <td>
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#UpModal{{$c->id}}">
-                                        Edit
-                                    </button>
-                                    
-                                    <form action="/master/customer/{{$c->id}}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
-                                </td>
-                            </tr>
+                                @foreach ($customer as $c)
+                                <tr>
+                                    <td>{{$loop->iteration }}</td>
+                                    <td>{{$c->nama}}</td>
+                                    <td>{{$c->alamat}}</td>
+                                    <td>{{$c->no_hp}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#UpModal{{$c->id}}">
+                                            Edit
+                                        </button>
 
-                            <!-- Modal update -->
-                            <div id="UpModal{{$c->id}}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel{{$c->id}}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="myModalLabel{{$c->id}}">Perbarui Data Customer</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="/master/customer/{{$c->id}}" method="POST">
-                                                @csrf
-                                                @method('PUT')
+                                        <form action="/master/customer/{{$c->id}}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
 
-                                                <div class="mb-3">
-                                                    <label for="nama{{$c->id}}" class="form-label">Nama</label>
-                                                    <input type="text" class="form-control" id="nama{{$c->id}}" name="nama" placeholder="Enter Your Name" value="{{$c->nama}}">
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="alamat{{$c->id}}" class="form-label">Alamat</label>
-                                                            <input type="text" class="form-control" id="alamat{{$c->id}}" name="alamat" placeholder="Enter Your Address" value="{{$c->alamat}}">
+                                <!-- Modal update -->
+                                <div id="UpModal{{$c->id}}" class="modal fade" tabindex="-1"
+                                    aria-labelledby="myModalLabel{{$c->id}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="myModalLabel{{$c->id}}">Perbarui Data
+                                                    Customer</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/master/customer/{{$c->id}}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+
+                                                    <div class="mb-3">
+                                                        <label for="nama{{$c->id}}" class="form-label">Nama</label>
+                                                        <input type="text" class="form-control" id="nama{{$c->id}}"
+                                                            name="nama" placeholder="Enter Your Name"
+                                                            value="{{$c->nama}}" required>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="alamat{{$c->id}}"
+                                                                    class="form-label">Alamat</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="alamat{{$c->id}}" name="alamat"
+                                                                    placeholder="Enter Your Address"
+                                                                    value="{{$c->alamat}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="number{{$c->id}}" class="form-label">No
+                                                                    HP</label>
+                                                                <input type="number" class="form-control"
+                                                                    id="number{{$c->id}}" name="no_hp"
+                                                                    placeholder="Enter Your Number"
+                                                                    value="{{$c->no_hp}}">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="number{{$c->id}}" class="form-label">No HP</label>
-                                                            <input type="number" class="form-control" id="number{{$c->id}}" name="no_hp" placeholder="Enter Your Number" value="{{$c->no_hp}}">
-                                                        </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary waves-effect"
+                                                            data-bs-dismiss="modal">Tutup</button>
+                                                        <button type="submit"
+                                                            class="btn btn-primary waves-effect waves-light"
+                                                            name="proses">Simpan Data</button>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
-                                                    <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan Data</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            @endforeach
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -138,28 +158,33 @@
 
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Enter Your Name">
+                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Enter Your Name"
+                                required>
                         </div>
                         <div class="row">
-    
+
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="alamat" class="form-label">Alamat</label>
-                                    <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Enter Your Adress">
+                                    <input type="text" class="form-control" id="alamat" name="alamat"
+                                        placeholder="Enter Your Adress">
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="number" class="form-label">No HP</label>
-                                    <input type="number" class="form-control" id="number" name="no_hp" placeholder="Enter Your Number">
+                                    <input type="number" class="form-control" id="number" name="no_hp"
+                                        placeholder="Enter Your Number">
                                 </div>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan Data</button>
+                            <button type="button" class="btn btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan
+                                Data</button>
                         </div>
                     </form>
                 </div>

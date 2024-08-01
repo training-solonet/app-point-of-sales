@@ -48,39 +48,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>BRG001</td>
-                                    <td>Indomie</td>
-                                    <td>Pcs</td>
-                                    <td>Makanan</td>
-                                    <td>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-warning btn-sm"><i class="uil uil-edit"></i> Edit</a>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-danger btn-sm"><i class="uil uil-trash-alt"></i> Hapus</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>BRG002</td>
-                                    <td>Indomie Goreng</td>
-                                    <td>Pcs</td>
-                                    <td>Makanan</td>
-                                    <td>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-warning btn-sm"><i class="uil uil-edit"></i> Edit</a>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-danger btn-sm"><i class="uil uil-trash-alt"></i> Hapus</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>BRG003</td>
-                                    <td>Indomie Soto</td>
-                                    <td>Pcs</td>
-                                    <td>Makanan</td>
-                                    <td>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-warning btn-sm"><i class="uil uil-edit"></i> Edit</a>
-                                        <a href="https://themesbrand.com/skote/layouts/form-elements.html" class="btn btn-danger btn-sm"><i class="uil uil-trash-alt"></i> Hapus</a>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -159,7 +127,42 @@
 <script>
     // make datatable
     $(document).ready(function() {
-        $('#table').DataTable();
+        $('#table').DataTable({
+            "responsive": true,
+            "serverSide": true,
+            "processing": true,
+            "ajax": {
+                "url": "{{ route('master.barang.index') }}",
+                "type": "GET"
+            },
+            "columns": [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    searchable: false,
+                    orderable: false,
+                },
+                {
+                    data: 'kode',
+                    name: 'kode'
+                },
+                {
+                    data: 'nama',
+                    name: 'nama'
+                },
+                {
+                    data: 'satuan.nama',
+                    name: 'satuan.nama'
+                },
+                {
+                    data: 'kategori.nama',
+                    name: 'kategori.nama'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
+            ]
+        });
     });
 </script>
 @endsection

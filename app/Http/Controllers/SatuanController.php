@@ -20,14 +20,19 @@ class SatuanController extends Controller
 
     public function store(Request $request)
     {
+        // validasi input
+        $validated = $request->validate([
+            'nama' => 'required',
+        ]);
+
         Satuan::create($request->except('_token', 'proses'));
-        return redirect('/master/satuan');
+        return redirect('/master/satuan')->with('success', 'Data berhasil disimpan');
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
         $satuan = Satuan::find($id);
-        return view('master.satuan.index', compact('satuan'));
+        return view('master.satuan.edit', compact('satuan'));
     }
 
     public function show(string $id)
