@@ -33,13 +33,34 @@ class SatuanController extends Controller
         return view('master.satuan.index');
     }
 
+
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|max:255'
+        //define validation rules
+        $validator = Validator::make($request->all(), [
+            'nama'     => 'required',
         ]);
-        Satuan::create($request->except('_token', 'proses'));
-        return redirect('/master/satuan')->with('berhasil', 'Item berhasil dibuat!');
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        //create post
+        $satuan = Satuan::create([
+            'nama'     => $request->nama, 
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Disimpan!',
+            'data'    => $satuan  
+        ]);
+    }
+
+        // Satuan::create($request->except('_token', 'proses'));
+        // return redirect('/master/satuan')->with('berhasil', 'Item berhasil dibuat!');
     }
 
     public function edit($id)
