@@ -128,10 +128,6 @@
                                 <option value="7">Lain-lain</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="stok" class="form-label">stok</label>
-                            <input type="number" class="form-control" id="stok" name="stok" placeholder="Masukkan jumlah stok">
-                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
@@ -142,7 +138,6 @@
             </div>
         </div>
     </div>
-    @include('master.barang.modal-edit')
 
 </div>
 
@@ -153,8 +148,12 @@
 @endsection
 @section('js')
 <script>
-    // make datatable
+    
     $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 1000);
+        // make datatable
         $('#table').DataTable({
             'responsive': true,
             'serverSide': true,
@@ -196,6 +195,40 @@
                     name: 'action'
                 }
             ]
+        });
+
+        $('body').on('click', '#btn-delete', function() {
+            let id = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            // Delete
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Hapus',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/master/barang/${id}`,
+                        type: 'DELETE',
+                        data: {
+                            "_token": token,
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $('#table').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            })
         });
     });
 </script>

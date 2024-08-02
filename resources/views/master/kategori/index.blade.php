@@ -100,7 +100,7 @@
 
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama kategori">
+                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama kategori" required>
                         </div>
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
@@ -118,48 +118,20 @@
             </div>
         </div>
     </div>
-
-    <div id="UpModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Perbarui Data Kategori</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form action="/master/kategori/" method="POST">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Kategori" value="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="keterangan" class="form-label">Keterangan</label>
-                            <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Masukkan Keterangan" value="">
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="proses">Simpan
-                                Data</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+    @include('master.kategori.modal-edit')
 </div>
+
+
 
 @endsection
 @section('js')
 <script>
     // make datatable
     $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 1000);
+
         $('#table').DataTable({
             'responsive': true,
             'serverSide': true,
@@ -187,42 +159,39 @@
             ]
         });
 
-        // Handle delete button click event
-        $('body').on('click', '.btn-delete', function() {
-            var post_id = $(this).data('id');
-            var token = $("meta[name='csrf-token']").attr("content");
+        $('body').on('click', '#btn-delete', function() {
+            let id = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
 
             Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini!",
+                title: 'Apakah Anda Yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Hapus',
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/master/kategori/' + post_id,
-                        type: "DELETE",
-                        cache: false,
+                        url: `/master/kategori/${id}`,
+                        type: 'DELETE',
                         data: {
-                            "_token": token
+                            "_token": token,
                         },
                         success: function(response) {
                             Swal.fire({
-                                type: 'success',
                                 icon: 'success',
-                                title: `${response.message}`,
+                                title: response.message,
                                 showConfirmButton: false,
-                                timer: 3000
-                            });
-
+                                timer: 1500
+                            })
                             $('#table').DataTable().ajax.reload();
                         }
                     });
                 }
-            });
+            })
         });
+
     });
 </script>
 @endsection
