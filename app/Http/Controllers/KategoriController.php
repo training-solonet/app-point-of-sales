@@ -71,9 +71,6 @@ class KategoriController extends Controller
         Kategori::where('id', $id)->update($request->all());
 
         return redirect('/master/kategori')->with('success', 'kategori berhasil diupdate');
-        // $kategori = Kategori::find($id);
-        // $kategori->update($request->except(['_token', 'proses']));
-        // return redirect('/master/kategori');
     }
 
     public function destroy(string $id, Request $request)
