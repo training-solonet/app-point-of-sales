@@ -16,9 +16,14 @@
     <!-- App Css-->
     <link href="{{ url('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <!-- DataTables -->
-    <link href="{{ url('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ url('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-    
+    <link href="{{ url('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ url('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     @yield('css')
 </head>
 
@@ -93,14 +98,16 @@
                     <div class="dropdown d-inline-block">
                         <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle header-profile-user" src="https://ui-avatars.com/api/?name=admin&rounded=true&color=7F9CF5&background=EBF4FF"
+                            <img class="rounded-circle header-profile-user"
+                                src="https://ui-avatars.com/api/?name=admin&rounded=true&color=7F9CF5&background=EBF4FF"
                                 alt="Header Avatar">
                             <span class="d-none d-xl-inline-block ms-1" key="t-henry">Admin</span>
                             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a class="dropdown-item" href="/user/profile"><i class="bx bx-user font-size-16 align-middle me-1"></i>
+                            <a class="dropdown-item" href="/user/profile"><i
+                                    class="bx bx-user font-size-16 align-middle me-1"></i>
                                 <span key="t-profile">Profile</span></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/logout"><i
@@ -223,7 +230,8 @@
 
             <div class="p-4">
                 <div class="mb-2">
-                    <img src="{{ url('assets/images/layouts/layout-1.jpg') }}" class="img-thumbnail" alt="icon apps">
+                    <img src="{{ url('assets/images/layouts/layout-1.jpg') }}" class="img-thumbnail"
+                        alt="icon apps">
                 </div>
 
                 <div class="form-check form-switch mb-3">
@@ -232,7 +240,8 @@
                 </div>
 
                 <div class="mb-2">
-                    <img src="{{ url('assets/images/layouts/layout-2.jpg') }}" class="img-thumbnail" alt="icon apps 2">
+                    <img src="{{ url('assets/images/layouts/layout-2.jpg') }}" class="img-thumbnail"
+                        alt="icon apps 2">
                 </div>
                 <div class="form-check form-switch mb-3">
                     <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Satuan;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class SatuanController extends Controller
@@ -38,7 +39,8 @@ class SatuanController extends Controller
     {
         //define validation rules
         $validator = Validator::make($request->all(), [
-            'nama'     => 'required',
+            'nama' => 'required',
+            'keterangan' => 'required|max:255',
         ]);
 
         //check if validation fails
@@ -48,20 +50,21 @@ class SatuanController extends Controller
 
         //create post
         $satuan = Satuan::create([
-            'nama'     => $request->nama, 
+            'nama' => $request->nama,
+            'keterangan' => $request->keterangan,
         ]);
 
         //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
-            'data'    => $satuan  
+            'data' => $satuan
         ]);
     }
 
-        // Satuan::create($request->except('_token', 'proses'));
-        // return redirect('/master/satuan')->with('berhasil', 'Item berhasil dibuat!');
-    }
+    // Satuan::create($request->except('_token', 'proses'));
+    // return redirect('/master/satuan')->with('berhasil', 'Item berhasil dibuat!');
+
 
     public function edit($id)
     {
