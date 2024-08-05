@@ -17,9 +17,9 @@ class SatuanController extends Controller
             return datatables()->of($satuan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-warning btn-sm">Edit</button>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm">Delete</button>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -29,18 +29,11 @@ class SatuanController extends Controller
         return view('master.satuan.index');
     }
 
-    public function create()
-    {
-        return view('master.satuan.index');
-    }
-
-
     public function store(Request $request)
     {
         //define validation rules
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
-            'keterangan' => 'required|max:255',
         ]);
 
         //check if validation fails
@@ -62,32 +55,60 @@ class SatuanController extends Controller
         ]);
     }
 
-    // Satuan::create($request->except('_token', 'proses'));
-    // return redirect('/master/satuan')->with('berhasil', 'Item berhasil dibuat!');
-
-
-    public function edit($id)
+    public function show($id)
     {
         $satuan = Satuan::find($id);
-        return view('master.satuan.edit', compact('satuan'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data Satuan',
+            'data' => $satuan
+        ]);
     }
 
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        // Implementasi jika diperlukan
-    }
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required',
+        ]);
 
-    public function update(Request $request, string $id)
-    {
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $satuan = Satuan::find($id);
-        $satuan->update($request->all());
-        return redirect('/master/satuan')->with('update', 'Item berhasil diperbarui!');
+        if (!$satuan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan!'
+            ], 404);
+        }
+
+        //create post
+        $satuan->update([
+            'nama' => $request->nama,
+            'keterangan' => $request->keterangan
+        ]);
+
+        //return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diupdate!',
+            'data' => $satuan
+        ]);
     }
 
-    public function destroy(string $id)
+    public function destroy($id, Request $request)
     {
-        $satuan = Satuan::find($id);
-        $satuan->delete();
-        return redirect('/master/satuan')->with('delete', 'Item berhasil dihapus!');
+        Satuan::find($id)->delete();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        }
+        return redirect()->route('master.satuan.index')->with('success', 'Barang berhasil dihapus');
     }
 }
