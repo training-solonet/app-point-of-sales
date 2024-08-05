@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\Satuan;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -16,7 +19,7 @@ class BarangController extends Controller
             return datatables()->of($barang)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<button type="button" class="btn btn-primary btn-sm edit-btn" data-id="' . $data->id . '" data-bs-toggle="modal" data-bs-target="#UpModal"> Edit</button>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
                     $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
                     return $button;
@@ -25,7 +28,10 @@ class BarangController extends Controller
                 ->make(true);
         }
 
-        return view('master.barang.index');
+        $kategori = Kategori::all();
+        $satuan = Satuan::all();
+
+        return view('master.barang.index', compact('kategori', 'satuan'));
     }
 
     public function create()
@@ -35,62 +41,67 @@ class BarangController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kode' => 'required',
+        $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
 
         $data = $request->all();
         $data['stok'] = 0;
 
+        
         Barang::create($data);
-        return redirect('/master/barang')->with('success', 'barang berhasil dibuat');
+        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil ditambahkan');
     }
 
 
     public function show(string $id)
     {
-        $barang = Barang::with(['kategori', 'satuan'])->find($id);
+        $barang = Barang::find($id);
 
-        if ($barang) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Barang found',
-                'data' => $barang
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Barang not found'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'data' => $barang
+        ]);
     }
 
     public function edit(string $id)
     {
-        $barang = Barang::with('kategori', 'satuan')->find($id);
-        return response()->json($barang);
+        $barang = Barang::find($id);
+        return view('master.barang.index', compact('barang'));
     }
 
     public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'kode' => 'required',
+        $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
-
-        Barang::find($id)->update([
+    
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+    
+        $barang = Barang::find($id);
+        $barang->update([
             'kode' => $request->kode,
             'part_number' => $request->part_number,
             'nama' => $request->nama,
-            'stok' => $request->stok,
+            'id_satuan' => $request->id_satuan,
+            'id_kategori' => $request->id_kategori,
         ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang updated',
-            'data' => Barang::with('kategori', 'satuan')->find($id)
-        ]);
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Barang berhasil diedit'
+            ]);
+        }
+    
+        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil diupdate');
     }
 
     public function destroy(string $id, Request $request)
@@ -100,7 +111,7 @@ class BarangController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Kategori berhasil dihapus'
+                'message' => 'Barang berhasil dihapus'
             ]);
         }
         return redirect()->route('master.barang.index')->with('success', 'barang berhasil dihapus');
