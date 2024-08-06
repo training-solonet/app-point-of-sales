@@ -18,6 +18,8 @@
     <!-- DataTables -->
     <link href="{{ url('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ url('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Select2 Css -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     
     @yield('css')
 </head>
@@ -260,6 +262,12 @@
     <!-- Bootstrap Toasts Js -->
     <script src="{{ url('assets/js/pages/bootstrap-toastr.init.js') }}"></script>
     <script src="{{ url('assets/js/apps.js') }}"></script>
+
+    <!-- Sweat Alert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Select2 Js -->
+    <script src="assets/libs/select2/js/select2.min.js"></script>
 
     @yield('js')
 </body>
