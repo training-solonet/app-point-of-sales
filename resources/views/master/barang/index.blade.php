@@ -82,7 +82,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Tambah Kategori</h5>
+                    <h5 class="modal-title" id="myModalLabel">Tambah Barang</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -93,17 +93,18 @@
                         <div class="mb-3">
                             <label for="nama" class="form-label">Kode</label>
                             <input type="text" class="form-control" id="kode" name="kode"
-                                placeholder="Masukkan kode barang">
+                                placeholder="Masukkan kode barang" required>
                         </div>
                         <div class="mb-3">
                             <label for="part_number" class="form-label">Part Number</label>
                             <input type="text" class="form-control" id="part_number" name="part_number"
-                                placeholder="Masukkan part number barang">
+                                placeholder="Masukkan part number barang" required>
                         </div>
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="nama" name="nama"
                                 placeholder="Masukkan part number barang">
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama"></div>
                         </div>
                         <div class="mb-3">
                             <label for="satuan" class="form-label">Satuan</label>
@@ -113,6 +114,7 @@
                                     <option value="{{ $s->id }}">{{ $s->nama }}</option>
                                 @endforeach
                             </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-satuan"></div>
                         </div>
                         <div class="mb-3">
                             <label for="kategori" class="form-label">Kategori</label>
@@ -122,6 +124,7 @@
                                     <option value="{{ $k->id }}">{{ $k->nama }}</option>
                                 @endforeach
                             </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kategori"></div>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -160,6 +163,7 @@
                             <label for="nama" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="nama" name="nama"
                                 placeholder="Masukkan part number barang">
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama"></div>
                         </div>
                         <div class="mb-3">
                             <label for="satuan" class="form-label">Satuan</label>
@@ -169,6 +173,7 @@
                                     <option value="{{ $s->id }}">{{ $s->nama }}</option>
                                 @endforeach
                             </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-satuan"></div>
                         </div>
                         <div class="mb-3">
                             <label for="kategori" class="form-label">Kategori</label>
@@ -178,6 +183,7 @@
                                     <option value="{{ $k->id }}">{{ $k->nama }}</option>
                                 @endforeach
                             </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kategori"></div>
                         </div>
                     </form>
                 </div>
@@ -200,11 +206,26 @@
 @endsection
 @section('js')
 <script>
-
     $(document).ready(function () {
         setTimeout(function () {
             $('.alert').fadeOut('slow');
         }, 1000);
+
+        // Toast function
+        function showToast(message, type) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            Toast.fire({
+                title: message
+            });
+        }
+
         // make datatable
         $('#table').DataTable({
             'responsive': true,
@@ -214,38 +235,41 @@
                 'url': "{{ route('master.barang.index') }}",
                 'type': 'GET'
             },
-            'columns': [{
-                data: 'id',
-                name: 'id'
-            },
-            {
-                data: 'kode',
-                name: 'kode'
-            },
-            {
-                data: 'part_number',
-                name: 'part_number'
-            },
-            {
-                data: 'nama',
-                name: 'nama'
-            },
-            {
-                data: 'kategori.nama',
-                name: 'kategori.nama'
-            },
-            {
-                data: 'satuan.nama',
-                name: 'satuan.nama'
-            },
-            {
-                data: 'stok',
-                name: 'stok'
-            },
-            {
-                data: 'action',
-                name: 'action'
-            }
+            'columns': [
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'kode',
+                    name: 'kode'
+                },
+                {
+                    data: 'part_number',
+                    name: 'part_number'
+                },
+                {
+                    data: 'nama',
+                    name: 'nama'
+                },
+                {
+                    data: 'kategori.nama',
+                    name: 'kategori.nama'
+                },
+                {
+                    data: 'satuan.nama',
+                    name: 'satuan.nama'
+                },
+                {
+                    data: 'stok',
+                    name: 'stok'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
             ]
         });
 
@@ -270,12 +294,7 @@
                             "_token": token,
                         },
                         success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
+                            showToast(response.message, 'success');
                             $('#table').DataTable().ajax.reload();
                         }
                     });
@@ -286,6 +305,7 @@
         // Create
         $('body').on('click', '#btn-create', function () {
             $('#myModal').modal('show');
+            $('#myModal form')[0].reset();
         });
 
         $('#store').click(function (e) {
@@ -310,12 +330,7 @@
                 },
                 success: function (response) {
                     $('#myModal').modal('hide');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Barang berhasil ditambahkan',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                    showToast('Barang berhasil ditambahkan', 'success');
                     $('#table').DataTable().ajax.reload();
                 },
                 error: function (error) {
@@ -395,13 +410,7 @@
                     "_token": token
                 },
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-
+                    showToast(response.message, 'success');
                     $('#table').DataTable().ajax.reload();
                     $('#UpModal').modal('hide');
                 },

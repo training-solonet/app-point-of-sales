@@ -44,19 +44,25 @@ class KategoriController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if ($request->ajax()) {
+        // check if data exists
+        $check = Kategori::where('nama', $request->nama)->first();
+
+        if ($check) {
             return response()->json([
-                'success' => true,
-                'message' => 'Kategori berhasil ditambahkan',
+                'success' => false,
+                'message' => 'Kategori sudah ada',
             ]);
         }
 
-        $kategori = Kategori::create([
-            'nama' => $request->nama,
-            'keterangan' => $request->keterangan,
+        $data = $request->all();
+
+        Kategori::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil ditambahkan',
         ]);
 
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
     public function show($id)
@@ -71,9 +77,7 @@ class KategoriController extends Controller
 
     public function edit($id)
     {
-        $kategori = Kategori::find($id);
-
-        return view('master.kategori.index', compact('kategori'));
+        //
     }
 
     public function update(Request $request, $id)
@@ -85,6 +89,8 @@ class KategoriController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
+
+        
 
         $kategori = Kategori::find($id);
         $kategori->update([
@@ -98,8 +104,6 @@ class KategoriController extends Controller
                 'message' => 'Kategori berhasil diedit',
             ]);
         }
-
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil diupdate');
     }
 
     public function destroy($id, Request $request)
@@ -113,6 +117,5 @@ class KategoriController extends Controller
             ]);
         }
 
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil dihapus');
     }
 }

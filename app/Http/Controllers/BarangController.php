@@ -19,9 +19,9 @@ class BarangController extends Controller
             return datatables()->of($barang)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="'.$data->id.'" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -44,10 +44,22 @@ class BarangController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
+            'id_satuan' => 'required',
+            'id_kategori' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
+        }
+
+        // check if data exists
+        $check = Barang::where('nama', $request->nama)->first();
+
+        if ($check) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Barang sudah ada',
+            ]);
         }
 
         $data = $request->all();
@@ -55,7 +67,10 @@ class BarangController extends Controller
 
         Barang::create($data);
 
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil ditambahkan');
+        return response()->json([
+            'success' => true,
+            'message' => 'Barang berhasil ditambahkan',
+        ]);
     }
 
     public function show(string $id)
@@ -70,9 +85,7 @@ class BarangController extends Controller
 
     public function edit(string $id)
     {
-        $barang = Barang::find($id);
 
-        return view('master.barang.index', compact('barang'));
     }
 
     public function update(Request $request, string $id)
@@ -101,7 +114,6 @@ class BarangController extends Controller
             ]);
         }
 
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil diupdate');
     }
 
     public function destroy(string $id, Request $request)
@@ -114,7 +126,5 @@ class BarangController extends Controller
                 'message' => 'Barang berhasil dihapus',
             ]);
         }
-
-        return redirect()->route('master.barang.index')->with('success', 'barang berhasil dihapus');
     }
 }
