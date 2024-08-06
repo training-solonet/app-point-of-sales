@@ -10,9 +10,8 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $customer = Customer::orderBy('id', 'asc');
+        $customer = Customer::orderBy('id', 'desc');
 
-        // datatable
         if ($request->ajax()) {
             return datatables()->of($customer)
                 ->addIndexColumn()
@@ -31,26 +30,31 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        //define validation rules
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
             'alamat' => 'required',
             'no_hp' => 'required',
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        //create post
+        $check = Customer::where('nama', $request->nama)->first();
+
+        if ($check) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data sudah ada!',
+            ]);
+        }
+
         $customer = Customer::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
         ]);
 
-        //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
@@ -77,26 +81,26 @@ class CustomerController extends Controller
             'no_hp' => 'required',
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
         $customer = Customer::find($id);
-        if (!$customer) {
+        $check = Customer::where('nama', $request->nama)->where('id', '!=', $id)->first();
+
+        if ($check) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data tidak ditemukan!'
-            ], 404);
+                'message' => 'Data sudah ada!',
+            ]);
         }
-        //create post
+
         $customer->update([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp
         ]);
 
-        //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Diupdate!',
@@ -108,12 +112,12 @@ class CustomerController extends Controller
     public function destroy(string $id, Request $request)
     {
         customer::find($id)->delete();
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'data berhasil dihapus'
+                'message' => 'data berhasil dihapus!'
             ]);
         }
-        return redirect()->route('master.customer.index')->with('success', 'barang berhasil dihapus');
     }
 }

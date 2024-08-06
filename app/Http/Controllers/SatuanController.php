@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Satuan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ class SatuanController extends Controller
 {
     public function index(Request $request)
     {
-        $satuan = Satuan::orderBy('id', 'asc');
+        $satuan = Satuan::orderBy('id', 'desc');
 
         // datatable
         if ($request->ajax()) {
@@ -31,23 +32,28 @@ class SatuanController extends Controller
 
     public function store(Request $request)
     {
-        //define validation rules
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        //create post
+        $check = Satuan::where('nama', $request->nama)->first();
+
+        if ($check) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data sudah ada!',
+            ]);
+        }
+
         $satuan = Satuan::create([
             'nama' => $request->nama,
             'keterangan' => $request->keterangan,
         ]);
 
-        //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
@@ -68,30 +74,30 @@ class SatuanController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validasi input
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
         $satuan = Satuan::find($id);
-        if (!$satuan) {
+        $check = Satuan::where('nama', $request->nama)->where('id', '!=', $id)->first();
+
+        if ($check) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data tidak ditemukan!'
-            ], 404);
+                'message' => 'Data sudah ada!',
+            ]);
         }
 
-        //create post
         $satuan->update([
             'nama' => $request->nama,
             'keterangan' => $request->keterangan
         ]);
 
-        //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Diupdate!',
@@ -106,9 +112,8 @@ class SatuanController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Data berhasil dihapus!'
             ]);
         }
-        return redirect()->route('master.satuan.index')->with('success', 'Barang berhasil dihapus');
     }
 }

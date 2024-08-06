@@ -163,6 +163,14 @@
 @endsection
 @section('js')
     <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+
         // tampil data
         $(document).ready(function() {
             $('#table').DataTable({
@@ -174,8 +182,10 @@
                     "type": "GET"
                 },
                 "columns": [{
-                        data: 'id',
-                        name: 'id'
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'nama',
@@ -221,21 +231,23 @@
                     "_token": token
                 },
                 success: function(response) {
-                    Swal.fire({
-                        type: 'success',
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    if (response.success) {
+                        Toast.fire({
+                            title: response.message
+                        });
 
-                    $('#table').DataTable().ajax.reload();
+                        $('#table').DataTable().ajax.reload();
 
-                    $('#nama').val('');
-                    $('#alamat').val('');
-                    $('#no_hp').val('');
+                        $('#nama').val('');
+                        $('#alamat').val('');
+                        $('#no_hp').val('');
 
-                    $('#myModal').modal('hide');
+                        $('#myModal').modal('hide');
+                    } else {
+                        Toast.fire({
+                            title: response.message
+                        });
+                    }
                 },
                 error: function(error) {
                     if (error.responseJSON.nama) {
@@ -295,12 +307,8 @@
                     "_token": token
                 },
                 success: function(response) {
-                    Swal.fire({
-                        type: 'success',
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 1500
+                    Toast.fire({
+                        title: response.message
                     });
 
                     $('#modal-edit').modal('hide');
@@ -350,12 +358,9 @@
                             "_token": token,
                         },
                         success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
+                            Toast.fire({
+                                title: response.message
+                            });
                             $('#table').DataTable().ajax.reload();
                         }
                     });
