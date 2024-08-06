@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Satuan;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
@@ -22,6 +22,7 @@ class BarangController extends Controller
                     $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
                     $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -43,21 +44,34 @@ class BarangController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
+            'id_satuan' => 'required',
+            'id_kategori' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
+        // check if data exists
+        $check = Barang::where('nama', $request->nama)->first();
+
+        if ($check) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Barang sudah ada',
+            ]);
+        }
 
         $data = $request->all();
         $data['stok'] = 0;
 
-        
         Barang::create($data);
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil ditambahkan');
-    }
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Barang berhasil ditambahkan',
+        ]);
+    }
 
     public function show(string $id)
     {
@@ -65,14 +79,13 @@ class BarangController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $barang
+            'data' => $barang,
         ]);
     }
 
     public function edit(string $id)
     {
-        $barang = Barang::find($id);
-        return view('master.barang.index', compact('barang'));
+
     }
 
     public function update(Request $request, string $id)
@@ -80,11 +93,11 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-    
+
         $barang = Barang::find($id);
         $barang->update([
             'kode' => $request->kode,
@@ -93,15 +106,14 @@ class BarangController extends Controller
             'id_satuan' => $request->id_satuan,
             'id_kategori' => $request->id_kategori,
         ]);
-    
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Barang berhasil diedit'
+                'message' => 'Barang berhasil diedit',
             ]);
         }
-    
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil diupdate');
+
     }
 
     public function destroy(string $id, Request $request)
@@ -111,9 +123,8 @@ class BarangController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Barang berhasil dihapus'
+                'message' => 'Barang berhasil dihapus',
             ]);
         }
-        return redirect()->route('master.barang.index')->with('success', 'barang berhasil dihapus');
     }
 }

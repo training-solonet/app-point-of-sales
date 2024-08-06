@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KategoriController extends Controller
 {
@@ -16,9 +16,10 @@ class KategoriController extends Controller
             return datatables()->of($kategori)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="'.$data->id.'" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -43,19 +44,25 @@ class KategoriController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if ($request->ajax()) {
+        // check if data exists
+        $check = Kategori::where('nama', $request->nama)->first();
+
+        if ($check) {
             return response()->json([
-                'success' => true,
-                'message' => 'Kategori berhasil ditambahkan'
+                'success' => false,
+                'message' => 'Kategori sudah ada',
             ]);
         }
 
-        $kategori = Kategori::create([
-            'nama' => $request->nama,
-            'keterangan' => $request->keterangan,
+        $data = $request->all();
+
+        Kategori::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil ditambahkan',
         ]);
 
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
     public function show($id)
@@ -64,14 +71,13 @@ class KategoriController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $kategori
+            'data' => $kategori,
         ]);
     }
 
     public function edit($id)
     {
-        $kategori = Kategori::find($id);
-        return view('master.kategori.index', compact('kategori'));
+        //
     }
 
     public function update(Request $request, $id)
@@ -79,25 +85,25 @@ class KategoriController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-    
+
+        
+
         $kategori = Kategori::find($id);
         $kategori->update([
             'nama' => $request->nama,
             'keterangan' => $request->keterangan,
         ]);
-    
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Kategori berhasil diedit'
+                'message' => 'Kategori berhasil diedit',
             ]);
         }
-    
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil diupdate');
     }
 
     public function destroy($id, Request $request)
@@ -107,9 +113,9 @@ class KategoriController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Kategori berhasil dihapus'
+                'message' => 'Kategori berhasil dihapus',
             ]);
         }
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil dihapus');
+
     }
 }

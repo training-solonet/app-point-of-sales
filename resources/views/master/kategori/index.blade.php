@@ -106,6 +106,7 @@
                             <label for="nama" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="nama" name="nama"
                                 placeholder="Masukkan nama kategori" required>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama"></div>
                         </div>
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
@@ -140,11 +141,13 @@
                         <label for="nama" class="form-label">Nama</label>
                         <input type="text" class="form-control" id="nama" name="nama"
                             placeholder="Masukkan Nama Kategori" value="">
+                        <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama"></div>
                     </div>
                     <div class="mb-3">
                         <label for="keterangan" class="form-label">Keterangan</label>
                         <input type="text" class="form-control" id="keterangan" name="keterangan"
                             placeholder="Masukkan Keterangan" value="">
+                        <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan"></div>
                     </div>
 
                     <div class="modal-footer">
@@ -176,6 +179,21 @@
             $('.alert').fadeOut('slow');
         }, 1000);
 
+        // Toast function
+        function showToast(message, type) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            Toast.fire({
+                title: message
+            });
+        }
+
         // make datatable
         $('#table').DataTable({
             'responsive': true,
@@ -186,8 +204,10 @@
                 'type': 'GET'
             },
             'columns': [{
-                data: 'id',
-                name: 'id'
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
             },
             {
                 data: 'nama',
@@ -225,12 +245,7 @@
                             "_token": token,
                         },
                         success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
+                            showToast(response.message, 'success');
                             $('#table').DataTable().ajax.reload();
                         }
                     });
@@ -241,6 +256,7 @@
         // Create Kategori
         $('body').on('click', '#btn-create', function () {
             $('#myModal').modal('show');
+            $('#myModal form')[0].reset();
         });
         $('#store').click(function (e) {
             e.preventDefault();
@@ -257,16 +273,9 @@
                     "_token": token
                 },
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    $('#table').DataTable().ajax.reload();
-                    $('#nama').val('');
-                    $('#keterangan').val('');
                     $('#myModal').modal('hide');
+                    showToast(response.message, 'success');
+                    $('#table').DataTable().ajax.reload();
                 },
                 error: function (error) {
                     if (error.responseJSON.nama) {
@@ -322,12 +331,7 @@
                     "_token": token
                 },
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    showToast(response.message, 'success');
 
                     $('#table').DataTable().ajax.reload();
                     $('#UpModal').modal('hide');
