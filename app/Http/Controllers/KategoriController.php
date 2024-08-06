@@ -49,13 +49,8 @@ class KategoriController extends Controller
 
         if ($check) {
             return response()->json([
-<<<<<<< HEAD
                 'success' => false,
                 'message' => 'Kategori sudah ada',
-=======
-                'success' => true,
-                'message' => 'Kategori berhasil ditambahkan',
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
             ]);
         }
 
@@ -82,13 +77,7 @@ class KategoriController extends Controller
 
     public function edit($id)
     {
-<<<<<<< HEAD
         //
-=======
-        $kategori = Kategori::find($id);
-
-        return view('master.kategori.index', compact('kategori'));
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 
     public function update(Request $request, $id)
@@ -101,11 +90,8 @@ class KategoriController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-<<<<<<< HEAD
         
 
-=======
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
         $kategori = Kategori::find($id);
         $kategori->update([
             'nama' => $request->nama,
@@ -118,11 +104,6 @@ class KategoriController extends Controller
                 'message' => 'Kategori berhasil diedit',
             ]);
         }
-<<<<<<< HEAD
-=======
-
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil diupdate');
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 
     public function destroy($id, Request $request)
@@ -136,9 +117,5 @@ class KategoriController extends Controller
             ]);
         }
 
-<<<<<<< HEAD
-=======
-        return redirect()->route('master.kategori.index')->with('success', 'Kategori berhasil dihapus');
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 }

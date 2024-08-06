@@ -19,13 +19,9 @@ class BarangController extends Controller
             return datatables()->of($barang)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="'.$data->id.'" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-<<<<<<< HEAD
                     $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
-=======
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
 
                     return $button;
                 })
@@ -56,7 +52,6 @@ class BarangController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-<<<<<<< HEAD
         // check if data exists
         $check = Barang::where('nama', $request->nama)->first();
 
@@ -67,13 +62,10 @@ class BarangController extends Controller
             ]);
         }
 
-=======
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
         $data = $request->all();
         $data['stok'] = 0;
 
         Barang::create($data);
-<<<<<<< HEAD
 
         return response()->json([
             'success' => true,
@@ -81,12 +73,6 @@ class BarangController extends Controller
         ]);
     }
 
-=======
-
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil ditambahkan');
-    }
-
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     public function show(string $id)
     {
         $barang = Barang::find($id);
@@ -99,13 +85,7 @@ class BarangController extends Controller
 
     public function edit(string $id)
     {
-<<<<<<< HEAD
 
-=======
-        $barang = Barang::find($id);
-
-        return view('master.barang.index', compact('barang'));
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 
     public function update(Request $request, string $id)
@@ -134,10 +114,6 @@ class BarangController extends Controller
             ]);
         }
 
-<<<<<<< HEAD
-=======
-        return redirect()->route('master.barang.index')->with('success', 'Barang berhasil diupdate');
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 
     public function destroy(string $id, Request $request)
@@ -150,10 +126,5 @@ class BarangController extends Controller
                 'message' => 'Barang berhasil dihapus',
             ]);
         }
-<<<<<<< HEAD
-=======
-
-        return redirect()->route('master.barang.index')->with('success', 'barang berhasil dihapus');
->>>>>>> 740c836f5831ad44e195900b2c7a38f81e7166e0
     }
 }
