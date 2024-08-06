@@ -330,7 +330,7 @@
                 },
                 success: function (response) {
                     $('#myModal').modal('hide');
-                    showToast('Barang berhasil ditambahkan', 'success');
+                    showToast(response.message, 'success');
                     $('#table').DataTable().ajax.reload();
                 },
                 error: function (error) {
