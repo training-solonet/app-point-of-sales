@@ -90,8 +90,6 @@ class KategoriController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        
-
         $kategori = Kategori::find($id);
         $kategori->update([
             'nama' => $request->nama,
