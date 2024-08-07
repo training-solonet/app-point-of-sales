@@ -25,8 +25,6 @@
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
     @yield('css')
 </head>
 
@@ -272,6 +270,12 @@
     <!-- Bootstrap Toasts Js -->
     <script src="{{ url('assets/js/pages/bootstrap-toastr.init.js') }}"></script>
     <script src="{{ url('assets/js/apps.js') }}"></script>
+
+    <!-- Sweat Alert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Select2 Js -->
+    <script src="assets/libs/select2/js/select2.min.js"></script>
 
     @yield('js')
 </body>
