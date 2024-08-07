@@ -1,15 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\SatuanController;
-
 use App\Http\Controllers\JurnalPiutangController;
-use App\Http\Controllers\ReportPenjualanController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ReportPembayaranPiutangController;
+use App\Http\Controllers\ReportPenjualanController;
+use App\Http\Controllers\SatuanController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('layouts.template');
