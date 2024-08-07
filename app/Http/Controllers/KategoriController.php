@@ -10,7 +10,7 @@ class KategoriController extends Controller
 {
     public function index(Request $request)
     {
-        $kategori = Kategori::orderBy('id', 'asc');
+        $kategori = Kategori::orderBy('id', 'desc');
 
         if ($request->ajax()) {
             return datatables()->of($kategori)
