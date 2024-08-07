@@ -8,4 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class Jual extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'no_faktur',
+        'customer_id',
+        'tanggal',
+        'total',
+        'bayar',
+        'diskon',
+        'ppn',
+        'status',
+    ];
+
+    protected $table = 'jual';
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
 }
