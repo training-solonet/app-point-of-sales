@@ -13,7 +13,6 @@ class SatuanController extends Controller
     {
         $satuan = Satuan::orderBy('id', 'desc');
 
-        // datatable
         if ($request->ajax()) {
             return datatables()->of($satuan)
                 ->addIndexColumn()
@@ -74,7 +73,6 @@ class SatuanController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
         ]);

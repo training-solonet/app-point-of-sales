@@ -33,7 +33,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required',
             'alamat' => 'required',
-            'no_hp' => 'required',
+            'no_hp' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
