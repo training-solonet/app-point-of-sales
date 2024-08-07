@@ -145,8 +145,38 @@
 
                         <li>
                             <a href="#" class="waves-effect">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Penjualan</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('menu.jurnal-piutang.index') }}" class="waves-effect">
+                                <i class="fas fa-money-bill-alt"></i>
+                                <span>Jurnal Piutang</span>
+                            </a>
+                        </li>
+
+                        <li class="menu-title" key="t-menu">Report</li>
+
+                        <li>
+                            <a href="{{ route('report.penjualan.index') }}" class="waves-effect">
                                 <i class="fas fa-chart-line"></i>
-                                <span>Laporan</span>
+                                <span>Penjualan</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('report.pembayaran-piutang.index') }}" class="waves-effect">
+                                <i class="fas fa-money-bill-alt"></i>
+                                <span>Pembayaran Piutang</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="waves-effect">
+                                <i class="fas fa-dolly-flatbed"></i>
+                                <span>Stok Barang</span>
                             </a>
                         </li>
 
