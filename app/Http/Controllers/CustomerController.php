@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -16,9 +16,10 @@ class CustomerController extends Controller
             return datatables()->of($customer)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -58,7 +59,7 @@ class CustomerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
-            'data' => $customer
+            'data' => $customer,
         ]);
     }
 
@@ -69,7 +70,7 @@ class CustomerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Detail Data Satuan',
-            'data' => $customer
+            'data' => $customer,
         ]);
     }
 
@@ -98,16 +99,15 @@ class CustomerController extends Controller
         $customer->update([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp
+            'no_hp' => $request->no_hp,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Diupdate!',
-            'data' => $customer
+            'data' => $customer,
         ]);
     }
-
 
     public function destroy(string $id, Request $request)
     {
@@ -116,7 +116,7 @@ class CustomerController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'data berhasil dihapus!'
+                'message' => 'data berhasil dihapus!',
             ]);
         }
     }

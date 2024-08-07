@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
 use App\Models\Satuan;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SatuanController extends Controller
 {
@@ -18,9 +17,10 @@ class SatuanController extends Controller
             return datatables()->of($satuan)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -57,7 +57,7 @@ class SatuanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
-            'data' => $satuan
+            'data' => $satuan,
         ]);
     }
 
@@ -68,7 +68,7 @@ class SatuanController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Detail Data Satuan',
-            'data' => $satuan
+            'data' => $satuan,
         ]);
     }
 
@@ -95,13 +95,13 @@ class SatuanController extends Controller
 
         $satuan->update([
             'nama' => $request->nama,
-            'keterangan' => $request->keterangan
+            'keterangan' => $request->keterangan,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Diupdate!',
-            'data' => $satuan
+            'data' => $satuan,
         ]);
     }
 
@@ -112,7 +112,7 @@ class SatuanController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus!'
+                'message' => 'Data berhasil dihapus!',
             ]);
         }
     }
