@@ -29,19 +29,19 @@
     <div class="row">
         <div class="col-12">
             @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
 
             @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
             @endif
             <div class="card">
                 <div class="card-body">
@@ -53,7 +53,9 @@
                     </div>
                     <div class="table-responsive">
                         <div class="btn-group mb-3">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Filter Data Penjualan <i class="mdi mdi-chevron-down"></i></button>
+                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">Filter Data Penjualan <i
+                                    class="mdi mdi-chevron-down"></i></button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Default</a>
                                 <div class="dropdown-divider"></div>
@@ -61,24 +63,29 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-filter="nama_customer">Nama Customer</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="bx bx-calendar-alt"></i> Tanggal</a>
+                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                        class="bx bx-calendar-alt"></i> Tanggal</a>
                                 <a class="dropdown-item" href="#" data-filter="tanggal_terbaru">Tanggal Terbaru</a>
                                 <a class="dropdown-item" href="#">Tanggal Terlama</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="bx bx-calculator"></i> Total Pembelian</a>
-                                <a class="dropdown-item" href="#">Total Terbesar</a>
-                                <a class="dropdown-item" href="#">Total Terkecil</a>
+                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                        class="bx bx-calculator"></i> Total Pembelian</a>
+                                <a class="dropdown-item" href="#" data-filter="total_terbesar">Total Terbesar</a>
+                                <a class="dropdown-item" href="#" data-filter="total_terkecil">Total Terkecil</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="bx bx-money"></i> Sudah Bayar/Belum Bayar</a>
-                                <a class="dropdown-item" href="#">Terbayar</a>
-                                <a class="dropdown-item" href="#">Belum Terbayar</a>
+                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                        class="bx bx-money"></i> Sudah Bayar/Belum Bayar</a>
+                                <a class="dropdown-item" href="#" data-filter="sudah_terbayar">Terbayar</a>
+                                <a class="dropdown-item" href="#" data-filter="belum_terbayar">Belum Terbayar</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i class="bx bxs-bank"></i> Jenis Pembayaran</a>
-                                <a class="dropdown-item" href="#">Bank</a>
-                                <a class="dropdown-item" href="#">Cash</a>
-                                <a class="dropdown-item" href="#">Piutang</a>
+                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                        class="bx bxs-bank"></i> Jenis Pembayaran</a>
+                                <a class="dropdown-item" href="#" data-filter="bank">Bank</a>
+                                <a class="dropdown-item" href="#" data-filter="cash">Cash</a>
+                                <a class="dropdown-item" href="#" data-filter="piutang">Piutang</a>
                             </div>
                         </div><!-- /btn-group -->
+                        <input type="hidden" id="filter" value="default">
                         <table id="table" class="table table-bordered dt-responsive  nowrap w-100">
                             <thead>
                                 <tr>
@@ -111,67 +118,72 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function() {
-        setTimeout(function() {
+    $(document).ready(function () {
+        setTimeout(function () {
             $('.alert').fadeOut('slow');
         }, 1000);
 
-        // make datatable
-        $('#table').DataTable({
+        // Initialize datatable with filter
+        var table = $('#table').DataTable({
             'responsive': true,
             'serverSide': true,
             'processing': true,
             'ajax': {
                 'url': "{{ route('report.penjualan.index') }}",
-                'type': 'GET'
+                'type': 'GET',
+                'data': function (d) {
+                    d.filter = $('#filter').val();
+                }
             },
             'columns': [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'no_faktur',
-                    name: 'no_faktur'
-                },
-                {
-                    data: 'customer.nama',
-                    name: 'customer.nama'
-                },
-                {
-                    data: 'tanggal',
-                    name: 'tanggal'
-                },
-                {
-                    data: 'total',
-                    name: 'total'
-                },
-                {
-                    data: 'bayar',
-                    name: 'bayar'
-                },
-                {
-                    data: 'diskon',
-                    name: 'diskon'
-                },
-                {
-                    data: 'ppn',
-                    name: 'ppn'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                }
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'no_faktur',
+                name: 'no_faktur'
+            },
+            {
+                data: 'customer.nama',
+                name: 'customer.nama'
+            },
+            {
+                data: 'tanggal',
+                name: 'tanggal'
+            },
+            {
+                data: 'total',
+                name: 'total'
+            },
+            {
+                data: 'bayar',
+                name: 'bayar'
+            },
+            {
+                data: 'diskon',
+                name: 'diskon'
+            },
+            {
+                data: 'ppn',
+                name: 'ppn'
+            },
+            {
+                data: 'status',
+                name: 'status'
+            }
             ]
         });
 
-        $('.dropdown-item').click(function() {
-            var filter = $(this).attr('data-filter');
-            $('#filter').val(filter);
+        // Handle filter change
+        $('.dropdown-menu a').on('click', function () {
+            var filterValue = $(this).data('filter');
+            $('#filter').val(filterValue);
             table.ajax.reload();
         });
     });
 </script>
+
 
 @endsection
