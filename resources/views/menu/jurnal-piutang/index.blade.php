@@ -69,6 +69,7 @@
                     <div class="modal-body">
                         <form id="form-bayar" method="POST">
                             @csrf
+                            <input type="hidden" id="id" name="id">
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama</label>
                                 <input type="text" class="form-control" id="nama" name="nama" readonly>
@@ -81,19 +82,27 @@
                                 <div class="alert alert-danger mt-2 d-none"></div>
                             </div>
 
-                            <div class="col-lg-5">
-                                <label for="bayar" class="form-label">Bayar</label>
-                                <input type="number" class="form-control" id="bayar" name="bayar"
-                                    placeholder="Masukan Nominal">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-bayar"></div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <label for="date" class="form-label">Tanggal Pembayaran</label>
+                                    <input class="form-control" type="date" id="date">
+                                </div>
+
+                                <div class="col-lg-5">
+                                    <label for="bayar" class="form-label">Bayar</label>
+                                    <input type="number" class="form-control" id="bayar" name="bayar"
+                                        placeholder="Masukan Nominal">
+                                </div>
+
                             </div>
+
                         </form>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Batal</button>
                         <button type="button" class="btn btn-primary waves-effect waves-light"
-                            id="store">Konfirmasi</button>
+                            id="update">Konfirmasi</button>
                     </div>
                 </div>
             </div>
@@ -114,7 +123,7 @@
                 },
                 "columns": [{
                         data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',pok
+                        name: 'DT_RowIndex',
                         orderable: false,
                         searchable: false
                     },
@@ -158,19 +167,65 @@
             });
         });
 
-
         $('body').on('click', '#btn-bayar', function() {
-            $('#myModal').modal('show');
             var id = $(this).data('id');
             $.ajax({
                 url: `/menu/jurnal-piutang/${id}`,
                 method: 'GET',
                 cache: false,
                 success: function(response) {
+                    $('#id').val(response.data.id);
                     $('#nama').val(response.data.customer.nama);
                     $('#Total-bayar').val(response.data.total);
+                    setDateToday();
                     $('#myModal').modal('show');
+                }
+            });
+        });
 
+        function setDateToday() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+        $('#update').click(function(e) {
+            e.preventDefault();
+            let id = $('#id').val();
+            let bayar = $('#bayar').val();
+            let token = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: `/menu/jurnal-piutang/${id}`,
+                type: "PUT",
+                cache: false,
+                data: {
+                    "_token": token,
+                    "bayar": bayar
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                        $('#table').DataTable().ajax.reload();
+                        $('#bayar').val('');
+                        $('#myModal').modal('hide');
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Terjadi kesalahan',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }
                 }
             });
         });

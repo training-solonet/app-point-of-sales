@@ -10,6 +10,7 @@ class JurnalPiutangController extends Controller
     public function index(Request $request)
     {
         $piutang = Jual::with('customer')->where('status', 'piutang')->get();
+
         if ($request->ajax()) {
             return datatables()->of($piutang)
                 ->addIndexColumn()
@@ -17,7 +18,7 @@ class JurnalPiutangController extends Controller
                     return $data->customer->nama;
                 })
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-bayar" data-id="'.$data->id.'" class="btn btn-info btn-sm">Bayar</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-bayar" data-id="' . $data->id . '" class="btn btn-info btn-sm">Bayar</a>';
 
                     return $button;
                 })
@@ -41,8 +42,7 @@ class JurnalPiutangController extends Controller
 
     public function show(string $id)
     {
-        $piutang = Jual::find($id);
-
+        $piutang = Jual::with('customer')->find($id);
         return response()->json([
             'success' => true,
             'message' => 'Pembayaran berhasil',
@@ -59,19 +59,28 @@ class JurnalPiutangController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // $piutang = Jual::find($id);
-        $piutang = Jual::with('customer')->find($id);
-    
-        // $piutang->update([
-        //     'nama' => $request->nama,
-        //     'keterangan' => $request->keterangan,
-        // ]);
+        $piutang = Jual::find($id);
+        $totalbayar = $piutang->bayar;
+        $kbayar = $totalbayar + $request->bayar;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Diupdate!',
-            'data' => $piutang,
+        \Log::info("ID: $id, Total Bayar: $totalbayar, Bayar: {$request->bayar}, Total: {$piutang->total}, Kbayar: $kbayar");
+
+        $piutang->update([
+            'bayar' => $kbayar
         ]);
+
+        if ($piutang->bayar >= $piutang->total) {
+            $piutang->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran lelah lunas bye bye'
+            ]);
+        } else {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran berhasil diupdate'
+            ]);
+        }
     }
 
 
