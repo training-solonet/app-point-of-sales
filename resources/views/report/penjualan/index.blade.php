@@ -53,9 +53,8 @@
                     </div>
                     <div class="table-responsive">
                         <div class="btn-group mb-3">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">Filter Data Penjualan <i
-                                    class="mdi mdi-chevron-down"></i></button>
+                            <button type="button" class="btn dropdown-toggle border border-black" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bx bx-filter-alt"></i></button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Default</a>
                                 <div class="dropdown-divider"></div>
