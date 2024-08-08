@@ -72,13 +72,19 @@
                             <input type="hidden" id="id" name="id">
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" id="nama" name="nama" readonly>
+                                <input type="text" class="form-control" id="nama" name="nama" disabled>
                                 <div class="alert alert-danger mt-2 d-none"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="Total-bayar" class="form-label">Total Bayar</label>
-                                <input type="text" class="form-control" id="Total-bayar" name="Total-bayar" readonly>
+                                <input type="text" class="form-control" id="Total-bayar" name="Total-bayar" disabled>
+                                <div class="alert alert-danger mt-2 d-none"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="belum-dibayar" class="form-label">Yang Belum Dibayar</label>
+                                <input type="text" class="form-control" id="belum-dibayar" name="belum-dibayar" disabled>
                                 <div class="alert alert-danger mt-2 d-none"></div>
                             </div>
 
@@ -132,8 +138,8 @@
                         name: 'no_faktur'
                     },
                     {
-                        data: 'customer_nama',
-                        name: 'customer_nama'
+                        data: 'customer.nama',
+                        name: 'customer.nama'
                     },
                     {
                         data: 'tanggal',
@@ -167,30 +173,35 @@
             });
         });
 
+        function setDateToday() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
         $('body').on('click', '#btn-bayar', function() {
             var id = $(this).data('id');
+
             $.ajax({
                 url: `/menu/jurnal-piutang/${id}`,
                 method: 'GET',
                 cache: false,
                 success: function(response) {
-                    $('#id').val(response.data.id);
-                    $('#nama').val(response.data.customer.nama);
-                    $('#Total-bayar').val(response.data.total);
+                    $('#myModal #id').val(response.data.id);
+                    $('#myModal #nama').val(response.data.customer.nama);
+                    $('#myModal #Total-bayar').val(response.data.total);
+                    $('#myModal #belum-dibayar').val(response.belum_dibayar);
                     setDateToday();
+                    $('#update').data('id', id)
                     $('#myModal').modal('show');
                 }
             });
         });
 
-        function setDateToday() {
-            var today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').value = today;
-        }
         $('#update').click(function(e) {
             e.preventDefault();
-            let id = $('#id').val();
-            let bayar = $('#bayar').val();
+
+            let id = $(this).data('id');
+            let bayar = $('#myModal #bayar').val();
             let token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
@@ -213,8 +224,8 @@
                             timerProgressBar: true,
                         });
                         $('#table').DataTable().ajax.reload();
-                        $('#bayar').val('');
                         $('#myModal').modal('hide');
+                        $('#myModal form')[0].reset();
                     } else {
                         Swal.fire({
                             toast: true,

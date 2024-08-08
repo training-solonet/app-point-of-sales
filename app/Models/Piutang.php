@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Piutang extends Model
 {
     use HasFactory;
+
+    protected $table = 'piutang';
+    protected $fillable = [
+        'jual_id',
+        'pembayaran',
+        'tanggal',
+        'keterangan',
+    ];
+
+    public function jual()
+    {
+        return $this->BelongsTo(Jual::class, 'jual_id');
+    }
 }
