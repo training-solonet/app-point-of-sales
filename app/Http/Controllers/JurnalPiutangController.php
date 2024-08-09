@@ -28,7 +28,6 @@ class JurnalPiutangController extends Controller
         }
 
         return view('menu.jurnal-piutang.index');
-
     }
 
     public function create()
@@ -71,40 +70,47 @@ class JurnalPiutangController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'bayar' => 'required|numeric'
+            'bayar' => 'required|numeric|min:0',
         ]);
     
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 400);
         }
     
         $piutang = Jual::find($id);
-        $totalbayar = $piutang->bayar + $request->bayar;
     
-        $piutang->update([
-            'bayar' => $totalbayar
-        ]);
-    
-        // Check if payment is completed
-        if ($totalbayar >= $piutang->total) {
-            $piutang->update([
-                'status' => 'cash'
-            ]);
-    
-            Piutang::create([
-                'jual_id' => $piutang->id,
-                'keterangan' => 'Pembayaran Piutang Lunas',
-            ]);
-    
+        if (!$piutang) {
             return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran berhasil diupdate, Piutang Lunas'
-            ]);
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
         }
+    
+        $bayarAmount = $request->input('bayar');
+        $newBayarTotal = $piutang->bayar + $bayarAmount;
+    
+        $piutang->bayar = $newBayarTotal;
+    
+        if ($newBayarTotal >= $piutang->total) {
+            $piutang->status = 'cash';
+        }
+    
+        $piutang->save();
+    
+        $newPiutang = new Piutang();
+        $newPiutang->jual_id = $piutang->id;
+        $newPiutang->pembayaran = $bayarAmount;
+        $newPiutang->tanggal = $request->input('date');
+        $newPiutang->keterangan = $piutang->status;
+        $newPiutang->save();
     
         return response()->json([
             'success' => true,
-            'message' => 'Pembayaran berhasil diupdate'
+            'message' => 'Pembayaran berhasil dilakukan.',
+            'status' => $piutang->status
         ]);
     }
 
