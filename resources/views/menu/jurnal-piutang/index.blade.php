@@ -171,73 +171,77 @@
                     },
                 ]
             });
-        });
 
-        function setDateToday() {
-            var today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').value = today;
-        }
+            function setDateToday() {
+                var today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+            }
 
-        $('body').on('click', '#btn-bayar', function() {
-            var id = $(this).data('id');
+            $('body').on('click', '#btn-bayar', function() {
+                var id = $(this).data('id');
 
-            $.ajax({
-                url: `/menu/jurnal-piutang/${id}`,
-                method: 'GET',
-                cache: false,
-                success: function(response) {
-                    $('#myModal #id').val(response.data.id);
-                    $('#myModal #nama').val(response.data.customer.nama);
-                    $('#myModal #Total-bayar').val(response.data.total);
-                    $('#myModal #belum-dibayar').val(response.belum_dibayar);
-                    setDateToday();
-                    $('#update').data('id', id)
-                    $('#myModal').modal('show');
-                }
-            });
-        });
-
-        $('#update').click(function(e) {
-            e.preventDefault();
-
-            let id = $(this).data('id');
-            let bayar = $('#myModal #bayar').val();
-            let token = $('meta[name="csrf-token"]').attr('content');
-
-            $.ajax({
-                url: `/menu/jurnal-piutang/${id}`,
-                type: "PUT",
-                cache: false,
-                data: {
-                    "_token": token,
-                    "bayar": bayar
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                        });
-                        $('#table').DataTable().ajax.reload();
-                        $('#myModal').modal('hide');
-                        $('#myModal form')[0].reset();
-                    } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Terjadi kesalahan',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                        });
+                $.ajax({
+                    url: `/menu/jurnal-piutang/${id}`,
+                    method: 'GET',
+                    cache: false,
+                    success: function(response) {
+                        $('#myModal #id').val(response.data.id);
+                        $('#myModal #nama').val(response.data.customer.nama);
+                        $('#myModal #Total-bayar').val(response.data.total);
+                        $('#myModal #belum-dibayar').val(response.belum_dibayar);
+                        setDateToday();
+                        $('#update').data('id', id)
+                        $('#myModal').modal('show');
                     }
-                }
+                });
+            });
+
+            $('#update').click(function(e) {
+                e.preventDefault();
+
+                let id = $(this).data('id');
+                let bayar = $('#myModal #bayar').val();
+                let token = $('meta[name="csrf-token"]').attr('content');
+
+                $.ajax({
+                    url: `/menu/jurnal-piutang/${id}`,
+                    type: "PUT",
+                    cache: false,
+                    data: {
+                        "_token": token,
+                        "bayar": bayar
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                            });
+                            $('#table').DataTable().ajax.reload();
+                            $('#myModal').modal('hide');
+                            $('#myModal form')[0].reset();
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Pembayaran Tercicil',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                            });
+                            $('#myModal').modal('hide');
+                            $('#table').DataTable().ajax.reload();
+                            $('#myModal form')[0].reset();
+
+                        }
+                    }
+                });
             });
         });
     </script>

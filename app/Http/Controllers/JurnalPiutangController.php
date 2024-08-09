@@ -73,38 +73,39 @@ class JurnalPiutangController extends Controller
         $validator = Validator::make($request->all(), [
             'bayar' => 'required|numeric'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
+    
         $piutang = Jual::find($id);
         $totalbayar = $piutang->bayar + $request->bayar;
-        $belumDibayar = $piutang->total - $totalbayar;
-
+    
         $piutang->update([
             'bayar' => $totalbayar
         ]);
-
-        if ($totalbayar >= $piutang->total) { {
-
-                $piutang->update([
-                    'status' => 'cash'
-                ]);
-
-                Piutang::create([
-                    'jual_id' => $piutang->id,
-                    'keterangan' => 'Pembayaran Piutang Lunas',
-                ]);
-            }
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Pembayaran berhasil diupdate'
-                ]);
-            }
+    
+        // Check if payment is completed
+        if ($totalbayar >= $piutang->total) {
+            $piutang->update([
+                'status' => 'cash'
+            ]);
+    
+            Piutang::create([
+                'jual_id' => $piutang->id,
+                'keterangan' => 'Pembayaran Piutang Lunas',
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran berhasil diupdate, Piutang Lunas'
+            ]);
         }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil diupdate'
+        ]);
     }
 
 
