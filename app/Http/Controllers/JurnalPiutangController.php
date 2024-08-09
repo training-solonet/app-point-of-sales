@@ -109,7 +109,7 @@ class JurnalPiutangController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Pembayaran berhasil dilakukan.',
+            'message' => 'Pembayaran berhasil dilakukan',
             'status' => $piutang->status
         ]);
     }
