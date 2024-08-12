@@ -48,7 +48,7 @@
                     <div class="row ">
                         <div class="col-md-6 col-12">
                             <h4 class="card-title">Data Penjualan</h4>
-                            <p class="card-title-desc">Data seluruh penjualan</p>
+                            <p class="card-title-desc">Data seluruh penjualan yang tercatat</p>
                         </div>
                     </div>
                     <div class="table-responsive">
