@@ -65,7 +65,7 @@
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
                                         class="bx bx-calendar-alt"></i> Tanggal</a>
                                 <a class="dropdown-item" href="#" data-filter="tanggal_terbaru">Baru</a>
-                                <a class="dropdown-item" href="#">Lama</a>
+                                <a class="dropdown-item" href="#" data-filter="tanggal_terlama">Lama</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
                                         class="bx bx-calculator"></i> Total Pembelian</a>

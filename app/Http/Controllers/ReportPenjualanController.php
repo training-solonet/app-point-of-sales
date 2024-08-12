@@ -19,7 +19,7 @@ class ReportPenjualanController extends Controller
 
                 switch ($filter) {
                     case 'no_faktur':
-                        $penjualan->orderBy('no_faktur', 'desc');
+                        $penjualan->orderByRaw('CAST(no_faktur AS UNSIGNED) DESC');
                         break;
                     case 'nama_customer':
                         $penjualan->join('customer', 'jual.customer_id', '=', 'customer.id')
@@ -27,10 +27,10 @@ class ReportPenjualanController extends Controller
                             ->orderBy('customer.nama');
                         break;
                     case 'tanggal_terbaru':
-                        $penjualan->orderBy('tanggal', 'desc');
+                        $penjualan->orderByRaw('CAST(tanggal AS DATE) DESC');
                         break;
                     case 'tanggal_terlama':
-                        $penjualan->orderBy('tanggal', 'asc');
+                        $penjualan->orderByRaw('CAST(tanggal AS DATE) ASC');
                         break;
                     case 'total_terbesar':
                         $penjualan->orderBy('total', 'desc');
@@ -54,7 +54,7 @@ class ReportPenjualanController extends Controller
                         $penjualan->where('status', 'piutang');
                         break;
                     default:
-                        $penjualan->orderBy('id', 'desc');
+                        $penjualan->orderBy('id', 'asc');
                         break;
                 }
             }
