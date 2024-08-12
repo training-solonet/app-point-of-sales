@@ -9,7 +9,7 @@ class ReportPembayaranPiutangController extends Controller
 {
     public function index(Request $request)
     {
-        $report_piutang = Piutang::with(['jual'])->orderBy('id', 'desc');
+        $report_piutang = Piutang::with(['jual'])->where('keterangan', 'cash')->orderBy('id', 'desc');
 
         if ($request->ajax()) {
             return datatables()->of($report_piutang)

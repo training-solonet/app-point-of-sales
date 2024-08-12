@@ -64,18 +64,18 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
                                         class="bx bx-calendar-alt"></i> Tanggal</a>
-                                <a class="dropdown-item" href="#" data-filter="tanggal_terbaru">Tanggal Terbaru</a>
-                                <a class="dropdown-item" href="#">Tanggal Terlama</a>
+                                <a class="dropdown-item" href="#" data-filter="tanggal_terbaru">Baru</a>
+                                <a class="dropdown-item" href="#">Lama</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
                                         class="bx bx-calculator"></i> Total Pembelian</a>
-                                <a class="dropdown-item" href="#" data-filter="total_terbesar">Total Terbesar</a>
-                                <a class="dropdown-item" href="#" data-filter="total_terkecil">Total Terkecil</a>
+                                <a class="dropdown-item" href="#" data-filter="total_terbesar">Besar</a>
+                                <a class="dropdown-item" href="#" data-filter="total_terkecil">Kecil</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
-                                        class="bx bx-money"></i> Sudah Bayar/Belum Bayar</a>
+                                        class="bx bx-money"></i> Bayar</a>
                                 <a class="dropdown-item" href="#" data-filter="sudah_terbayar">Terbayar</a>
-                                <a class="dropdown-item" href="#" data-filter="belum_terbayar">Belum Terbayar</a>
+                                <a class="dropdown-item" href="#" data-filter="belum_terbayar">Belum Bayar</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
                                         class="bx bxs-bank"></i> Jenis Pembayaran</a>
