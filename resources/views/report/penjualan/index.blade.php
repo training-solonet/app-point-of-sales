@@ -1,6 +1,10 @@
 @extends('layouts.template')
 @section('css')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet"
+    type="text/css">
+<link href="{{ asset('assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css') }}" rel="stylesheet"
+    type="text/css" />
 @endsection
 @section('content')
 <style>
@@ -53,108 +57,6 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <div class="btn-group mb-3">
-                            <button type="button" class="btn dropdown-toggle border border-black"
-                                data-bs-toggle="dropdown" aria-expanded="false"><i
-                                    class="bx bx-filter-alt"></i></button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Default</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-filter="no_faktur">No Faktur</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-filter="nama_customer">Nama Customer</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
-                                        class="bx bx-calendar-alt"></i> Tanggal</a>
-                                <a class="dropdown-item" href="#" data-filter="tanggal_terbaru">Baru</a>
-                                <a class="dropdown-item" href="#" data-filter="tanggal_terlama">Lama</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
-                                        class="bx bx-calculator"></i> Total Pembelian</a>
-                                <a class="dropdown-item" href="#" data-filter="total_terbesar">Besar</a>
-                                <a class="dropdown-item" href="#" data-filter="total_terkecil">Kecil</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
-                                        class="bx bx-money"></i> Bayar</a>
-                                <a class="dropdown-item" href="#" data-filter="sudah_terbayar">Terbayar</a>
-                                <a class="dropdown-item" href="#" data-filter="belum_terbayar">Belum Bayar</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
-                                        class="bx bxs-bank"></i> Jenis Pembayaran</a>
-                                <a class="dropdown-item" href="#" data-filter="bank">Bank</a>
-                                <a class="dropdown-item" href="#" data-filter="cash">Cash</a>
-                                <a class="dropdown-item" href="#" data-filter="piutang">Piutang</a>
-                            </div>
-                        </div><!-- /btn-group -->
-                        <input type="hidden" id="filter" value="default">
-                        <div class="mb-3">
-                            <label class="form-label">Single Select</label>
-                            <select class="form-control select2">
-                                <option>Select</option>
-                                <optgroup label="Alaskan/Hawaiian Time Zone">
-                                    <option value="AK">Alaska</option>
-                                    <option value="HI">Hawaii</option>
-                                </optgroup>
-                                <optgroup label="Pacific Time Zone">
-                                    <option value="CA">California</option>
-                                    <option value="NV">Nevada</option>
-                                    <option value="OR">Oregon</option>
-                                    <option value="WA">Washington</option>
-                                </optgroup>
-                                <optgroup label="Mountain Time Zone">
-                                    <option value="AZ">Arizona</option>
-                                    <option value="CO">Colorado</option>
-                                    <option value="ID">Idaho</option>
-                                    <option value="MT">Montana</option>
-                                    <option value="NE">Nebraska</option>
-                                    <option value="NM">New Mexico</option>
-                                    <option value="ND">North Dakota</option>
-                                    <option value="UT">Utah</option>
-                                    <option value="WY">Wyoming</option>
-                                </optgroup>
-                                <optgroup label="Central Time Zone">
-                                    <option value="AL">Alabama</option>
-                                    <option value="AR">Arkansas</option>
-                                    <option value="IL">Illinois</option>
-                                    <option value="IA">Iowa</option>
-                                    <option value="KS">Kansas</option>
-                                    <option value="KY">Kentucky</option>
-                                    <option value="LA">Louisiana</option>
-                                    <option value="MN">Minnesota</option>
-                                    <option value="MS">Mississippi</option>
-                                    <option value="MO">Missouri</option>
-                                    <option value="OK">Oklahoma</option>
-                                    <option value="SD">South Dakota</option>
-                                    <option value="TX">Texas</option>
-                                    <option value="TN">Tennessee</option>
-                                    <option value="WI">Wisconsin</option>
-                                </optgroup>
-                                <optgroup label="Eastern Time Zone">
-                                    <option value="CT">Connecticut</option>
-                                    <option value="DE">Delaware</option>
-                                    <option value="FL">Florida</option>
-                                    <option value="GA">Georgia</option>
-                                    <option value="IN">Indiana</option>
-                                    <option value="ME">Maine</option>
-                                    <option value="MD">Maryland</option>
-                                    <option value="MA">Massachusetts</option>
-                                    <option value="MI">Michigan</option>
-                                    <option value="NH">New Hampshire</option>
-                                    <option value="NJ">New Jersey</option>
-                                    <option value="NY">New York</option>
-                                    <option value="NC">North Carolina</option>
-                                    <option value="OH">Ohio</option>
-                                    <option value="PA">Pennsylvania</option>
-                                    <option value="RI">Rhode Island</option>
-                                    <option value="SC">South Carolina</option>
-                                    <option value="VT">Vermont</option>
-                                    <option value="VA">Virginia</option>
-                                    <option value="WV">West Virginia</option>
-                                </optgroup>
-                            </select>
-
-                        </div>
-
                         <table id="table" class="table table-bordered dt-responsive  nowrap w-100">
                             <thead>
                                 <tr>
@@ -174,6 +76,39 @@
                             </tbody>
                         </table>
                     </div>
+                    <form class="mt-5">
+                        <div class="mb-3">
+                            <label class="form-label">Filter nama (multiple)</label>
+                            <select class="select2 form-control select2-multiple" name="filter_customer"
+                                multiple="multiple" data-placeholder="Pilih Nama">
+                                @foreach ($customer as $c)
+                                    <option value="{{ $c->id}}">{{$c->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Filter Tanggal</label>
+                            <div class="input-daterange input-group" id="datepicker6" data-date-format="dd M, yyyy"
+                                data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                <input type="text" class="form-control" name="start" placeholder="Start Date" />
+                                <input type="text" class="form-control" name="end" placeholder="End Date" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Min </label>
+                                    <input data-toggle="touchspin" type="text" data-bts-prefix="Rp">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Max </label>
+                                    <input data-toggle="touchspin" type="text" data-bts-prefix="Rp">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -186,12 +121,39 @@
 </div>
 @endsection
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ asset('assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
 <script>
     $(document).ready(function () {
         setTimeout(function () {
             $('.alert').fadeOut('slow');
         }, 1000);
+
+        $('.select2').select2();
+
+        $('#datepicker6').datepicker({
+            format: 'dd M, yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: 'top auto'
+        });
+
+        function formatCurrency(value) {
+            return parseInt(value).toLocaleString('id-ID').replace(/,/g, '.');
+        }
+
+        $("input[data-toggle='touchspin']").TouchSpin({
+            max: 100000000,
+            step: 1000,
+            decimals: 2,
+            forcestepdivisibility: 'none',
+            prefix: 'Rp',
+            initval: 0,
+        }).on('touchspin.on.startupspin touchspin.on.startdownspin touchspin.on.min touchspin.on.max', function () {
+            var value = $(this).val().replace(/Rp/g, '').replace(/\./g, '').trim();
+            $(this).val(formatCurrency(value));
+        });
 
         // Initialize datatable with filter
         var table = $('#table').DataTable({
@@ -202,7 +164,7 @@
                 'url': "{{ route('report.penjualan.index') }}",
                 'type': 'GET',
                 'data': function (d) {
-                    d.filter = $('#filter').val();
+                    d.filter_customer = $('select[name="filter_customer"]').val();
                 }
             },
             'columns': [{
@@ -221,38 +183,63 @@
             },
             {
                 data: 'tanggal',
-                name: 'tanggal'
+                name: 'tanggal',
+                render: function (data, type, row) {
+                    if (data) {
+                        var date = new Date(data);
+                        var day = ('0' + date.getDate()).slice(-2);
+                        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear().toString().slice(-2);
+                        return `${day}/${month}/${year}`;
+                    }
+                    return '';
+                },
             },
             {
                 data: 'total',
-                name: 'total'
+                name: 'total',
+                render: function (data, type, row) {
+                    return formatCurrency(data);
+                },
+                className: 'text-end'
             },
             {
                 data: 'bayar',
-                name: 'bayar'
+                name: 'bayar',
+                render: function (data, type, row) {
+                    return formatCurrency(data);
+                },
+                className: 'text-end'
             },
             {
                 data: 'diskon',
-                name: 'diskon'
+                name: 'diskon',
+                render: function (data, type, row) {
+                    return formatCurrency(data);
+                },
+                className: 'text-end'
             },
             {
                 data: 'ppn',
-                name: 'ppn'
+                name: 'ppn',
+                render: function (data, type, row) {
+                    return formatCurrency(data);
+                },
+                className: 'text-end'
             },
             {
                 data: 'status',
-                name: 'status'
+                name: 'status',
+                className: 'text-center'
             }
             ]
         });
 
-        // Handle filter change
-        $('.dropdown-menu a').on('click', function () {
-            var filterValue = $(this).data('filter');
-            $('#filter').val(filterValue);
+        $('select[name="filter_customer"], input[name="start"], input[name="end"], input[name="min"], input[name="max"]').on('change', function () {
             table.ajax.reload();
         });
     });
+
 </script>
 
 
