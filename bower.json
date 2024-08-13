@@ -1,0 +1,17 @@
+{
+  "name": "app-point-of-sales",
+  "description": "",
+  "main": "",
+  "authors": [
+    "asus <rasyadelgiva@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/training-solonet/app-point-of-sales",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

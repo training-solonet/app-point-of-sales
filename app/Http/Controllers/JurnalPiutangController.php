@@ -27,7 +27,8 @@ class JurnalPiutangController extends Controller
                 ->make(true);
         }
 
-        return view('menu.jurnal-piutang.index');
+        $customer = Customer::all();
+        return view('menu.jurnal-piutang.index', compact('customer'));
     }
 
     public function create()
@@ -63,6 +64,7 @@ class JurnalPiutangController extends Controller
 
     public function edit(string $id)
     {
+        //
     }
 
 
