@@ -12,9 +12,23 @@ class JurnalPiutangController extends Controller
 {
     public function index(Request $request)
     {
-        $piutang = Jual::with(['customer'])->where('status', 'piutang')
-            ->orderBy('bayar', 'desc');
+        $piutang = Jual::with(['customer'])->where('status', 'piutang');
 
+        if ($request->has('filter_customer') && !empty($request->filter_customer)) {
+            $piutang->whereIn('customer_id', $request->filter_customer);
+        }
+
+        if ($request->has('start') && $request->has('end')) {
+            $startDate = $request->input('start');
+            $endDate = $request->input('end');
+    
+            if (!empty($startDate) && !empty($endDate)) {
+                $piutang->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }
+
+
+            
         if ($request->ajax()) {
             return datatables()->of($piutang)
                 ->addIndexColumn()
