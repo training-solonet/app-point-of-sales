@@ -1,15 +1,14 @@
 <?php
+
 namespace Grav\Plugin;
 
+use Grav\Common\Config\Config;
 use Grav\Common\Page\Collection;
-use Grav\Common\Plugin;
-use Grav\Common\Uri;
 use Grav\Common\Page\Page;
 use Grav\Common\Page\Types;
+use Grav\Common\Plugin;
 use Grav\Common\Taxonomy;
-use Grav\Common\Utils;
-use Grav\Common\Data\Data;
-use Grav\Common\Config\Config;
+use Grav\Common\Uri;
 use RocketTheme\Toolbox\Event\Event;
 
 class SimplesearchPlugin extends Plugin
@@ -51,13 +50,12 @@ class SimplesearchPlugin extends Plugin
         $types->scanTemplates('plugins://simplesearch/templates');
     }
 
-
     /**
      * Add current directory to twig lookup paths.
      */
     public function onTwigTemplatePaths()
     {
-        $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
+        $this->grav['twig']->twig_paths[] = __DIR__.'/templates';
     }
 
     /**
@@ -71,10 +69,9 @@ class SimplesearchPlugin extends Plugin
 
         $this->enable([
             'onPagesInitialized' => ['onPagesInitialized', 0],
-            'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
+            'onTwigSiteVariables' => ['onTwigSiteVariables', 0],
         ]);
     }
-
 
     /**
      * Build search results.
@@ -105,7 +102,7 @@ class SimplesearchPlugin extends Plugin
         $route = $this->config->get('plugins.simplesearch.route');
 
         // performance check for route
-        if (!($route && $route == $uri->path())) {
+        if (! ($route && $route == $uri->path())) {
             return;
         }
 
@@ -133,7 +130,7 @@ class SimplesearchPlugin extends Plugin
             }
         }
 
-        if (!$should_process || !$filters || $query === false || (count($filters) == 1 && !reset($filters))) {
+        if (! $should_process || ! $filters || $query === false || (count($filters) == 1 && ! reset($filters))) {
             /** @var \Grav\Common\Page\Pages $pages */
             $pages = $this->grav['pages'];
             $this->collection = $pages->all();
@@ -165,7 +162,7 @@ class SimplesearchPlugin extends Plugin
                 $params['query'] = $this->config->get('plugins.simplesearch.query');
                 $this->collection = $page->collection($params, false);
             } else {
-                $this->collection = new Collection();
+                $this->collection = new Collection;
                 $this->collection->append($taxonomy_map->findTaxonomy($find_taxonomy, $operator)->toArray());
             }
         }
@@ -174,7 +171,7 @@ class SimplesearchPlugin extends Plugin
         $this->collection->published()->routable();
 
         //Check if user has permission to view page
-        if($this->grav['config']->get('plugins.login.enabled')) {
+        if ($this->grav['config']->get('plugins.login.enabled')) {
             $this->collection = $this->checkForPermissions($this->collection);
         }
         $extras = [];
@@ -186,6 +183,7 @@ class SimplesearchPlugin extends Plugin
 
                     if ($this->notFound($query, $cpage, $taxonomies)) {
                         $this->collection->remove($cpage);
+
                         continue;
                     }
 
@@ -199,12 +197,12 @@ class SimplesearchPlugin extends Plugin
             }
         }
 
-        if (!empty($extras)) {
+        if (! empty($extras)) {
             $this->collection->append($extras);
         }
 
         // use a configured sorting order if not already done
-        if (!$new_approach) {
+        if (! $new_approach) {
             $this->collection = $this->collection->order(
                 $this->config->get('plugins.simplesearch.order.by'),
                 $this->config->get('plugins.simplesearch.order.dir')
@@ -212,10 +210,10 @@ class SimplesearchPlugin extends Plugin
         }
 
         // if page doesn't have settings set, create a page
-        if (!isset($page->header()->simplesearch)) {
+        if (! isset($page->header()->simplesearch)) {
             // create the search page
             $page = new Page;
-            $page->init(new \SplFileInfo(__DIR__ . '/pages/simplesearch.md'));
+            $page->init(new \SplFileInfo(__DIR__.'/pages/simplesearch.md'));
 
             // override the template is set in the config
             $template_override = $this->config->get('plugins.simplesearch.template');
@@ -237,33 +235,33 @@ class SimplesearchPlugin extends Plugin
     public function checkForPermissions($collection)
     {
         $user = $this->grav['user'];
-        $returnCollection = new Collection();
+        $returnCollection = new Collection;
         foreach ($collection as $page) {
 
             $header = $page->header();
-            $rules = isset($header->access) ? (array)$header->access : [];
+            $rules = isset($header->access) ? (array) $header->access : [];
 
             if ($this->config->get('plugins.login.parent_acl')) {
                 // If page has no ACL rules, use its parent's rules
-                if (!$rules) {
+                if (! $rules) {
                     $parent = $page->parent();
-                    while (!$rules and $parent) {
+                    while (! $rules and $parent) {
                         $header = $parent->header();
-                        $rules = isset($header->access) ? (array)$header->access : [];
+                        $rules = isset($header->access) ? (array) $header->access : [];
                         $parent = $parent->parent();
                     }
                 }
             }
 
             // Continue to the page if it has no ACL rules.
-            if (!$rules) {
+            if (! $rules) {
                 $returnCollection[$page->path()] = ['slug' => $page->slug()];
             } else {
                 // Continue to the page if user is authorized to access the page.
                 foreach ($rules as $rule => $value) {
                     if (is_array($value)) {
                         foreach ($value as $nested_rule => $nested_value) {
-                            if ($user->authorize($rule . '.' . $nested_rule) == $nested_value) {
+                            if ($user->authorize($rule.'.'.$nested_rule) == $nested_value) {
                                 $returnCollection[$page->path()] = ['slug' => $page->slug()];
                                 break;
                             }
@@ -277,6 +275,7 @@ class SimplesearchPlugin extends Plugin
                 }
             }
         }
+
         return $returnCollection;
     }
 
@@ -296,11 +295,11 @@ class SimplesearchPlugin extends Plugin
             $this->grav['assets']->add('plugin://simplesearch/css/simplesearch.css');
         }
 
-
-        $this->grav['assets']->addJs('plugin://simplesearch/js/simplesearch.js', [ 'group' => 'bottom' ]);
+        $this->grav['assets']->addJs('plugin://simplesearch/js/simplesearch.js', ['group' => 'bottom']);
     }
 
-    private function matchText($haystack, $needle) {
+    private function matchText($haystack, $needle)
+    {
         if ($this->config->get('plugins.simplesearch.ignore_accented_characters')) {
             setlocale(LC_ALL, 'en_US');
             try {
@@ -309,6 +308,7 @@ class SimplesearchPlugin extends Plugin
                 $result = mb_stripos($haystack, $needle);
             }
             setlocale(LC_ALL, '');
+
             return $result;
         } else {
             return mb_stripos($haystack, $needle);
@@ -316,9 +316,7 @@ class SimplesearchPlugin extends Plugin
     }
 
     /**
-     * @param $query
-     * @param Page $page
-     * @param $taxonomies
+     * @param  Page  $page
      * @return bool
      */
     private function notFound($query, $page, $taxonomies)
@@ -338,17 +336,17 @@ class SimplesearchPlugin extends Plugin
                 $taxonomy_match = false;
                 foreach ((array) $page_taxonomies as $taxonomy => $values) {
                     // if taxonomies filter set, make sure taxonomy filter is valid
-                    if (is_array($taxonomies) && !empty($taxonomies) && !in_array($taxonomy, $taxonomies)) {
+                    if (is_array($taxonomies) && ! empty($taxonomies) && ! in_array($taxonomy, $taxonomies)) {
                         continue;
                     }
 
-                    $taxonomy_values = implode('|',$values);
+                    $taxonomy_values = implode('|', $values);
                     if ($this->matchText($taxonomy_values, $query) !== false) {
                         $taxonomy_match = true;
                         break;
                     }
                 }
-                $result = !$taxonomy_match;
+                $result = ! $taxonomy_match;
             } else {
                 if ($search_content == 'raw') {
                     $content = $page->rawMarkdown();
@@ -358,10 +356,11 @@ class SimplesearchPlugin extends Plugin
                 $result = $this->matchText(strip_tags($content), $query) === false;
             }
             $results = $results && $result;
-            if ($results === false ) {
+            if ($results === false) {
                 break;
             }
         }
+
         return $results;
     }
 }

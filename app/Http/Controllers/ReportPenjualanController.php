@@ -13,15 +13,15 @@ class ReportPenjualanController extends Controller
         $penjualan = Jual::with(['customer']);
         $customer = Customer::all();
 
-        if ($request->has('filter_customer') && !empty($request->filter_customer)) {
+        if ($request->has('filter_customer') && ! empty($request->filter_customer)) {
             $penjualan->whereIn('customer_id', $request->filter_customer);
         }
 
         if ($request->has('start') && $request->has('end')) {
             $startDate = $request->input('start');
             $endDate = $request->input('end');
-    
-            if (!empty($startDate) && !empty($endDate)) {
+
+            if (! empty($startDate) && ! empty($endDate)) {
                 $penjualan->whereBetween('tanggal', [$startDate, $endDate]);
             }
         }
@@ -77,31 +77,18 @@ class ReportPenjualanController extends Controller
                 ->make(true);
         }
 
-
         return view('report.penjualan.index', compact('customer'));
     }
 
-    public function create()
-    {
-    }
+    public function create() {}
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
-    public function show(string $id)
-    {
-    }
+    public function show(string $id) {}
 
-    public function edit(string $id)
-    {
-    }
+    public function edit(string $id) {}
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }
