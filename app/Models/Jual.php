@@ -9,6 +9,8 @@ class Jual extends Model
 {
     use HasFactory;
 
+    protected $table = 'jual';
+
     protected $fillable = [
         'no_faktur',
         'customer_id',
@@ -19,7 +21,7 @@ class Jual extends Model
         'ppn',
         'status',
     ];
-
+  
     protected $table = 'jual';
 
     public function customer()
@@ -27,4 +29,5 @@ class Jual extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+}
 }

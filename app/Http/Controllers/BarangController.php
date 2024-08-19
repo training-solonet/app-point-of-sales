@@ -13,7 +13,7 @@ class BarangController extends Controller
     public function index(Request $request)
     {
         $barang = Barang::with(['kategori', 'satuan'])
-            ->orderBy('id', 'asc');
+            ->orderBy('id', 'desc');
 
         if ($request->ajax()) {
             return datatables()->of($barang)
