@@ -3,7 +3,6 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet" />
-
     <style>
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button {
@@ -43,7 +42,7 @@
 
                         <form class="mt-3 mb-5">
                             <div class="mb-4">
-                                <label class="form-label">Filter nama (multiple)</label>
+                                <label class="form-label">Filter Nama (multiple)</label>
                                 <select class="select2 form-control select2-multiple" name="filter_customer"
                                     multiple="multiple" data-placeholder="Pilih Nama">
                                     @foreach ($customer as $c)
@@ -164,11 +163,6 @@
             return Number(number).toLocaleString('id-ID');
         }
 
-        function formatDate(date) {
-            var parts = date.split('-');
-            return parts[2] + '-' + parts[1] + '-' + parts[0];
-        }
-
         $(document).ready(function() {
             $('.select2').select2();
 
@@ -222,7 +216,7 @@
                                 var day = ('0' + date.getDate()).slice(-2);
                                 var month = ('0' + (date.getMonth() + 1)).slice(-2);
                                 var year = date.getFullYear().toString().slice(-2);
-                                return `${day}/${month}/${year}`;
+                                return `${day}-${month}-${year}`;
                             }
                             return '';
                         }
