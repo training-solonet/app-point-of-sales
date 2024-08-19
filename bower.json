@@ -1,0 +1,20 @@
+{
+  "name": "app-point-of-sales",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Nomu1Nomu1 <isaiah.tino@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/training-solonet/app-point-of-sales",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "select2": "^4.0.13"
+  }
+}

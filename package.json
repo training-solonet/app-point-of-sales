@@ -11,6 +11,8 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "bower": "^1.8.14",
+        "numeral": "^2.0.6",
         "sweetalert2": "^11.12.4"
     }
 }

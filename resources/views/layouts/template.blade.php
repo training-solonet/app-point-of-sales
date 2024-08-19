@@ -304,8 +304,6 @@
     <!-- Sweat Alert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Select2 Js -->
-    <script src="assets/libs/select2/js/select2.min.js"></script>
 
     @yield('js')
 </body>
