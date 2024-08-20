@@ -21,13 +21,10 @@ class Jual extends Model
         'ppn',
         'status',
     ];
-  
-    protected $table = 'jual';
 
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-}
 }
