@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('stok', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('pembelian_id')->constrained('pembelian')->onDelete('cascade');
+            $table->date('tanggal_masuk');
+            $table->foreignId('barang_id')->constrained('barang')->onDelete('cascade');
+            $table->integer('harga_beli');
+            $table->foreignId('jual_id')->constrained('jual')->onDelete('cascade');
+            $table->date('tanggal_keluar');
+            $table->integer('harga_jual');
             $table->timestamps();
         });
     }
