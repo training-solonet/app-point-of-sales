@@ -22,5 +22,5 @@ jobs:
         script: |
           cd /var/www/app-point-of-sales
           git pull origin main
-          composer update --no-interaction --prefer-dist --optimize-autoloader
+          composer install --no-interaction --prefer-dist --optimize-autoloader
           php artisan config:clear
