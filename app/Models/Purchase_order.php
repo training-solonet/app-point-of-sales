@@ -31,8 +31,9 @@ class Purchase_order extends Model
 
     public function detail_purchase_order()
     {
-        return $this->hasMany(Detail_purchase_order::class, 'kode_po', 'kode_po');
+        return $this->hasMany(Detail_purchase_order::class, 'kode_po');
     }
+
 
     protected $table = 'purchase_orders';
 }

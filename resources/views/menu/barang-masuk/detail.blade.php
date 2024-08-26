@@ -24,12 +24,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="text-center">Halaman Detail Barang Masuk</h4>
-                    <p>1. Tampilkan sebuah record table pembelian di join dengan table detail_pembelian</p>
-                    <p>2. Tambahkan 1 button "Masukan Ke Stok"</p>
-                    <p>3. Dan ketika button tersebut di klik masukan data yang ditampilkan tersebut ke table stok</p>
-                    <p>4. Di table stok, jual_id, tanggal_keluar, harga_jual, buat defaultnya null</p>
-                    <p>5. Di table stok, harga_beli diambil dari perhitungan harga 1 buah barang</p>
+                    
                 </div>
             </div>
         </div>
