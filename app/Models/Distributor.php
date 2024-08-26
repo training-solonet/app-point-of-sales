@@ -19,7 +19,7 @@ class Distributor extends Model
         'bank',
         'nomer_rekening',
         'atas_nama',
-    ]; 
+    ];
 
     protected $table = 'distributor';
 }

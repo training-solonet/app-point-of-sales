@@ -14,7 +14,7 @@ class Jurnal_harian extends Model
         'keterangan',
         'nominal',
         'status',
-    ]; 
+    ];
 
     protected $table = 'jurnal_harian';
 }

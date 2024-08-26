@@ -15,17 +15,17 @@ class Detail_purchase_order extends Model
         'part_number',
         'qty',
         'harga_satuan',
-    ]; 
+    ];
 
     protected $table = 'detail_purchase_orders';
 
     public function purchase_order()
     {
-        return $this->BelongsTo(Purchase_order::class,'kode_po','kode_po');
+        return $this->BelongsTo(Purchase_order::class, 'kode_po', 'kode_po');
     }
 
     public function barang()
     {
-        return $this->HasOne(Barang::class,'kode','kode_barang');
+        return $this->HasOne(Barang::class, 'kode', 'kode_barang');
     }
 }

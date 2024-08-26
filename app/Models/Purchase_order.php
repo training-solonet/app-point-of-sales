@@ -21,19 +21,18 @@ class Purchase_order extends Model
         'pengguna',
         'status',
         'dp',
-        'id_user'
-    ]; 
+        'id_user',
+    ];
 
     public function distributor()
     {
-        return $this->BelongsTo(Distributor::class,'kode_distributor','kode');
+        return $this->BelongsTo(Distributor::class, 'kode_distributor', 'kode');
     }
 
     public function detail_purchase_order()
     {
-        return $this->hasMany(Detail_purchase_order::class,'kode_po','kode_po');
+        return $this->hasMany(Detail_purchase_order::class, 'kode_po', 'kode_po');
     }
 
     protected $table = 'purchase_orders';
-    
 }
