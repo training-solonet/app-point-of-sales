@@ -44,6 +44,7 @@ class JurnalPiutangController extends Controller
 
         return view('menu.jurnal-piutang.index', compact('customer'));
     }
+    
 
     public function create() {}
 

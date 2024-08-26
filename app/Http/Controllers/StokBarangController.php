@@ -2,61 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use Illuminate\Http\Request;
+use App\Models\Stok;
 
 class StokBarangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return view('report.stok-barang.index');
+        if ($request->ajax()) {
+            $stok = Stok::with(['barang', 'detailPurchaseOrder'])->get();
+    
+            return datatables()->of($stok)
+                ->addIndexColumn()
+                ->addColumn('nama', function ($row) {
+                    return $row->barang->nama;
+                })
+                ->addColumn('qty', function ($row) {
+                    return $row->detailPurchaseOrder->qty?? '-';
+                })
+                ->addColumn('action', function ($data) {
+                    $button = '<a href="javascript:void(0)" id="btn-det-stok" data-id="' . $data->id . '" class="btn btn-info waves-effect waves-light">Detail</a>';
+                    return $button;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        $barang = Barang::all();
+        return view('report.stok-barang.index', compact('barang'));
     }
+    
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         //
