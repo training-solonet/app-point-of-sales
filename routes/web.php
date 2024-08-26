@@ -1,13 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JurnalPiutangController;
+use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ReportPembayaranPiutangController;
 use App\Http\Controllers\ReportPenjualanController;
+use App\Http\Controllers\StokBarangController;
 use App\Http\Controllers\SatuanController;
-use Illuminate\Support\Facades\Route;
+use App\Models\Jurnal_harian;
 
 Route::get('/', function () {
     return view('layouts.template');
@@ -15,11 +20,14 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
     Route::resource('jurnal-piutang', JurnalPiutangController::class);
+    Route::resource('jurnal-harian', JurnalHarianController::class);
+    Route::resource('barang-masuk', BarangMasukController::class);
 });
 
 Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
     Route::resource('penjualan', ReportPenjualanController::class);
     Route::resource('pembayaran-piutang', ReportPembayaranPiutangController::class);
+    Route::resource('stok-barang', StokBarangController::class);
 });
 
 Route::group(['prefix' => 'master', 'as' => 'master.'], function () {
