@@ -12,7 +12,8 @@ class Jurnal_harian extends Model
     protected $fillable = [
         'tanggal',
         'keterangan',
-        'nominal',
+        'debit',
+        'kredit',
         'status',
     ];
 
