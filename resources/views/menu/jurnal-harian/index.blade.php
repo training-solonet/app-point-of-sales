@@ -39,7 +39,8 @@
                                     <th>#</th>
                                     <th>Tanggal</th>
                                     <th>Keterangan</th>
-                                    <th>Nominal</th>
+                                    <th>Debit</th>
+                                    <th>Kredit</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -49,6 +50,7 @@
                                     <td>1</td>
                                     <td>12/08/2024</td>
                                     <td>Beli Bensin</td>
+                                    <td>0</td>
                                     <td>100.000</td>
                                     <td>Cash</td>
                                     <td>
