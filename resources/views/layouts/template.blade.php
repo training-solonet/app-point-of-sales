@@ -157,6 +157,20 @@
                             </a>
                         </li>
 
+                        <li>
+                            <a href="{{ route('menu.barang-masuk.index') }}" class="waves-effect">
+                                <i class="fas fa-luggage-cart"></i>
+                                <span>Barang Masuk</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('menu.jurnal-harian.index') }}" class="waves-effect">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Jurnal Harian</span>
+                            </a>
+                        </li>
+
                         <li class="menu-title" key="t-menu">Report</li>
 
                         <li>
@@ -174,7 +188,7 @@
                         </li>
 
                         <li>
-                            <a href="#" class="waves-effect">
+                            <a href="{{ route('report.stok-barang.index') }}" class="waves-effect">
                                 <i class="fas fa-dolly-flatbed"></i>
                                 <span>Stok Barang</span>
                             </a>
