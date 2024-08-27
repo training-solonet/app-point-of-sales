@@ -30,6 +30,7 @@ class JurnalHarianController extends Controller
                 ->make(true);
         }
 
+        $jurnal = Jurnal_harian::all();
         return view('menu.jurnal-harian.index');
     }
 
@@ -48,8 +49,8 @@ class JurnalHarianController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'tanggal' => 'required',
-            // 'debit' => 'required',
-            // 'kredit' => 'required',
+            'debit' => 'required',
+            'kredit' => 'required',
             'keterangan' => 'required',
         ]);
 
@@ -72,10 +73,6 @@ class JurnalHarianController extends Controller
         ]);
     }
     
-
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $jurnal = Jurnal_harian::find($id);
@@ -95,11 +92,10 @@ class JurnalHarianController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal' => 'required|date',
-            'keterangan' => 'required|string|max:255',
-            'debit' => 'required|numeric',
-            'kredit' => 'required|numeric',
-            'status' => 'required'
+            'tanggal' => 'required',
+            'debit' => 'required',
+            'kredit' => 'required',
+            'keterangan' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -109,11 +105,11 @@ class JurnalHarianController extends Controller
         $jurnal = Jurnal_harian::find($id);
         
         $jurnal->update([
-            'tanggal' => $request->tanggal,
-            'keterangan' => $request->keterangan,
-            'debit' => $request->debit,
-            'kredit' => $request->kredit,
-            'status' => $request->status
+            'tanggal' => $request-> tanggal,
+            'debit' => $request-> debit,
+            'kredit' => $request-> kredit,
+            'keterangan' => $request-> keterangan,
+            'status' => $request-> status
         ]);
 
         return response()->json([

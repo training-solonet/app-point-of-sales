@@ -341,7 +341,7 @@
                 let keterangan = $('#keterangan-edit').val();
                 let debit = $('#debit-edit').val();
                 let kredit = $('#kredit-edit').val();
-                let status = $('#status').val();
+                let status = $('#status-edit').val();
                 let token = $("meta[name='csrf-token']").attr("content");
 
                 $.ajax({
@@ -353,7 +353,7 @@
                         "keterangan": keterangan,
                         "debit": debit,
                         "kredit": kredit,
-                        "id_status": id_status,
+                        "status": status,
                         "_token": token
                     },
                     success: function(response) {
@@ -434,22 +434,7 @@
             });
 
 
-            // Toggle debit dan kredit
-            // $('#debit').on('input', function() {
-            //     if ($(this).val()) {
-            //         $('#kredit').val('').prop('disabled', true);
-            //     } else {
-            //         $('#kredit').prop('disabled', false);
-            //     }
-            // });
-
-            // $('#kredit').on('input', function() {
-            //     if ($(this).val()) {
-            //         $('#debit').val('').prop('disabled', true);
-            //     } else {
-            //         $('#debit').prop('disabled', false);
-            //     }
-            // });
+          
         });
     </script>
 @endsection
