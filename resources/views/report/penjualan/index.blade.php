@@ -149,10 +149,6 @@
             orientation: 'auto'
         });
 
-        function formatCurrency(value) {
-            return parseInt(value).toLocaleString('id-ID').replace(/,/g, '.');
-        }
-
         // Initialize datatable with filter
         var table = $('#table').DataTable({
             'responsive': true,
@@ -203,34 +199,22 @@
                 {
                     data: 'total',
                     name: 'total',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'bayar',
                     name: 'bayar',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'diskon',
                     name: 'diskon',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'ppn',
                     name: 'ppn',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'status',

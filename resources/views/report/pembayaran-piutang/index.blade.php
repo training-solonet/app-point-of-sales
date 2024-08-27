@@ -125,10 +125,6 @@
             orientation: 'auto'
         });
 
-        function formatCurrency(value) {
-            return parseInt(value).toLocaleString('id-ID').replace(/,/g, '.');
-        }
-
         // Initialize datatable with filter
         var table = $('#table').DataTable({
             'responsive': true,
@@ -140,8 +136,8 @@
                 'data': function(d) {
                     d.filter = $('#filter').val();
                     d.filter_customer = $('select[name="filter_customer"]').val();
-                    d.start = $('input[name="start"]').val();
-                    d.end = $('input[name="end"]').val();
+                    // d.start = $('input[name="start"]').val();
+                    // d.end = $('input[name="end"]').val();
                 }
             },
             'columns': [{
@@ -175,10 +171,7 @@
                 {
                     data: 'pembayaran',
                     name: 'pembayaran',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'keterangan',
