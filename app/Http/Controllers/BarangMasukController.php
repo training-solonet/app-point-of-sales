@@ -37,23 +37,6 @@ class BarangMasukController extends Controller
         return view('menu.barang-masuk.index', compact('distributor', 'detailPembelian', 'po'));
     }
 
-    public function detail($id, Request $request)
-    {
-        $pembelian = Pembelian::with(['detail_pembelian.barang'])->find($id);
-
-        if ($request->ajax()) {
-            return datatables()->of($pembelian)
-                ->addIndexColumn()
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-
-        $detailPembelian = DetailPembelian::all();
-        $barang = Barang::all();
-
-        return view('menu.barang-masuk.detail', compact('pembelian', 'detailPembelian', 'barang'));
-    }
-
     public function create()
     {
         //
@@ -64,9 +47,33 @@ class BarangMasukController extends Controller
         //
     }
 
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        return view('menu.barang-masuk.detail');
+        if ($request->ajax()) {
+            $pembelian = Pembelian::with(['purchase_orders.distributor', 'detail_pembelian.barang'])
+                ->where('id', $id)
+                ->first();
+
+            if (!$pembelian) {
+                return response()->json(['error' => 'data not found'], 404);
+            }
+
+            $data = $pembelian->detail_pembelian->map(function ($detail, $index) {
+                return [
+                    'index' => $index + 1,
+                    'nama_barang' => $detail->barang->nama,
+                    'qty' => $detail->qty,
+                    'harga_satuan' => $detail->harga_satuan,
+                    'total_harga' => $detail->qty * $detail->harga_satuan
+                ];
+            });
+
+            return datatables()->of($data)
+            ->addIndexColumn()
+            ->make(true);
+        }
+
+        return view('menu.barang-masuk.detail', compact('id'));
     }
 
     public function edit(string $id)
