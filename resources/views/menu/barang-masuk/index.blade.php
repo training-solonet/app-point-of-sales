@@ -92,8 +92,8 @@
                 name: 'no_invoice',
             },
             {
-                data: 'purchase_orders.distributor.nama',
-                name: 'purchase_orders.distributor.nama',
+                data: 'purchase_orders.distributor.atas_nama',
+                name: 'purchase_orders.distributor.atas_nama',
             },
             {
                 data: 'total_barang',

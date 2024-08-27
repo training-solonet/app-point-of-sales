@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
 use App\Models\DetailPembelian;
 use App\Models\Distributor;
@@ -36,49 +37,48 @@ class BarangMasukController extends Controller
         return view('menu.barang-masuk.index', compact('distributor', 'detailPembelian', 'po'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function detail($id, Request $request)
+    {
+        $pembelian = Pembelian::with(['detail_pembelian.barang'])->find($id);
+
+        if ($request->ajax()) {
+            return datatables()->of($pembelian)
+                ->addIndexColumn()
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        $detailPembelian = DetailPembelian::all();
+        $barang = Barang::all();
+
+        return view('menu.barang-masuk.detail', compact('pembelian', 'detailPembelian', 'barang'));
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return view('menu.barang-masuk.detail');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
