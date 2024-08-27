@@ -48,6 +48,8 @@ class JurnalHarianController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'tanggal' => 'required',
+            // 'debit' => 'required',
+            // 'kredit' => 'required',
             'keterangan' => 'required',
         ]);
 
@@ -69,6 +71,7 @@ class JurnalHarianController extends Controller
             'data' => $jurnal,
         ]);
     }
+    
 
     /**
      * Display the specified resource.

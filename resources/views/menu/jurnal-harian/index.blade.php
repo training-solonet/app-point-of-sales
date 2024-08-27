@@ -32,6 +32,7 @@
                                 <h4 class="card-title">Data Jurnal Harian</h4>
                                 <p class="card-title-desc">Anda dapat mengelola cash flow harian di halaman ini.</p>
                             </div>
+
                             <div class="col-md-6">
                                 <button type="button" class="btn btn-primary waves-effect waves-light float-md-end"
                                     data-bs-toggle="modal" data-bs-target="#myModal" id="btn-create-post">
@@ -39,11 +40,10 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div class="saldo">
                             <p class="card-title-desc">Saldo :</p>
                         </div>
-
                         <div class="table-responsive">
                             <table id="table" class="table table-bordered dt-responsive nowrap w-100">
                                 <thead>
@@ -148,7 +148,7 @@
                         @method('PUT')
                         <input type="hidden" id="id" name="id">
                         <div class="mb-3">
-                            <label for="tanggal-edit" class="form-label">Tanggal</label>
+                            <label for="tanggal" class="form-label">Tanggal</label>
                             <input type="date" class="form-control" id="tanggal-edit" name="tanggal"
                                 placeholder="Enter date">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal-edit"></div>
@@ -268,16 +268,7 @@
                         searchable: false
                     }
                 ],
-                drawCallback: function() {
-                let api = this.api();
-                let totalDebit = api.column(3).data().reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-                let totalKredit = api.column(4).data().reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-                let saldo = totalDebit - totalKredit;
-
-                $('.saldo').html(`
-                    <p class="card-title-desc">Saldo: <strong>${formatNumber(saldo.toFixed(2))}</strong></p>
-                `);
-            }
+                
             });
 
             // Simpan data baru
