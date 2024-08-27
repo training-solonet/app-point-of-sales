@@ -77,7 +77,7 @@
             'serverSide': true,
             'processing': true,
             'ajax': {
-                'url': "/menu/barang-masuk/" + id,
+                'url': "{{ route('menu.barang-masuk.detail') }}",
                 'type': 'GET'
             },
             'columns': [{
