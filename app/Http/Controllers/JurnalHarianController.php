@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Jurnal_harian;
 use Illuminate\Support\Facades\Validator;
 
-
 class JurnalHarianController extends Controller
 {
     /**

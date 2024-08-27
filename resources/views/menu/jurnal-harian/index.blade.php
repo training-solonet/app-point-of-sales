@@ -43,6 +43,7 @@
 
                         <div class="saldo">
                             <p class="card-title-desc">Saldo :</p>
+                            <p id="saldo-cash" class="card-title-desc">0</p>
                         </div>
                         <div class="table-responsive">
                             <table id="table" class="table table-bordered dt-responsive nowrap w-100">
@@ -133,6 +134,7 @@
         </div>
     </div>
 
+
     <!-- Modal Edit -->
     <div id="modal-edit" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -199,6 +201,7 @@
             </div>
         </div>
     </div>
+
 
     </div>
 @endsection
@@ -268,51 +271,36 @@
                         searchable: false
                     }
                 ],
-                
+
             });
 
-            // Simpan data baru
-            $('#store').click(function(e) {
-                e.preventDefault();
-                let form = $('#form-create');
-                $.ajax({
-                    url: "{{ route('menu.jurnal-harian.store') }}",
-                    type: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#myModal').modal('hide');
-                            $('#table').DataTable().ajax.reload();
-                            Toast.fire({
-                                icon: 'success',
-                                title: response.message
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        if (error.responseJSON.tanggal) {
-                            $('#alert-tanggal').removeClass('d-none').html(error
-                                .responseJSON.tanggal[0]);
-                        }
-                        if (error.responseJSON.debit) {
-                            $('#alert-debit').removeClass('d-none').html(error.responseJSON
-                                .debit[0]);
-                        }
-                        if (error.responseJSON.kredit) {
-                            $('#alert-kredit').removeClass('d-none').html(error
-                                .responseJSON.kredit[0]);
-                        }
-                        if (error.responseJSON.keterangan) {
-                            $('#alert-keterangan').removeClass('d-none').html(error.responseJSON
-                                .keterangan[0]);
-                        }
-                        if (error.responseJSON.status) {
-                            $('#alert-kategori').removeClass('d-none').html(error.responseJSON
-                                .status[0]);
-                        }
-                    }
-                });
-            });
+    // Simpan data baru
+    $('#store').click(function(e) {
+        e.preventDefault();
+        let form = $('#form-create');
+        $.ajax({
+            url: "{{ route('menu.jurnal-harian.store') }}",
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                if (response.success) {
+                    $('#myModal').modal('hide');
+                    $('#table').DataTable().ajax.reload();
+                    Toast.fire({
+                        icon: 'success',
+                        title: response.message
+                    });
+                }
+            },
+            error: function(error) {
+                $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal).html(error.responseJSON.tanggal ? error.responseJSON.tanggal[0] : '');
+                $('#alert-debit').toggleClass('d-none', !error.responseJSON.debit).html(error.responseJSON.debit ? error.responseJSON.debit[0] : '');
+                $('#alert-kredit').toggleClass('d-none', !error.responseJSON.kredit).html(error.responseJSON.kredit ? error.responseJSON.kredit[0] : '');
+                $('#alert-keterangan').toggleClass('d-none', !error.responseJSON.keterangan).html(error.responseJSON.keterangan ? error.responseJSON.keterangan[0] : '');
+                $('#alert-status').toggleClass('d-none', !error.responseJSON.status).html(error.responseJSON.status ? error.responseJSON.status[0] : '');
+            }
+        });
+    });
 
             $('body').on('click', '#btn-edit', function() {
                 let id = $(this).data('id');
@@ -434,7 +422,7 @@
             });
 
 
-          
+
         });
     </script>
 @endsection
