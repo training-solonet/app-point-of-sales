@@ -8,12 +8,11 @@ use Illuminate\Support\Facades\Validator;
 
 class JurnalHarianController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $jurnal = Jurnal_harian::all();
+        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
 
         if ($request->ajax()) {
             return datatables()->of($jurnal)
@@ -29,8 +28,7 @@ class JurnalHarianController extends Controller
                 ->make(true);
         }
 
-        $jurnal = Jurnal_harian::all();
-        return view('menu.jurnal-harian.index');
+        return view('menu.jurnal-harian.index', compact('saldo'));
     }
 
     public function create()
@@ -40,32 +38,32 @@ class JurnalHarianController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
-            'debit' => 'required',
-            'kredit' => 'required',
+            'debit' => 'nullable|numeric|required_without:kredit',
+            'kredit' => 'nullable|numeric|required_without:debit',
             'keterangan' => 'required',
+            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $jurnal = Jurnal_harian::create([
-            'tanggal' => $request-> tanggal,
-            'debit' => $request-> debit,
-            'kredit' => $request-> kredit,
-            'keterangan' => $request-> keterangan,
-            'status' => $request-> status
+        $debit = $request->debit ?? 0;
+        $kredit = $request->kredit ?? 0;
+
+        Jurnal_harian::create([
+            'tanggal' => $request->tanggal,
+            'debit' => $debit,
+            'kredit' => $kredit,
+            'keterangan' => $request->keterangan,
+            'status' => $request->status,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Disimpan!',
-            'data' => $jurnal,
-        ]);
+        return response()->json(['success' => true, 'message' => 'Data berhasil disimpan.']);
     }
-    
+
     public function show($id)
     {
         $jurnal = Jurnal_harian::find($id);
@@ -89,6 +87,8 @@ class JurnalHarianController extends Controller
             'debit' => 'required',
             'kredit' => 'required',
             'keterangan' => 'required',
+            'status' => 'required',
+
         ]);
 
         if ($validator->fails()) {
@@ -96,13 +96,13 @@ class JurnalHarianController extends Controller
         }
 
         $jurnal = Jurnal_harian::find($id);
-        
+
         $jurnal->update([
-            'tanggal' => $request-> tanggal,
-            'debit' => $request-> debit,
-            'kredit' => $request-> kredit,
-            'keterangan' => $request-> keterangan,
-            'status' => $request-> status
+            'tanggal' => $request->tanggal,
+            'debit' => $request->debit,
+            'kredit' => $request->kredit,
+            'keterangan' => $request->keterangan,
+            'status' => $request->status
         ]);
 
         return response()->json([

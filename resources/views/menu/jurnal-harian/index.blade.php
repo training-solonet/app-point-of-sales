@@ -41,9 +41,10 @@
                             </div>
                         </div>
 
-                        {{-- <div class="saldo">
-                            <p class="card-title-desc">Saldo :</p>
-                        </div> --}}
+                        <div class="saldo">
+                            <p class="card-title-desc">Saldo : <strong> {{ number_format($saldo, 0, ',', '.') }}</strong>
+                            </p>
+                        </div>
 
                         <div class="table-responsive">
                             <table id="table" class="table table-bordered dt-responsive nowrap w-100">
@@ -207,7 +208,6 @@
 
 @section('js')
     <script>
-
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -267,33 +267,48 @@
 
             });
 
-    // Simpan data
-    $('#store').click(function(e) {
-        e.preventDefault();
-        let form = $('#form-create');
-        $.ajax({
-            url: "{{ route('menu.jurnal-harian.store') }}",
-            type: 'POST',
-            data: form.serialize(),
-            success: function(response) {
-                if (response.success) {
-                    $('#myModal').modal('hide');
-                    $('#table').DataTable().ajax.reload();
-                    Toast.fire({
-                        icon: 'success',
-                        title: response.message
-                    });
-                }
-            },
-            error: function(error) {
-                $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal).html(error.responseJSON.tanggal ? error.responseJSON.tanggal[0] : '');
-                $('#alert-debit').toggleClass('d-none', !error.responseJSON.debit).html(error.responseJSON.debit ? error.responseJSON.debit[0] : '');
-                $('#alert-kredit').toggleClass('d-none', !error.responseJSON.kredit).html(error.responseJSON.kredit ? error.responseJSON.kredit[0] : '');
-                $('#alert-keterangan').toggleClass('d-none', !error.responseJSON.keterangan).html(error.responseJSON.keterangan ? error.responseJSON.keterangan[0] : '');
-                $('#alert-status').toggleClass('d-none', !error.responseJSON.status).html(error.responseJSON.status ? error.responseJSON.status[0] : '');
-            }
-        });
-    });
+            // Simpan data
+            $('#store').click(function(e) {
+                e.preventDefault();
+                let form = $('#form-create');
+                $.ajax({
+                    url: "{{ route('menu.jurnal-harian.store') }}",
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#tanggal').val('');
+                            $('#debit').val('');
+                            $('#kredit').val('');
+                            $('#keterangan').val('');
+                            $('#status').val('');
+
+                            $('#myModal').modal('hide');
+                            $('#table').DataTable().ajax.reload();
+                            Toast.fire({
+                                icon: 'success',
+                                title: response.message
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal)
+                            .html(error.responseJSON.tanggal ? error.responseJSON.tanggal[0] :
+                                '');
+                        $('#alert-debit').toggleClass('d-none', !error.responseJSON.debit).html(
+                            error.responseJSON.debit ? error.responseJSON.debit[0] : '');
+                        $('#alert-kredit').toggleClass('d-none', !error.responseJSON.kredit)
+                            .html(error.responseJSON.kredit ? error.responseJSON.kredit[0] :
+                                '');
+                        $('#alert-keterangan').toggleClass('d-none', !error.responseJSON
+                            .keterangan).html(error.responseJSON.keterangan ? error
+                            .responseJSON.keterangan[0] : '');
+                        $('#alert-status').toggleClass('d-none', !error.responseJSON.status)
+                            .html(error.responseJSON.status ? error.responseJSON.status[0] :
+                                '');
+                    }
+                });
+            });
 
             $('body').on('click', '#btn-edit', function() {
                 let id = $(this).data('id');
@@ -302,7 +317,6 @@
                     type: "GET",
                     cache: false,
                     success: function(response) {
-                        // console.log(response); // Tambahkan ini untuk debug
                         $('#id').val(response.data.id);
                         $('#tanggal-edit').val(response.data.tanggal);
                         $('#keterangan-edit').val(response.data.keterangan);
@@ -340,6 +354,7 @@
                     success: function(response) {
                         if (response.success) {
                             Toast.fire({
+                                icon: 'success',
                                 title: response.message
                             });
 
@@ -347,37 +362,43 @@
                             $('#table').DataTable().ajax.reload();
                         } else {
                             Toast.fire({
+                                icon: 'error',
                                 title: response.message
                             });
                         }
                     },
                     error: function(error) {
+                        $('#alert-tanggal-edit, #alert-keterangan-edit, #alert-debit-edit, #alert-kredit-edit, #alert-status-edit')
+                            .addClass('d-none').html('');
+
                         if (error.responseJSON.tanggal) {
-                            $('#alert-tanggal-edit').removeClass('d-none');
-                            $('#alert-tanggal-edit').addClass('d-block');
-                            $('#alert-tanggal-edit').html(error.responseJSON.tanggal[0]);
+                            $('#alert-tanggal-edit').removeClass('d-none').html(error
+                                .responseJSON.tanggal[0]);
                         }
 
                         if (error.responseJSON.keterangan) {
-                            $('#alert-keterangan-edit').removeClass('d-none');
-                            $('#alert-keterangan-edit').addClass('d-block');
-                            $('#alert-keterangan-edit').html(error.responseJSON.keterangan[0]);
+                            $('#alert-keterangan-edit').removeClass('d-none').html(error
+                                .responseJSON.keterangan[0]);
                         }
 
                         if (error.responseJSON.debit) {
-                            $('#alert-debit-edit').removeClass('d-none');
-                            $('#alert-debit-edit').addClass('d-block');
-                            $('#alert-debit-edit').html(error.responseJSON.debit[0]);
+                            $('#alert-debit-edit').removeClass('d-none').html(error.responseJSON
+                                .debit[0]);
                         }
 
                         if (error.responseJSON.kredit) {
-                            $('#alert-kredit-edit').removeClass('d-none');
-                            $('#alert-kredit-edit').addClass('d-block');
-                            $('#alert-kredit-edit').html(error.responseJSON.kredit[0]);
+                            $('#alert-kredit-edit').removeClass('d-none').html(error
+                                .responseJSON.kredit[0]);
+                        }
+
+                        if (error.responseJSON.status) {
+                            $('#alert-status-edit').removeClass('d-none').html(error
+                                .responseJSON.status[0]);
                         }
                     }
                 });
             });
+
 
 
             // Hapus data
