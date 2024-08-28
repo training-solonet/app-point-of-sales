@@ -8,7 +8,10 @@ use App\Models\DetailPembelian;
 use App\Models\Distributor;
 use App\Models\Pembelian;
 use App\Models\Purchase_order;
+use App\Models\Stok;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BarangMasukController extends Controller
 {
@@ -44,7 +47,25 @@ class BarangMasukController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $stok = Pembelian::with(['detail_pembelian.barang'])->find($request->pembelian_id);
+
+        if (!$stok) {
+            return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
+        }
+
+        foreach ($stok->detail_pembelian as $detail) {
+            $newStok = new Stok();
+            $newStok->pembelian_id = $stok->id;
+            $newStok->tanggal_masuk = $stok->tgl_beli;
+            $newStok->barang_id = $detail->barang->id;
+            $newStok->harga_beli = $detail->harga_satuan;
+            $newStok->jual_id = null;
+            $newStok->tanggal_keluar = null;
+            $newStok->harga_jual = null;
+            $newStok->save();
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Data has been added'], 200);
     }
 
     public function show(string $id, Request $request)
@@ -69,8 +90,8 @@ class BarangMasukController extends Controller
             });
 
             return datatables()->of($data)
-            ->addIndexColumn()
-            ->make(true);
+                ->addIndexColumn()
+                ->make(true);
         }
 
         return view('menu.barang-masuk.detail', compact('id'));
@@ -83,7 +104,26 @@ class BarangMasukController extends Controller
 
     public function update(Request $request, string $id)
     {
-        //
+        // Log::info("Update method called with ID: $id");
+
+        // $stok = Pembelian::with(['detail_pembelian.barang'])->find($id);
+
+        // if (!$stok) {
+        //     return response()->json(['error' => 'data not found'], 404);
+        // }
+
+        // $newStok = new Stok();
+        // $newStok->pembelian_id = $stok->id;
+        // $newStok->tanggal_masuk = $stok->tgl_beli;
+        // $newStok->barang_id = $stok->detail_pembelian->barang->id;
+        // $newStok->harga_beli = $stok->detail_pembelian->harga_satuan;
+        // $newStok->jual_id = null;
+        // $newStok->tanggal_keluar = null;
+        // $newStok->harga_jual = null;
+        // $newStok->save();
+
+        // return response()->json(['success' => 'data has been added'], 200);
+
     }
 
     public function destroy(string $id)

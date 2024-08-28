@@ -24,16 +24,12 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 id="invoice"></h4>
-                    <h4 id="tanggal_beli"></h4>
                     <div class="row mb-2">
                         <div class="col-md-6 col-12">
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary waves-effect waves-light float-md-end"
-                                data-bs-toggle="modal" data-bs-target="#myModal" id="btn-create"><i
-                                    class="fas fa-plus"></i> Tambah
-                                Barang</button>
+                            <button type="button" class="btn btn-warning waves-effect waves-light float-md-end"
+                                id="addStok">Masukan Ke Stok</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -51,12 +47,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- <h4 class="text-center">Halaman Detail Barang Masuk</h4>
-                    <p>1. Tampilkan sebuah record table pembelian di join dengan table detail_pembelian</p>
-                    <p>2. Tambahkan 1 button "Masukan Ke Stok"</p>
-                    <p>3. Dan ketika button tersebut di klik masukan data yang ditampilkan tersebut ke table stok</p>
-                    <p>4. Di table stok, jual_id, tanggal_keluar, harga_jual, buat defaultnya null</p>
-                    <p>5. Di table stok, harga_beli diambil dari perhitungan harga 1 buah barang</p> -->
                 </div>
             </div>
         </div>
@@ -71,18 +61,6 @@
 @section('js')
 <script>
     $(document).ready(function () {
-        $.ajax({
-            url: "/menu/barang-masuk/{{ $id }}",
-            method: "GET",
-            success: function (data) {
-                $('#invoice').text('Invoice: ' + data.no_invoice)
-                $('#tanggal_beli').text('Tanggal Beli: ' + data.tgl_beli)
-            },
-            error: function (xhr, status, error) {
-                alert('Failed to load data: ' + error)
-            }
-        })
-
         $('#table').DataTable({
             processing: true,
             serverSide: true,
@@ -115,6 +93,44 @@
                 }
             ]
         })
+
+        $('#addStok').on('click', function () {
+            $.ajax({
+                url: "/menu/barang-masuk",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    pembelian_id: "{{ $id }}"
+                },
+                success: function (data) {
+                    if (data.status == 'success') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        }).then(function () {
+                            window.location.href = "/menu/barang-masuk";
+                        });
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+            });
+        });
+
     })
+
 </script>
 @endsection
