@@ -36,9 +36,10 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Pembeli</th>
+                                        <th>Tanggal Masuk</th>
                                         <th>Barang</th>
-                                        <th>Qty</th>
-                                        <th>Nominal</th>
+                                        <th>Harga Beli</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -77,25 +78,30 @@
                         searchable: false
                     },
                     {
-                        data: 'nama',
-                        name: 'nama'
+                        data: 'pembelian_id',
+                        name: 'pembelian_id'
                     },
                     {
-                        data: 'qty',
-                        name: 'qty'
+                        data: 'tanggal_masuk',
+                        name: 'tanggal_masuk'
                     },
                     {
-                        data: 'nominal',
-                        name: 'nominal'
+                        data: 'barang_id',
+                        name: 'barang_id'
+                    },
+                    {
+                        data: 'harga_beli',
+                        name: 'harga_beli',
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
+
                     },
                     {
                         data: 'action',
                         name: 'action'
                     }
                 ]
+
             });
-
-
         });
     </script>
 @endsection

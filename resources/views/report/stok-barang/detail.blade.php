@@ -1,46 +1,83 @@
 @extends('layouts.template')
-@section('css')
-@endsection
+
 @section('content')
-<div class="container-fluid">
-    <!-- start page title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">stok Masuk</h4>
-
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item active">Menu/stok-barang</li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- end page title -->
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="text-center">Halaman Detail Barang Masuk</h4>
-                    <p>1. Tampilkan sebuah record table pembelian di join dengan table detail_pembelian</p>
-                    <p>2. Tambahkan 1 button "Masukan Ke Stok"</p>
-                    <p>3. Dan ketika button tersebut di klik masukan data yang ditampilkan tersebut ke table stok</p>
-                    <p>4. Di table stok, jual_id, tanggal_keluar, harga_jual, buat defaultnya null</p>
-                    <p>5. Di table stok, harga_beli diambil dari perhitungan harga 1 buah barang</p>
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0 font-size-18">Detail Stok Barang</h4>
                 </div>
             </div>
         </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Detail Stok</h4>
+                        <p class="card-title-desc">Detail stok barang dengan ID: {{ $id }}</p>
+
+                        <div class="table-responsive">
+                            <table id="detailTable" class="table table-bordered dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama Barang</th>
+                                        <th>Qty</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Total Harga</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <th>hahay</th>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-
-</div>
-</div>
-</div>
 @endsection
-@section('js')
 
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#detailTable').DataTable({
+                'responsive': true,
+                'serverSide': true,
+                'processing': true,
+                'ajax': {
+                    'url': "{{ url('/report/stok-barang/' . $id) }}",
+                    'type': 'GET'
+                },
+                'columns': [
+                    {
+                        data: 'index',
+                        name: 'index'
+                    },
+                    {
+                        data: 'nama_barang',
+                        name: 'nama_barang'
+                    },
+                    {
+                        data: 'qty',
+                        name: 'qty'
+                    },
+                    {
+                        data: 'harga_satuan',
+                        name: 'harga_satuan',
+                        render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ')
+                    },
+                    {
+                        data: 'total_harga',
+                        name: 'total_harga',
+                        render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ')
+                    }
+                ]
+            });
+        });
+    </script>
 @endsection

@@ -41,10 +41,10 @@
                             </div>
                         </div>
 
-                        <div class="saldo">
+                        {{-- <div class="saldo">
                             <p class="card-title-desc">Saldo :</p>
-                            <p id="saldo-cash" class="card-title-desc">0</p>
-                        </div>
+                        </div> --}}
+
                         <div class="table-responsive">
                             <table id="table" class="table table-bordered dt-responsive nowrap w-100">
                                 <thead>
@@ -59,7 +59,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Data akan di-load dengan DataTables -->
                                 </tbody>
                             </table>
                         </div>
@@ -127,7 +126,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary waves-effect waves-light" id="store">Simpan
+                    <button type="button" class="btn btn-primary waves-effect waves-light" id="store">Simpann
                         Data</button>
                 </div>
             </div>
@@ -208,9 +207,6 @@
 
 @section('js')
     <script>
-        function formatNumber(number) {
-            return Number(number).toLocaleString('id-ID');
-        }
 
         const Toast = Swal.mixin({
             toast: true,
@@ -221,7 +217,6 @@
         });
 
         $(document).ready(function() {
-            // Menampilkan data
             $('#table').DataTable({
                 'responsive': true,
                 'serverSide': true,
@@ -248,17 +243,15 @@
                         data: 'debit',
                         name: 'debit',
                         className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
+
                     },
                     {
                         data: 'kredit',
                         name: 'kredit',
                         className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
+
                     },
                     {
                         data: 'status',
@@ -274,7 +267,7 @@
 
             });
 
-    // Simpan data baru
+    // Simpan data
     $('#store').click(function(e) {
         e.preventDefault();
         let form = $('#form-create');

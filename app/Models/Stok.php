@@ -26,9 +26,20 @@ class Stok extends Model
         return $this->belongsTo(Barang::class, 'barang_id');
     }
 
-    public function detailPurchaseOrder()
+    public function pembelian()
     {
-        return $this->belongsTo(Detail_purchase_order::class, 'kode_po', 'kode_po');
+        return $this->belongsTo(Pembelian::class, 'pembelian_id');
+    }
+
+
+    public function detail_pembelian()
+    {
+        return $this->hasMany(DetailPembelian::class, 'no_invoice', 'pembelian_id');
+    }
+    
+    public function detail_purchase_order()
+    {
+        return $this->hasMany(DetailPembelian::class, 'kode_barang', 'kode_po');
     }
 
 

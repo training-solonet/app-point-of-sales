@@ -33,17 +33,11 @@ class JurnalHarianController extends Controller
         return view('menu.jurnal-harian.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
