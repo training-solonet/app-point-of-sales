@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
-use Illuminate\Support\Facades\DB;
 use App\Models\DetailPembelian;
 use App\Models\Distributor;
 use App\Models\Pembelian;
 use App\Models\Purchase_order;
 use App\Models\Stok;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BarangMasukController extends Controller
 {
@@ -28,7 +25,8 @@ class BarangMasukController extends Controller
             return datatables()->of($pembelian)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="/menu/barang-masuk/' . $data->id . '" class="btn btn-info waves-effect waves-light">Detail</button>';
+                    $button = '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light">Detail</button>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])
@@ -37,6 +35,7 @@ class BarangMasukController extends Controller
         $distributor = Distributor::all();
         $detailPembelian = DetailPembelian::all();
         $po = Purchase_order::all();
+
         return view('menu.barang-masuk.index', compact('distributor', 'detailPembelian', 'po'));
     }
 
@@ -49,12 +48,12 @@ class BarangMasukController extends Controller
     {
         $stok = Pembelian::with(['detail_pembelian.barang'])->find($request->pembelian_id);
 
-        if (!$stok) {
+        if (! $stok) {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
 
         foreach ($stok->detail_pembelian as $detail) {
-            $newStok = new Stok();
+            $newStok = new Stok;
             $newStok->pembelian_id = $stok->id;
             $newStok->tanggal_masuk = now();
             $newStok->barang_id = $detail->barang->id;
@@ -75,7 +74,7 @@ class BarangMasukController extends Controller
                 ->where('id', $id)
                 ->first();
 
-            if (!$pembelian) {
+            if (! $pembelian) {
                 return response()->json(['error' => 'data not found'], 404);
             }
 
@@ -85,7 +84,7 @@ class BarangMasukController extends Controller
                     'nama_barang' => $detail->barang->nama,
                     'qty' => $detail->qty,
                     'harga_satuan' => $detail->harga_satuan,
-                    'total_harga' => $detail->qty * $detail->harga_satuan
+                    'total_harga' => $detail->qty * $detail->harga_satuan,
                 ];
             });
 
@@ -102,13 +101,7 @@ class BarangMasukController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
-    {
+    public function update(Request $request, string $id) {}
 
-    }
-
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(string $id) {}
 }
