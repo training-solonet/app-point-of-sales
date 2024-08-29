@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Jurnal_harian;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class JurnalHarianController extends Controller
 {
-
     public function index(Request $request)
     {
         $jurnal = Jurnal_harian::all();
@@ -17,9 +16,9 @@ class JurnalHarianController extends Controller
             return datatables()->of($jurnal)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -33,10 +32,10 @@ class JurnalHarianController extends Controller
     public function create()
     {
         $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
-        
+
         return response()->json([
             'success' => true,
-            'saldo' => number_format($saldo)
+            'saldo' => number_format($saldo),
         ]);
 
     }
@@ -107,7 +106,7 @@ class JurnalHarianController extends Controller
             'debit' => $request->debit,
             'kredit' => $request->kredit,
             'keterangan' => $request->keterangan,
-            'status' => $request->status
+            'status' => $request->status,
         ]);
 
         return response()->json([

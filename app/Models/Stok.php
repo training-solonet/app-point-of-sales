@@ -35,5 +35,4 @@ class Stok extends Model
     {
         return $this->belongsTo(Pembelian::class, 'pembelian_id');
     }
-
 }
