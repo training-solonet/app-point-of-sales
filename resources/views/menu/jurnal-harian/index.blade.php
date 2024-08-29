@@ -83,17 +83,17 @@
                         @csrf
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d')}}"
-                                placeholder="Enter date">
+                            <input type="date" class="form-control" id="tanggal" name="tanggal"
+                                value="{{ date('Y-m-d') }}" placeholder="Enter date">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="jenis" class="form-label">Pilih Jenis</label>
-                            <select class="form-select" id="id_jenis" name="jenis" required>
+                            <label for="jenis" class="form-label">Jenis</label>
+                            <select class="form-select" id="jenis" name="jenis" required>
                                 <option selected disabled value="">Pilih Jenis</option>
-                                <option>Pemasukan</option>
-                                <option>Pengeluaran</option>
+                                <option value="Pemasukan">Pemasukan</option>
+                                <option value="Pengeluaran">Pengeluaran</option>
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jenis"></div>
                         </div>
@@ -109,32 +109,35 @@
 
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea type="text" class="form-control" id="keterangan" name="keterangan"
-                                placeholder="Enter information"></textarea>
+                            <textarea type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Enter information"></textarea>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="status" class="form-label">Pilih status</label>
+                            <label for="status" class="form-label">Pilih Status</label>
                             <select class="form-select" id="id_status" name="status" required>
-                                <option selected disabled value="">Pilih status</option>
-                                <option>cash</option>
-                                <option>bank</option>
+                                <option selected disabled value="">Pilih Status</option>
+                                <option value="cash">Cash</option>
+                                <option value="bank">Bank</option>
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-status"></div>
                         </div>
+
+                        <input type="hidden" id="debit" name="debit">
+                        <input type="hidden" id="kredit" name="kredit">
 
                     </form>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary waves-effect waves-light" id="store">Simpann
+                    <button type="button" class="btn btn-primary waves-effect waves-light" id="store">Simpan
                         Data</button>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <!-- Modal Edit -->
@@ -158,21 +161,25 @@
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal-edit"></div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-lg-5">
-                                <label for="debit-edit" class="form-label">Debit</label>
-                                <input type="number" class="form-control" id="debit-edit" name="debit"
-                                    placeholder="Enter debit amount">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-debit-edit"></div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="jenis" class="form-label">Jenis</label>
+                            <select class="form-select" id="jenis-edit" name="jenis" required>
+                                <option selected disabled value="">Pilih Jenis</option>
+                                <option value="Pemasukan">Pemasukan</option>
+                                <option value="Pengeluaran">Pengeluaran</option>
+                            </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jenis-edit"></div>
+                        </div>
 
-                            <div class="col-lg-5">
-                                <label for="kredit-edit" class="form-label">Kredit</label>
-                                <input type="number" class="form-control" id="kredit-edit" name="kredit"
-                                    placeholder="Enter credit amount">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kredit-edit"></div>
+                        <div class="row mb-3">
+                            <div class="col-lg-12">
+                                <label for="nominal" class="form-label">Nominal</label>
+                                <input type="number" class="form-control" id="nominal-edit" name="nominal"
+                                    placeholder="Enter Nominal ">
+                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nominal-edit"></div>
                             </div>
                         </div>
+
 
                         <div class="mb-3">
                             <label for="keterangan-edit" class="form-label">Keterangan</label>
@@ -283,7 +290,22 @@
             // Simpan data
             $('#store').click(function(e) {
                 e.preventDefault();
+                let nominal = $('#nominal').val();
+                let jenis = $('#jenis').val();
+
+                // Set debit and kredit based on jenis
+                if (jenis === 'Pemasukan') {
+                    $('#debit').val(nominal);
+                    $('#kredit').val(0);
+                } else if (jenis === 'Pengeluaran') {
+                    $('#debit').val(0);
+                    $('#kredit').val(nominal);
+                } else {
+                    $('#debit').val(0);
+                    $('#kredit').val(0);
+                }
                 let form = $('#form-create');
+
                 $.ajax({
                     url: "{{ route('menu.jurnal-harian.store') }}",
                     type: 'POST',
@@ -291,9 +313,10 @@
                     success: function(response) {
                         if (response.success) {
                             $('#tanggal').val('');
-                            $('#jenis').val('');
                             // $('#debit').val('');
                             // $('#kredit').val('');
+                            $('#jenis').val('');
+                            $('#nominal').val('');
                             $('#keterangan').val('');
                             $('#status').val('');
 
@@ -304,20 +327,25 @@
                                 title: response.message
                             });
                         }
-                        get_saldo;
+                        get_saldo();
                     },
                     error: function(error) {
                         $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal)
                             .html(error.responseJSON.tanggal ? error.responseJSON.tanggal[0] :
                                 '');
-                        $('#alert-debit').toggleClass('d-none', !error.responseJSON.debit).html(
-                            error.responseJSON.debit ? error.responseJSON.debit[0] : '');
-                        $('#alert-kredit').toggleClass('d-none', !error.responseJSON.kredit)
-                            .html(error.responseJSON.kredit ? error.responseJSON.kredit[0] :
-                                '');
+                       
+                        $('#alert-jenis').toggleClass('d-none', !error.responseJSON
+                            .jenis).html(error.responseJSON.jenis ? error
+                            .responseJSON.jenis[0] : '');
+
+                        $('#alert-nominal').toggleClass('d-none', !error.responseJSON
+                            .nominal).html(error.responseJSON.nominal ? error
+                            .responseJSON.nominal[0] : '');
+
                         $('#alert-keterangan').toggleClass('d-none', !error.responseJSON
                             .keterangan).html(error.responseJSON.keterangan ? error
                             .responseJSON.keterangan[0] : '');
+
                         $('#alert-status').toggleClass('d-none', !error.responseJSON.status)
                             .html(error.responseJSON.status ? error.responseJSON.status[0] :
                                 '');
@@ -335,9 +363,12 @@
                         $('#id').val(response.data.id);
                         $('#tanggal-edit').val(response.data.tanggal);
                         $('#keterangan-edit').val(response.data.keterangan);
-                        $('#debit-edit').val(response.data.debit);
-                        $('#kredit-edit').val(response.data.kredit);
-                        $('#status-edit').val(response.data.id_status);
+                        // $('#debit-edit').val(response.data.debit);
+                        // $('#kredit-edit').val(response.data.kredit);
+                        $('#jenis-edit').val(response.data.jenis);
+                        $('#nominal-edit').val(response.data.nominal);
+
+                        $('#status-edit').val(response.data.status);
                         $('#modal-edit').modal('show');
                     }
                 });
@@ -349,8 +380,11 @@
                 let id = $('#id').val();
                 let tanggal = $('#tanggal-edit').val();
                 let keterangan = $('#keterangan-edit').val();
-                let debit = $('#debit-edit').val();
-                let kredit = $('#kredit-edit').val();
+                // let debit = $('#debit-edit').val();
+                // let kredit = $('#kredit-edit').val();
+                let nominal = $('#nominal-edit').val();
+                let jenis = $('#jenis-edit').val();
+
                 let status = $('#status-edit').val();
                 let token = $("meta[name='csrf-token']").attr("content");
 
@@ -361,8 +395,11 @@
                     data: {
                         "tanggal": tanggal,
                         "keterangan": keterangan,
-                        "debit": debit,
-                        "kredit": kredit,
+                        // "debit": debit,
+                        // "kredit": kredit,
+                        "jenis": jenis,
+                        "nominal": nominal,
+
                         "status": status,
                         "_token": token
                     },
@@ -381,7 +418,7 @@
                                 title: response.message
                             });
                         }
-                        get_saldo;
+                        get_saldo();
                     },
                     error: function(error) {
                         $('#alert-tanggal-edit, #alert-keterangan-edit, #alert-debit-edit, #alert-kredit-edit, #alert-status-edit')
@@ -397,15 +434,24 @@
                                 .responseJSON.keterangan[0]);
                         }
 
-                        if (error.responseJSON.debit) {
-                            $('#alert-debit-edit').removeClass('d-none').html(error.responseJSON
-                                .debit[0]);
-                        }
+                        // if (error.responseJSON.debit) {
+                        //     $('#alert-debit-edit').removeClass('d-none').html(error.responseJSON
+                        //         .debit[0]);
+                        // }
 
-                        if (error.responseJSON.kredit) {
-                            $('#alert-kredit-edit').removeClass('d-none').html(error
-                                .responseJSON.kredit[0]);
-                        }
+                        // if (error.responseJSON.kredit) {
+                        //     $('#alert-kredit-edit').removeClass('d-none').html(error
+                        //         .responseJSON.kredit[0]);
+                        // }
+
+                        
+                        $('#alert-jenis-edit').toggleClass('d-none', !error.responseJSON
+                            .jenis).html(error.responseJSON.jenis ? error
+                            .responseJSON.jenis[0] : '');
+
+                        $('#alert-nominal-edit').toggleClass('d-none', !error.responseJSON
+                            .nominal).html(error.responseJSON.nominal ? error
+                            .responseJSON.nominal[0] : '');
 
                         if (error.responseJSON.status) {
                             $('#alert-status-edit').removeClass('d-none').html(error
@@ -457,7 +503,7 @@
         });
 
 
-        function get_saldo(){
+        function get_saldo() {
             $.ajax({
                 url: '/menu/jurnal-harian/create',
                 type: "GET",

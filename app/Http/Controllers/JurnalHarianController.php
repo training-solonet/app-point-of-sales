@@ -16,9 +16,9 @@ class JurnalHarianController extends Controller
             return datatables()->of($jurnal)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -43,28 +43,28 @@ class JurnalHarianController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal' => 'required',
-            'debit' => 'nullable|numeric|required_without:kredit',
-            'kredit' => 'nullable|numeric|required_without:debit',
-            'keterangan' => 'required',
-            'status' => 'required',
+            'tanggal' => 'required|date',
+            'jenis' => 'required|in:Pemasukan,Pengeluaran',
+            'nominal' => 'required',
+            'keterangan' => 'required|string',
+            'status' => 'required|in:cash,bank',
+            'debit' => 'required|numeric',
+            'kredit' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $debit = $request->debit ?? 0;
-        $kredit = $request->kredit ?? 0;
+        $data = [
+            'tanggal' => $request->input('tanggal'),
+            'keterangan' => $request->input('keterangan'),
+            'debit' => $request->input('debit'),
+            'kredit' => $request->input('kredit'),
+            'status' => $request->input('status'),
+        ];
 
-        Jurnal_harian::create([
-            'tanggal' => $request->tanggal,
-            'debit' => $debit,
-            'kredit' => $kredit,
-            'keterangan' => $request->keterangan,
-            'status' => $request->status,
-        ]);
-
+        Jurnal_harian::create($data);
         return response()->json(['success' => true, 'message' => 'Data berhasil disimpan.']);
     }
 
