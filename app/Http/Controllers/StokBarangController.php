@@ -8,6 +8,7 @@ use App\Models\Stok;
 use App\Models\Barang;
 use App\Models\Purchase_order;
 use App\Models\Distributor;
+use App\Models\Pembelian;
 use Illuminate\Support\Facades\DB;
 
 
@@ -47,30 +48,27 @@ class StokBarangController extends Controller
 
     public function show(string $id, Request $request)
     {
+
         if ($request->ajax()) {
-            $stok = Stok::with(['barang', 'purchase_orders.distributor'])
-                ->where('id', $id)
-                ->first();
-
-            if ($stok->isEmpty()) {
-                return response()->json(['error' => 'data not found'], 404);
-            }
-
-            $data = $stok->map(function ($detail) {
-                return [
-        //           'index' => $index + 1,
-                    'tanggal_masuk' => $detail->tanggal_masuk,
-                    'harga_beli' => $detail->harga_beli,
-                    'distributor' => $detail->purchase_orders->distributor->name
-                ];
-            });
-
-            return datatables()->of($data)
+            $stok = Stok::where('barang_id', $id)
+                ->with(['pembelian.purchase_orders.distributor'])
+                ->get();
+    
+            return datatables()->of($stok)
                 ->addIndexColumn()
+                ->addColumn('tanggal_masuk', function ($row) {
+                    return $row->tanggal_masuk;
+                })
+                ->addColumn('harga_beli', function ($row) {
+                    return $row->harga_beli;
+                })
                 ->make(true);
         }
 
+        $pembelian = Pembelian::all();
+    
         return view('report.stok-barang.detail', compact('id'));
+
     }
 
 
