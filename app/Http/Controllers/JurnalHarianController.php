@@ -12,7 +12,6 @@ class JurnalHarianController extends Controller
     public function index(Request $request)
     {
         $jurnal = Jurnal_harian::all();
-        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
 
         if ($request->ajax()) {
             return datatables()->of($jurnal)
@@ -28,12 +27,18 @@ class JurnalHarianController extends Controller
                 ->make(true);
         }
 
-        return view('menu.jurnal-harian.index', compact('saldo'));
+        return view('menu.jurnal-harian.index');
     }
 
     public function create()
     {
-        //
+        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
+        
+        return response()->json([
+            'success' => true,
+            'saldo' => number_format($saldo)
+        ]);
+
     }
 
     public function store(Request $request)

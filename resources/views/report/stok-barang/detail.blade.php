@@ -24,14 +24,12 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nama Barang</th>
-                                        <th>Qty</th>
-                                        <th>Harga Satuan</th>
-                                        <th>Total Harga</th>
+                                        <th>Tanggal Masuk</th>
+                                        <th>Harga Beli</th>
+                                        <th>Distributor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <th>hahay</th>
                                 </tbody>
                             </table>
                         </div>
@@ -46,35 +44,41 @@
     <script>
         $(document).ready(function() {
             $('#detailTable').DataTable({
-                'responsive': true,
-                'serverSide': true,
-                'processing': true,
-                'ajax': {
-                    'url': "{{ url('/report/stok-barang/' . $id) }}",
-                    'type': 'GET'
+                responsive: true,
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '/report/stok-barang/{{ $id }}',
+                    type: 'GET'
                 },
-                'columns': [
-                    {
-                        data: 'index',
-                        name: 'index'
+                'columns': [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
-                        data: 'nama_barang',
-                        name: 'nama_barang'
+                        data: 'tanggal_masuk',
+                        name: 'tanggal_masuk',
+                        render: function(data, type, row) {
+                            if (data) {
+                                var date = new Date(data);
+                                var day = ('0' + date.getDate()).slice(-2);
+                                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                                var year = date.getFullYear().toString();
+                                return `${day}/${month}/${year}`;
+                            }
+                            return '';
+                        }
                     },
                     {
-                        data: 'qty',
-                        name: 'qty'
-                    },
-                    {
-                        data: 'harga_satuan',
-                        name: 'harga_satuan',
+                        data: 'harga_beli',
+                        name: 'harga_beli',
                         render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ')
                     },
                     {
-                        data: 'total_harga',
-                        name: 'total_harga',
-                        render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ')
+                        data: 'distributor',
+                        name: 'distributor'
                     }
                 ]
             });

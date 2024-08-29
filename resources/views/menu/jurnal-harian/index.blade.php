@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="saldo">
-                            <p class="card-title-desc">Saldo : <strong> {{ number_format($saldo, 0, ',', '.') }}</strong>
+                            <p class="card-title-desc">Saldo : <strong id="saldo"> 0</strong>
                             </p>
                         </div>
 
@@ -83,31 +83,34 @@
                         @csrf
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal"
+                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d')}}"
                                 placeholder="Enter date">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal"></div>
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-lg-5">
-                                <label for="debit" class="form-label">Debit</label>
-                                <input type="number" class="form-control" id="debit" name="debit"
-                                    placeholder="Enter debit amount">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-debit"></div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="jenis" class="form-label">Pilih Jenis</label>
+                            <select class="form-select" id="id_jenis" name="jenis" required>
+                                <option selected disabled value="">Pilih Jenis</option>
+                                <option>Pemasukan</option>
+                                <option>Pengeluaran</option>
+                            </select>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jenis"></div>
+                        </div>
 
-                            <div class="col-lg-5">
-                                <label for="kredit" class="form-label">Kredit</label>
-                                <input type="number" class="form-control" id="kredit" name="kredit"
-                                    placeholder="Enter credit amount">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-kredit"></div>
+                        <div class="row mb-3">
+                            <div class="col-lg-12">
+                                <label for="nominal" class="form-label">Nominal</label>
+                                <input type="number" class="form-control" id="nominal" name="nominal"
+                                    placeholder="Enter Nominal ">
+                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nominal"></div>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="keterangan" class="form-label">Keterangan</label>
-                            <input type="text" class="form-control" id="keterangan" name="keterangan"
-                                placeholder="Enter information">
+                            <textarea type="text" class="form-control" id="keterangan" name="keterangan"
+                                placeholder="Enter information"></textarea>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan"></div>
                         </div>
 
@@ -117,7 +120,6 @@
                                 <option selected disabled value="">Pilih status</option>
                                 <option>cash</option>
                                 <option>bank</option>
-                                <option>piutang</option>
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-status"></div>
                         </div>
@@ -185,7 +187,6 @@
                                 <option selected disabled value="">Pilih status</option>
                                 <option value="cash">cash</option>
                                 <option value="bank">bank</option>
-                                <option value="piutang">piutang</option>
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-status-edit"></div>
                         </div>
@@ -233,7 +234,17 @@
                     },
                     {
                         data: 'tanggal',
-                        name: 'tanggal'
+                        name: 'tanggal',
+                        render: function(data, type, row) {
+                            if (data) {
+                                var date = new Date(data);
+                                var day = ('0' + date.getDate()).slice(-2);
+                                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                                var year = date.getFullYear().toString();
+                                return `${day}/${month}/${year}`;
+                            }
+                            return '';
+                        }
                     },
                     {
                         data: 'keterangan',
@@ -267,6 +278,8 @@
 
             });
 
+            get_saldo();
+
             // Simpan data
             $('#store').click(function(e) {
                 e.preventDefault();
@@ -278,8 +291,9 @@
                     success: function(response) {
                         if (response.success) {
                             $('#tanggal').val('');
-                            $('#debit').val('');
-                            $('#kredit').val('');
+                            $('#jenis').val('');
+                            // $('#debit').val('');
+                            // $('#kredit').val('');
                             $('#keterangan').val('');
                             $('#status').val('');
 
@@ -290,6 +304,7 @@
                                 title: response.message
                             });
                         }
+                        get_saldo;
                     },
                     error: function(error) {
                         $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal)
@@ -366,6 +381,7 @@
                                 title: response.message
                             });
                         }
+                        get_saldo;
                     },
                     error: function(error) {
                         $('#alert-tanggal-edit, #alert-keterangan-edit, #alert-debit-edit, #alert-kredit-edit, #alert-status-edit')
@@ -429,6 +445,7 @@
                                 });
 
                                 $('#table').DataTable().ajax.reload();
+                                get_saldo;
                             }
                         });
                     }
@@ -438,5 +455,18 @@
 
 
         });
+
+
+        function get_saldo(){
+            $.ajax({
+                url: '/menu/jurnal-harian/create',
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    console.log(response)
+                    $('#saldo').text(response.saldo);
+                }
+            });
+        }
     </script>
 @endsection
