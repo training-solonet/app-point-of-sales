@@ -136,8 +136,8 @@
                 'data': function(d) {
                     d.filter = $('#filter').val();
                     d.filter_customer = $('select[name="filter_customer"]').val();
-                    // d.start = $('input[name="start"]').val();
-                    // d.end = $('input[name="end"]').val();
+                    d.start = $('input[name="start"]').val();
+                    d.end = $('input[name="end"]').val();
                 }
             },
             'columns': [{
@@ -162,7 +162,7 @@
                             var date = new Date(data);
                             var day = ('0' + date.getDate()).slice(-2);
                             var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                            var year = date.getFullYear().toString().slice(-2);
+                            var year = date.getFullYear().toString();
                             return `${day}/${month}/${year}`;
                         }
                         return '';

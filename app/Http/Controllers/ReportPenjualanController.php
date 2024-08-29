@@ -25,7 +25,6 @@ class ReportPenjualanController extends Controller
                 $penjualan->whereBetween('tanggal', [$startDate, $endDate]);
             }
         }
-
         if ($request->ajax()) {
             if ($request->has('filter')) {
                 $filter = $request->get('filter');
