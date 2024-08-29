@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
-    {{-- <link rel="shortcut icon" href="{{ url('assets/images/favicon.ico') }}"> --}}
+    {{--
+    <link rel="shortcut icon" href="{{ url('assets/images/favicon.ico') }}"> --}}
     <link href="{{ url('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Bootstrap Css -->
     <link href="{{ url('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
@@ -20,6 +21,7 @@
         type="text/css" />
     <link href="{{ url('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- SweetAlert2 JS -->
@@ -275,8 +277,7 @@
 
             <div class="p-4">
                 <div class="mb-2">
-                    <img src="{{ url('assets/images/layouts/layout-1.jpg') }}" class="img-thumbnail"
-                        alt="icon apps">
+                    <img src="{{ url('assets/images/layouts/layout-1.jpg') }}" class="img-thumbnail" alt="icon apps">
                 </div>
 
                 <div class="form-check form-switch mb-3">
@@ -285,8 +286,7 @@
                 </div>
 
                 <div class="mb-2">
-                    <img src="{{ url('assets/images/layouts/layout-2.jpg') }}" class="img-thumbnail"
-                        alt="icon apps 2">
+                    <img src="{{ url('assets/images/layouts/layout-2.jpg') }}" class="img-thumbnail" alt="icon apps 2">
                 </div>
                 <div class="form-check form-switch mb-3">
                     <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch">
@@ -303,6 +303,7 @@
 
     <!-- JAVASCRIPT -->
     <script src="{{ url('assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url('https://code.jquery.com/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url('assets/libs/metismenu/metisMenu.min.js') }}"></script>
     <script src="{{ url('assets/libs/simplebar/simplebar.min.js') }}"></script>
