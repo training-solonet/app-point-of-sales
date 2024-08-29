@@ -43,7 +43,7 @@ class JurnalHarianController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal' => 'required|date',
+            'tanggal' => 'required',
             'jenis' => 'required|in:Pemasukan,Pengeluaran',
             'nominal' => 'required',
             'keterangan' => 'required|string',
@@ -65,6 +65,7 @@ class JurnalHarianController extends Controller
         ];
 
         Jurnal_harian::create($data);
+        
         return response()->json(['success' => true, 'message' => 'Data berhasil disimpan.']);
     }
 
@@ -87,11 +88,19 @@ class JurnalHarianController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
+            // 'tanggal' => 'required',
+            // 'debit' => 'required',
+            // 'kredit' => 'required',
+            // 'keterangan' => 'required',
+            // 'status' => 'required',
+
             'tanggal' => 'required',
-            'debit' => 'required',
-            'kredit' => 'required',
-            'keterangan' => 'required',
-            'status' => 'required',
+            'jenis' => 'required|in:Pemasukan,Pengeluaran',
+            'nominal' => 'required',
+            'keterangan' => 'required|string',
+            'status' => 'required|in:cash,bank',
+            'debit' => 'required|numeric',
+            'kredit' => 'required|numeric',
 
         ]);
 
@@ -102,11 +111,21 @@ class JurnalHarianController extends Controller
         $jurnal = Jurnal_harian::find($id);
 
         $jurnal->update([
-            'tanggal' => $request->tanggal,
-            'debit' => $request->debit,
-            'kredit' => $request->kredit,
-            'keterangan' => $request->keterangan,
-            'status' => $request->status,
+            // 'tanggal' => $request->tanggal,
+            // 'debit' => $request->debit,
+            // 'kredit' => $request->kredit,
+            // 'jenis' => $request->jenis,
+            // 'nominal' => $request->nominal,
+            // 'keterangan' => $request->keterangan,
+            // 'status' => $request->status,
+            
+            'tanggal' => $request->input('tanggal'),
+            'jenis' => $request->input('jenis'),
+            'nominal' => $request->input('nominal'),
+            'keterangan' => $request->input('keterangan'),
+            'status' => $request->input('status'),
+            'debit' => $request->input('debit'),
+            'kredit' => $request->input('kredit'),
         ]);
 
         return response()->json([

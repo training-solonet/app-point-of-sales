@@ -148,7 +148,6 @@
                     <h5 class="modal-title" id="myModalLabel">Update Jurnal Harian</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <form id="form-edit" method="POST">
                         @csrf
@@ -156,11 +155,9 @@
                         <input type="hidden" id="id" name="id">
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal-edit" name="tanggal"
-                                placeholder="Enter date">
+                            <input type="date" class="form-control" id="tanggal-edit" name="tanggal">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal-edit"></div>
                         </div>
-
                         <div class="mb-3">
                             <label for="jenis" class="form-label">Jenis</label>
                             <select class="form-select" id="jenis-edit" name="jenis" required>
@@ -170,24 +167,18 @@
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-jenis-edit"></div>
                         </div>
-
                         <div class="row mb-3">
                             <div class="col-lg-12">
                                 <label for="nominal" class="form-label">Nominal</label>
-                                <input type="number" class="form-control" id="nominal-edit" name="nominal"
-                                    placeholder="Enter Nominal ">
+                                <input type="number" class="form-control" id="nominal-edit" name="nominal">
                                 <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nominal-edit"></div>
                             </div>
                         </div>
-
-
                         <div class="mb-3">
                             <label for="keterangan-edit" class="form-label">Keterangan</label>
-                            <input type="text" class="form-control" id="keterangan-edit" name="keterangan"
-                                placeholder="Enter information">
+                            <input type="text" class="form-control" id="keterangan-edit" name="keterangan">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan-edit"></div>
                         </div>
-
                         <div class="mb-3">
                             <label for="status-edit" class="form-label">Pilih status</label>
                             <select class="form-select" id="status-edit" name="status" required>
@@ -197,10 +188,10 @@
                             </select>
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-status-edit"></div>
                         </div>
-
                     </form>
                 </div>
-
+                <input type="hidden" id="debit-edit" name="debit">
+                <input type="hidden" id="kredit-edit" name="kredit">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-primary waves-effect waves-light" id="update">Simpan
@@ -293,7 +284,6 @@
                 let nominal = $('#nominal').val();
                 let jenis = $('#jenis').val();
 
-                // Set debit and kredit based on jenis
                 if (jenis === 'Pemasukan') {
                     $('#debit').val(nominal);
                     $('#kredit').val(0);
@@ -333,7 +323,7 @@
                         $('#alert-tanggal').toggleClass('d-none', !error.responseJSON.tanggal)
                             .html(error.responseJSON.tanggal ? error.responseJSON.tanggal[0] :
                                 '');
-                       
+
                         $('#alert-jenis').toggleClass('d-none', !error.responseJSON
                             .jenis).html(error.responseJSON.jenis ? error
                             .responseJSON.jenis[0] : '');
@@ -360,31 +350,47 @@
                     type: "GET",
                     cache: false,
                     success: function(response) {
+                        console.log('Nominal:', nominal);
+                        console.log('Debit:', debit);
+                        console.log('Kredit:', kredit);
+
+
                         $('#id').val(response.data.id);
                         $('#tanggal-edit').val(response.data.tanggal);
                         $('#keterangan-edit').val(response.data.keterangan);
-                        // $('#debit-edit').val(response.data.debit);
-                        // $('#kredit-edit').val(response.data.kredit);
+                        $('#debit-edit').val(response.data.debit);
+                        $('#kredit-edit').val(response.data.kredit);
                         $('#jenis-edit').val(response.data.jenis);
                         $('#nominal-edit').val(response.data.nominal);
-
                         $('#status-edit').val(response.data.status);
+
                         $('#modal-edit').modal('show');
                     }
                 });
             });
 
+            $('#jenis-edit').change(function() {
+                let jenis = $(this).val();
+                let nominal = parseFloat($('#nominal-edit').val()) || 0;
+
+                if (jenis === 'Pemasukan') {
+                    $('#debit-edit').val(nominal);
+                    $('#kredit-edit').val('0');
+                } else if (jenis === 'Pengeluaran') {
+                    $('#debit-edit').val('0');
+                    $('#kredit-edit').val(nominal);
+                }
+            });
 
             $('#update').click(function(e) {
                 e.preventDefault();
                 let id = $('#id').val();
                 let tanggal = $('#tanggal-edit').val();
                 let keterangan = $('#keterangan-edit').val();
-                // let debit = $('#debit-edit').val();
-                // let kredit = $('#kredit-edit').val();
-                let nominal = $('#nominal-edit').val();
+                let debit = $('#debit-edit').val();
+                let kredit = $('#kredit-edit').val();
                 let jenis = $('#jenis-edit').val();
-
+                let nominal = $('#nominal-edit').val();
                 let status = $('#status-edit').val();
                 let token = $("meta[name='csrf-token']").attr("content");
 
@@ -395,11 +401,10 @@
                     data: {
                         "tanggal": tanggal,
                         "keterangan": keterangan,
-                        // "debit": debit,
-                        // "kredit": kredit,
+                        "debit": debit,
+                        "kredit": kredit,
                         "jenis": jenis,
                         "nominal": nominal,
-
                         "status": status,
                         "_token": token
                     },
@@ -434,25 +439,21 @@
                                 .responseJSON.keterangan[0]);
                         }
 
-                        // if (error.responseJSON.debit) {
-                        //     $('#alert-debit-edit').removeClass('d-none').html(error.responseJSON
-                        //         .debit[0]);
-                        // }
+                        if (error.responseJSON.debit) {
+                            $('#alert-debit-edit').removeClass('d-none').html(error.responseJSON
+                                .debit[0]);
+                        }
 
-                        // if (error.responseJSON.kredit) {
-                        //     $('#alert-kredit-edit').removeClass('d-none').html(error
-                        //         .responseJSON.kredit[0]);
-                        // }
+                        if (error.responseJSON.kredit) {
+                            $('#alert-kredit-edit').removeClass('d-none').html(error
+                                .responseJSON.kredit[0]);
+                        }
 
-                        
-                        $('#alert-jenis-edit').toggleClass('d-none', !error.responseJSON
-                            .jenis).html(error.responseJSON.jenis ? error
-                            .responseJSON.jenis[0] : '');
-
+                        $('#alert-jenis-edit').toggleClass('d-none', !error.responseJSON.jenis)
+                            .html(error.responseJSON.jenis ? error.responseJSON.jenis[0] : '');
                         $('#alert-nominal-edit').toggleClass('d-none', !error.responseJSON
-                            .nominal).html(error.responseJSON.nominal ? error
-                            .responseJSON.nominal[0] : '');
-
+                            .nominal).html(error.responseJSON.nominal ? error.responseJSON
+                            .nominal[0] : '');
                         if (error.responseJSON.status) {
                             $('#alert-status-edit').removeClass('d-none').html(error
                                 .responseJSON.status[0]);
@@ -460,6 +461,7 @@
                     }
                 });
             });
+
 
 
 
