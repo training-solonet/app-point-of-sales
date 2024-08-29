@@ -33,8 +33,6 @@
                     </div>
 
                     <div class="table-responsive">
-                        <p>Tampilkan data dari table pembelian & detail_pembalian, join dengan purchase order dan join
-                            dengan distributor</p>
                         <table id="table" class="table table-bordered dt-responsive  nowrap w-100">
                             <thead>
                                 <tr>
