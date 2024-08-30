@@ -16,9 +16,9 @@ class JurnalHarianController extends Controller
             return datatables()->of($jurnal)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -68,7 +68,7 @@ class JurnalHarianController extends Controller
         ];
 
         Jurnal_harian::create($data);
-        
+
         return response()->json(['success' => true, 'message' => 'Data berhasil disimpan.']);
     }
 
@@ -108,7 +108,7 @@ class JurnalHarianController extends Controller
         $jurnal = Jurnal_harian::find($id);
 
         $jurnal->update([
-            
+
             'tanggal' => $request->input('tanggal'),
             'jenis' => $request->input('jenis'),
             'nominal' => $request->input('nominal'),
