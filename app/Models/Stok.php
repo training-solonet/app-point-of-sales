@@ -35,4 +35,9 @@ class Stok extends Model
     {
         return $this->belongsTo(Pembelian::class, 'pembelian_id');
     }
+
+    public function detailPurchaseOrder()
+    {
+        return $this->belongsTo(Detail_purchase_order::class, 'kode_po', 'kode_po');
+    }
 }

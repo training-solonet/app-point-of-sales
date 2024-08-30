@@ -125,10 +125,6 @@
             orientation: 'auto'
         });
 
-        function formatCurrency(value) {
-            return parseInt(value).toLocaleString('id-ID').replace(/,/g, '.');
-        }
-
         // Initialize datatable with filter
         var table = $('#table').DataTable({
             'responsive': true,
@@ -166,7 +162,7 @@
                             var date = new Date(data);
                             var day = ('0' + date.getDate()).slice(-2);
                             var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                            var year = date.getFullYear().toString().slice(-2);
+                            var year = date.getFullYear().toString();
                             return `${day}/${month}/${year}`;
                         }
                         return '';
@@ -175,10 +171,7 @@
                 {
                     data: 'pembayaran',
                     name: 'pembayaran',
-                    render: function(data, type, row) {
-                        return formatCurrency(data);
-                    },
-                    className: 'text-end'
+                    render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                 },
                 {
                     data: 'keterangan',

@@ -185,8 +185,8 @@
                     "data": function(d) {
                         // d.filter = $('#filter').val();
                         d.filter_customer = $('select[name="filter_customer"]').val();
-                        d.start = $('input[name="start"]').val();
-                        d.end = $('input[name="end"]').val();
+                        // d.start = $('input[name="start"]').val();
+                        // d.end = $('input[name="end"]').val();
                     }
                 },
                 "columns": [{
@@ -215,7 +215,7 @@
                                 var date = new Date(data);
                                 var day = ('0' + date.getDate()).slice(-2);
                                 var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                                var year = date.getFullYear().toString().slice(-2);
+                                var year = date.getFullYear().toString();
                                 return `${day}-${month}-${year}`;
                             }
                             return '';
@@ -224,34 +224,22 @@
                     {
                         data: 'total',
                         name: 'total',
-                        className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'bayar',
                         name: 'bayar',
-                        className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'diskon',
                         name: 'diskon',
-                        className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'ppn',
                         name: 'ppn',
-                        className: "text-end",
-                        render: function(data) {
-                            return formatNumber(data);
-                        }
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'status',
