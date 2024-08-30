@@ -2,63 +2,138 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jurnal_harian;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class JurnalHarianController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
+        $jurnal = Jurnal_harian::all();
+
+        if ($request->ajax()) {
+            return datatables()->of($jurnal)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) {
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+
+                    return $button;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         return view('menu.jurnal-harian.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
+
+        return response()->json([
+            'success' => true,
+            'saldo' => number_format($saldo),
+        ]);
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'jenis' => 'required|in:Pemasukan,Pengeluaran',
+            'nominal' => 'required',
+            'keterangan' => 'required|string',
+            'status' => 'required|in:cash,bank',
+            'debit' => 'required|numeric',
+            'kredit' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $debit = $request->input('jenis') === 'Pemasukan' ? $request->input('nominal') : 0;
+        $kredit = $request->input('jenis') === 'Pengeluaran' ? $request->input('nominal') : 0;
+
+        $data = [
+            'tanggal' => $request->input('tanggal'),
+            'keterangan' => $request->input('keterangan'),
+            'debit' => $debit,
+            'kredit' => $kredit,
+            'status' => $request->input('status'),
+        ];
+
+        Jurnal_harian::create($data);
+
+        return response()->json(['success' => true, 'message' => 'Data berhasil disimpan.']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $jurnal = Jurnal_harian::find($id);
+        if ($jurnal) {
+            return response()->json([
+                'success' => true,
+                'data' => $jurnal,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan',
+            ]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+            'jenis' => 'required|in:Pemasukan,Pengeluaran',
+            'nominal' => 'required',
+            'keterangan' => 'required|string',
+            'status' => 'required|in:cash,bank',
+            'debit' => 'required|numeric',
+            'kredit' => 'required|numeric',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $jurnal = Jurnal_harian::find($id);
+
+        $jurnal->update([
+
+            'tanggal' => $request->input('tanggal'),
+            'jenis' => $request->input('jenis'),
+            'nominal' => $request->input('nominal'),
+            'keterangan' => $request->input('keterangan'),
+            'status' => $request->input('status'),
+            'debit' => $request->input('debit'),
+            'kredit' => $request->input('kredit'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diupdate!',
+            'data' => $jurnal,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id, Request $request)
     {
-        //
-    }
+        Jurnal_harian::find($id)->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus!',
+            ]);
+        }
     }
 }

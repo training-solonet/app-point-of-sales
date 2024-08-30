@@ -28,7 +28,7 @@ class JurnalPiutangController extends Controller
         }
 
         if ($request->ajax()) {
-            return datatables()->of($piutang)
+            return datatables()->of($piutang->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $button = '<a href="javascript:void(0)" id="btn-bayar" data-id="'.$data->id.'" data-bs-target="#myModal" class="btn btn-info btn-sm">Bayar</a>';

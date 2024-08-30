@@ -10,8 +10,8 @@ class Jurnal_harian extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tanggal',
         'keterangan',
+        'tanggal',
         'debit',
         'kredit',
         'status',
