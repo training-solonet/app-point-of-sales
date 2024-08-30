@@ -369,30 +369,26 @@
                 });
             });
 
-            $('#jenis-edit').change(function() {
-                let jenis = $(this).val();
-                let nominal = parseFloat($('#nominal-edit').val()) || 0;
-
-                if (jenis === 'Pemasukan') {
-                    $('#debit-edit').val(nominal);
-                    $('#kredit-edit').val('0');
-                } else if (jenis === 'Pengeluaran') {
-                    $('#debit-edit').val('0');
-                    $('#kredit-edit').val(nominal);
-                }
-            });
 
             $('#update').click(function(e) {
                 e.preventDefault();
                 let id = $('#id').val();
                 let tanggal = $('#tanggal-edit').val();
-                let keterangan = $('#keterangan-edit').val();
-                let debit = $('#debit-edit').val();
-                let kredit = $('#kredit-edit').val();
+                let debit = 0;
+                let kredit = 0;
+
                 let jenis = $('#jenis-edit').val();
                 let nominal = $('#nominal-edit').val();
+                let keterangan = $('#keterangan-edit').val();
                 let status = $('#status-edit').val();
                 let token = $("meta[name='csrf-token']").attr("content");
+
+                if (jenis === 'Pemasukan') {
+                    debit = nominal;
+                } else if (jenis === 'Pengeluaran') {
+                    kredit = nominal;
+                }
+
 
                 $.ajax({
                     url: `/menu/jurnal-harian/${id}`,
@@ -461,9 +457,6 @@
                     }
                 });
             });
-
-
-
 
             // Hapus data
             $('body').on('click', '#btn-delete', function() {

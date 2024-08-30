@@ -56,11 +56,14 @@ class JurnalHarianController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        $debit = $request->input('jenis') === 'Pemasukan' ? $request->input('nominal') : 0;
+        $kredit = $request->input('jenis') === 'Pengeluaran' ? $request->input('nominal') : 0;
+
         $data = [
             'tanggal' => $request->input('tanggal'),
             'keterangan' => $request->input('keterangan'),
-            'debit' => $request->input('debit'),
-            'kredit' => $request->input('kredit'),
+            'debit' => $debit,
+            'kredit' => $kredit,
             'status' => $request->input('status'),
         ];
 
@@ -88,12 +91,6 @@ class JurnalHarianController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            // 'tanggal' => 'required',
-            // 'debit' => 'required',
-            // 'kredit' => 'required',
-            // 'keterangan' => 'required',
-            // 'status' => 'required',
-
             'tanggal' => 'required',
             'jenis' => 'required|in:Pemasukan,Pengeluaran',
             'nominal' => 'required',
@@ -111,13 +108,6 @@ class JurnalHarianController extends Controller
         $jurnal = Jurnal_harian::find($id);
 
         $jurnal->update([
-            // 'tanggal' => $request->tanggal,
-            // 'debit' => $request->debit,
-            // 'kredit' => $request->kredit,
-            // 'jenis' => $request->jenis,
-            // 'nominal' => $request->nominal,
-            // 'keterangan' => $request->keterangan,
-            // 'status' => $request->status,
             
             'tanggal' => $request->input('tanggal'),
             'jenis' => $request->input('jenis'),
