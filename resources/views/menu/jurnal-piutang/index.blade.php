@@ -1,8 +1,7 @@
 @extends('layouts.template')
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
     <style>
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button {
@@ -179,14 +178,19 @@
                 "responsive": true,
                 "serverSide": true,
                 "processing": true,
+                "scrollX":        true,
+                "scrollCollapse": true,
+                "scrollY":        "500px",
+                "paging": false,
+                "info": false,
                 "ajax": {
                     "url": "{{ route('menu.jurnal-piutang.index') }}",
                     "type": "GET",
                     "data": function(d) {
                         // d.filter = $('#filter').val();
                         d.filter_customer = $('select[name="filter_customer"]').val();
-                        // d.start = $('input[name="start"]').val();
-                        // d.end = $('input[name="end"]').val();
+                        d.start = $('input[name="start"]').val();
+                        d.end = $('input[name="end"]').val();
                     }
                 },
                 "columns": [{

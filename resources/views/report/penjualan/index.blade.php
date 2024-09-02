@@ -102,8 +102,8 @@
                             <div class="mb-4">
                                 <label>Filter Tanggal</label>
                                 <div class="input-daterange input-group" id="datepicker6">
-                                    <input type="text" class="form-control" name="start" placeholder="Start Date" />
-                                    <input type="text" class="form-control" name="end" placeholder="End Date" />
+                                    <input type="text" class="form-control" name="start" value="{{ date('Y-m-01')}}" placeholder="Start Date" />
+                                    <input type="text" class="form-control" name="end" value="{{ date('Y-m-d')}}" placeholder="End Date" />
                                 </div>
                             </div>
                             <button type="button" class="btn btn-secondary waves-effect waves-light align-middle me-2"
@@ -164,13 +164,18 @@
             'responsive': true,
             'serverSide': true,
             'processing': true,
+            "scrollX":        true,
+            'scrollCollapse': true,
+            'scrollY':        '500px',
+            'paging': false,
+            'info': false,
             'ajax': {
                 'url': "{{ route('report.penjualan.index') }}",
                 'type': 'GET',
                 'data': function (d) {
                     d.filter_customer = $('select[name="filter_customer"]').val();
-                    // d.start = $('input[name="start"]').val();
-                    // d.end = $('input[name="end"]').val();
+                    d.start = $('input[name="start"]').val();
+                    d.end = $('input[name="end"]').val();
                 }
             },
             'columns': [{
