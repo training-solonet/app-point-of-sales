@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('layouts.template');
 });
 
+Route::get('menu/dashboard/{id}', [DashboardController::class, 'show'])->name('invoice.show');
+
 Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
     Route::resource('dashboard', DashboardController::class);
     Route::resource('jurnal-piutang', JurnalPiutangController::class);
