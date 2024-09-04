@@ -15,7 +15,15 @@ class BarangMasukController extends Controller
     public function index(Request $request)
     {
         $pembelian = Pembelian::with(['purchase_orders.distributor'])
-            ->select('pembelian.id', 'pembelian.no_invoice', 'pembelian.tgl_beli', 'pembelian.kode_po', 'pembelian.pengguna', DB::raw('SUM(detail_pembelian.qty) as total_barang'))
+            ->select(
+                'pembelian.id',
+                'pembelian.no_invoice',
+                'pembelian.tgl_beli',
+                'pembelian.kode_po',
+                'pembelian.pengguna',
+                DB::raw('SUM(detail_pembelian.qty) as total_barang'),
+                DB::raw('(CASE WHEN EXISTS (SELECT 1 FROM stok WHERE stok.pembelian_id = pembelian.id) THEN 1 ELSE 0 END) as is_stock_added')
+            )
             ->join('detail_pembelian', 'detail_pembelian.no_invoice', '=', 'pembelian.no_invoice')
             ->groupBy('pembelian.id', 'pembelian.no_invoice', 'pembelian.tgl_beli', 'pembelian.kode_po', 'pembelian.pengguna')
             ->orderBy('id', 'desc')
@@ -25,7 +33,7 @@ class BarangMasukController extends Controller
             return datatables()->of($pembelian)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light">Detail</button>';
+                    $button = '<a href="/menu/barang-masuk/' . $data->id . '" class="btn btn-info waves-effect waves-light ' . ($data->is_stock_added ? 'disabled' : '') . '">Detail</a>';
 
                     return $button;
                 })
@@ -48,7 +56,7 @@ class BarangMasukController extends Controller
     {
         $stok = Pembelian::with(['detail_pembelian.barang'])->find($request->pembelian_id);
 
-        if (! $stok) {
+        if (!$stok) {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
 
@@ -76,7 +84,7 @@ class BarangMasukController extends Controller
                 ->where('id', $id)
                 ->first();
 
-            if (! $pembelian) {
+            if (!$pembelian) {
                 return response()->json(['error' => 'data not found'], 404);
             }
 
@@ -103,7 +111,11 @@ class BarangMasukController extends Controller
         //
     }
 
-    public function update(Request $request, string $id) {}
+    public function update(Request $request, string $id)
+    {
+    }
 
-    public function destroy(string $id) {}
+    public function destroy(string $id)
+    {
+    }
 }
