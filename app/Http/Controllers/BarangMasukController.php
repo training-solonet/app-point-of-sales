@@ -53,15 +53,17 @@ class BarangMasukController extends Controller
         }
 
         foreach ($stok->detail_pembelian as $detail) {
-            $newStok = new Stok;
-            $newStok->pembelian_id = $stok->id;
-            $newStok->tanggal_masuk = now();
-            $newStok->barang_id = $detail->barang->id;
-            $newStok->harga_beli = $detail->harga_satuan;
-            $newStok->jual_id = null;
-            $newStok->tanggal_keluar = null;
-            $newStok->harga_jual = null;
-            $newStok->save();
+            for ($i = 0; $i < $detail->qty; $i++) {
+                $newStok = new Stok;
+                $newStok->pembelian_id = $stok->id;
+                $newStok->tanggal_masuk = now();
+                $newStok->barang_id = $detail->barang->id;
+                $newStok->harga_beli = $detail->harga_satuan;
+                $newStok->jual_id = null;
+                $newStok->tanggal_keluar = null;
+                $newStok->harga_jual = null;
+                $newStok->save();
+            }
         }
 
         return response()->json(['status' => 'success', 'message' => 'Data has been added'], 200);
