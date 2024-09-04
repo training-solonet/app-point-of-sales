@@ -75,7 +75,7 @@ class JurnalHarianController extends Controller
     public function show($id)
     {
         $jurnal = Jurnal_harian::find($id);
-        
+
         $nominal = $jurnal->debit ? $jurnal->debit : $jurnal->kredit;
 
         return response()->json([
@@ -88,7 +88,7 @@ class JurnalHarianController extends Controller
                 'jenis' => $jurnal->debit ? 'Pemasukan' : 'Pengeluaran',
                 'nominal' => $nominal,
                 'status' => $jurnal->status,
-            ]
+            ],
         ]);
     }
 

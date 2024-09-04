@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class PrintService
 {
@@ -11,7 +11,7 @@ class PrintService
 
     public function __construct()
     {
-        $connector = new WindowsPrintConnector("EPPOS-ZJ-80");
+        $connector = new WindowsPrintConnector('EPPOS-ZJ-80');
         $this->printer = new Printer($connector);
     }
 

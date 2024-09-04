@@ -33,7 +33,7 @@ class BarangMasukController extends Controller
             return datatables()->of($pembelian)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="/menu/barang-masuk/' . $data->id . '" class="btn btn-info waves-effect waves-light ' . ($data->is_stock_added ? 'disabled' : '') . '">Detail</a>';
+                    $button = '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light '.($data->is_stock_added ? 'disabled' : '').'">Detail</a>';
 
                     return $button;
                 })
@@ -56,7 +56,7 @@ class BarangMasukController extends Controller
     {
         $stok = Pembelian::with(['detail_pembelian.barang'])->find($request->pembelian_id);
 
-        if (!$stok) {
+        if (! $stok) {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
 
@@ -84,7 +84,7 @@ class BarangMasukController extends Controller
                 ->where('id', $id)
                 ->first();
 
-            if (!$pembelian) {
+            if (! $pembelian) {
                 return response()->json(['error' => 'data not found'], 404);
             }
 
@@ -111,11 +111,7 @@ class BarangMasukController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }
