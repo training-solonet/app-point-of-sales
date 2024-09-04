@@ -3,6 +3,7 @@
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\JurnalPiutangController;
 use App\Http\Controllers\KategoriController;
@@ -17,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
+    Route::resource('dashboard', DashboardController::class);
     Route::resource('jurnal-piutang', JurnalPiutangController::class);
     Route::resource('jurnal-harian', JurnalHarianController::class);
     Route::resource('barang-masuk', BarangMasukController::class);

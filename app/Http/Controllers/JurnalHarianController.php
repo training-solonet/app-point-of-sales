@@ -75,17 +75,21 @@ class JurnalHarianController extends Controller
     public function show($id)
     {
         $jurnal = Jurnal_harian::find($id);
-        if ($jurnal) {
-            return response()->json([
-                'success' => true,
-                'data' => $jurnal,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan',
-            ]);
-        }
+
+        $nominal = $jurnal->debit ? $jurnal->debit : $jurnal->kredit;
+
+        return response()->json([
+            'data' => [
+                'id' => $jurnal->id,
+                'tanggal' => $jurnal->tanggal,
+                'keterangan' => $jurnal->keterangan,
+                'debit' => $jurnal->debit,
+                'kredit' => $jurnal->kredit,
+                'jenis' => $jurnal->debit ? 'Pemasukan' : 'Pengeluaran',
+                'nominal' => $nominal,
+                'status' => $jurnal->status,
+            ],
+        ]);
     }
 
     public function update(Request $request, $id)
