@@ -15,10 +15,40 @@ class PrintService
         $this->printer = new Printer($connector);
     }
 
-    public function printText($text)
+    public function printReceipt($title, $header, $items, $totals)
     {
-        $this->printer->text($text);
+        $this->printer->text($title . "\n");
+        $this->printer->text($header . "\n");
+        
+        $this->printer->text(str_repeat('-', 32) . "\n");
+
+        foreach ($items as $item) {
+            $this->printer->text($item . "\n");
+        }
+
+        $this->printer->text(str_repeat('-', 32) . "\n");
+
+        foreach ($totals as $total) {
+            $this->printer->text($total . "\n");
+        }
+
+        $this->printer->text("\nTHANK YOU\n");
+        $this->printer->text("\n\n");
         $this->printer->cut();
+        $this->printer->feed(3);
         $this->printer->close();
+    }
+
+    public function formatItemLine($name, $qty, $price, $total)
+    {
+        $nameLine = $name;
+        $detailLine = sprintf("%2s x %5s %7s", $qty, $price, $total);
+
+        return $nameLine . "\n" . $detailLine;
+    }
+
+    public function formatTotalLine($label, $amount)
+    {
+        return sprintf("%-20s %10s", $label, $amount);
     }
 }
