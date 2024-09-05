@@ -19,11 +19,11 @@ class PrintService
     {
         $this->printer->text($title . "\n");
         $this->printer->text($header . "\n");
-        
+
         $this->printer->text(str_repeat('-', 32) . "\n");
 
         foreach ($items as $item) {
-            $this->printer->text($item . "\n");
+            $this->printer->text($item . "\n\n");
         }
 
         $this->printer->text(str_repeat('-', 32) . "\n");
@@ -32,8 +32,9 @@ class PrintService
             $this->printer->text($total . "\n");
         }
 
-        $this->printer->text("\nTHANK YOU\n");
+        $this->printer->text("\n----------THANK YOU----------\n");
         $this->printer->text("\n\n");
+
         $this->printer->cut();
         $this->printer->feed(3);
         $this->printer->close();
@@ -42,7 +43,7 @@ class PrintService
     public function formatItemLine($name, $qty, $price, $total)
     {
         $nameLine = $name;
-        $detailLine = sprintf("%2s x %5s %7s", $qty, $price, $total);
+        $detailLine = sprintf("%5s x %7s %10s", $qty, $price, $total);
 
         return $nameLine . "\n" . $detailLine;
     }

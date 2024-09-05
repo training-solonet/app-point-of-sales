@@ -20,8 +20,7 @@ class DashboardController extends Controller
     {
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
-        $header = "SoloNet\n"
-                . "-----------------------------\n"
+        $header = "-----------------------------\n"
                 . "DATE: " . now()->format('d-M-Y h:i:s A') . "\n"
                 . "CASHIER: Admin\n"
                 . "-----------------------------";
@@ -42,13 +41,9 @@ class DashboardController extends Controller
         $totals = [];
         $totals[] = $printService->formatTotalLine('Sub Total', number_format($invo->total, 2));
         $totals[] = $printService->formatTotalLine('Discount', number_format($invo->discount, 2));
-        $totals[] = $printService->formatTotalLine('VAT @ 17.5%', number_format($invo->vat, 2));
-        $totals[] = $printService->formatTotalLine('Bill Total', number_format($invo->bill_total, 2));
-        $totals[] = $printService->formatTotalLine('Tendered', number_format($invo->tendered, 2));
-        $totals[] = $printService->formatTotalLine('Balance', number_format($invo->balance, 2));
 
         // Using PrintService to print the receipt
-        $printService->printReceipt('Invoice Example', $header, $items, $totals);
+        $printService->printReceipt('SoloNet', $header, $items, $totals);
 
         return response()->json(['status' => 'success']);
 
