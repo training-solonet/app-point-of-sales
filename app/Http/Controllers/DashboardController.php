@@ -3,25 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jual;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\PrintService;
-use Smalot\PdfParser\Parser;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Smalot\PdfParser\Parser;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        
-    }
+    public function index() {}
 
-    public function create()
-    {
-    }
+    public function create() {}
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     public function show($id)
     {
@@ -39,7 +32,7 @@ class DashboardController extends Controller
 
         $pdf->save($pdfPath);
 
-        $parser = new Parser();
+        $parser = new Parser;
         $pdfText = $parser->parseFile($pdfPath)->getText();
 
         // Membuat instance PrintService
@@ -51,15 +44,9 @@ class DashboardController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function edit(string $id)
-    {
-    }
+    public function edit(string $id) {}
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }

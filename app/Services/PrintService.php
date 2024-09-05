@@ -11,7 +11,7 @@ class PrintService
 
     public function __construct()
     {
-        $connector = new WindowsPrintConnector("POS-58");
+        $connector = new WindowsPrintConnector('POS-58');
         $this->printer = new Printer($connector);
     }
 
