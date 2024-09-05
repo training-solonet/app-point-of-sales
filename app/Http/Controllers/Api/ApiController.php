@@ -6,39 +6,41 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Kategori;
-use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    public function barang() {
+    public function barang()
+    {
         $data = Barang::select('id', 'nama', 'stok')
-        ->where('stok', '>', 0)
-        ->get();
+            ->where('stok', '>', 0)
+            ->get();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data barang berhasil diambil',
-            'data' => $data
+            'data' => $data,
         ]);
     }
 
-    public function kategori() {
+    public function kategori()
+    {
         $data = Kategori::select('id', 'nama')->get();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data kategori berhasil diambil',
-            'data' => $data
+            'data' => $data,
         ]);
     }
 
-    public function customer() {
+    public function customer()
+    {
         $data = Customer::select('id', 'nama', 'no_hp')->get();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data customer berhasil diambil',
-            'data' => $data
+            'data' => $data,
         ]);
     }
 }
