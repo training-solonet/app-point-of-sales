@@ -102,8 +102,10 @@
                             <div class="mb-4">
                                 <label>Filter Tanggal</label>
                                 <div class="input-daterange input-group" id="datepicker6">
-                                    <input type="text" class="form-control" name="start" value="{{ date('Y-m-01')}}" placeholder="Start Date" />
-                                    <input type="text" class="form-control" name="end" value="{{ date('Y-m-d')}}" placeholder="End Date" />
+                                    <input type="text" class="form-control" name="start" value="{{ date('Y-m-01')}}"
+                                        placeholder="Start Date" />
+                                    <input type="text" class="form-control" name="end" value="{{ date('Y-m-d')}}"
+                                        placeholder="End Date" />
                                 </div>
                             </div>
                             <button type="button" class="btn btn-secondary waves-effect waves-light align-middle me-2"
@@ -164,9 +166,9 @@
             'responsive': true,
             'serverSide': true,
             'processing': true,
-            "scrollX":        true,
+            "scrollX": true,
             'scrollCollapse': true,
-            'scrollY':        '500px',
+            'scrollY': '500px',
             'paging': false,
             'info': false,
             'ajax': {
@@ -187,10 +189,10 @@
             {
                 data: 'no_faktur',
                 name: 'no_faktur',
-                // render: function (data, type, row) {
-                //     var url = "{{ route('report.pembayaran-piutang.index') }}".replace(':id', row.id);
-                //     return '<a href="' + url + '">' + data + '</a>';
-                // }
+                render: function (data, type, row) {
+                    var url = "{{ route('invoice.show', ':id') }}".replace(':id', row.id);
+                    return '<a href="' + url + '">' + data + '</a>';
+                }
             },
             {
                 data: 'customer.nama',
