@@ -350,11 +350,6 @@
                     type: "GET",
                     cache: false,
                     success: function(response) {
-                        console.log('Nominal:', nominal);
-                        console.log('Debit:', debit);
-                        console.log('Kredit:', kredit);
-
-
                         $('#id').val(response.data.id);
                         $('#tanggal-edit').val(response.data.tanggal);
                         $('#keterangan-edit').val(response.data.keterangan);

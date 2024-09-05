@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class PrintService
 {
