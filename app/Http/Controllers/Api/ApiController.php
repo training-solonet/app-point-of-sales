@@ -67,14 +67,14 @@ class ApiController extends Controller
         $data = Barang::whereIn('id', $bestSellers->pluck('barang_id'))
             ->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
             ->get()
-            ->map(function ($item){
+            ->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'nama' => $item->nama,
                     'kategori' => $item->kategori->nama ?? 'N/A',
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
-                    'stok' => $item->stok
+                    'stok' => $item->stok,
                 ];
             });
 
