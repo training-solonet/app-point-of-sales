@@ -6,14 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Kategori;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
-    public function product()
+    public function product(Request $request)
     {
-        $data = Barang::with('kategori')->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
-            ->where('stok', '>', 0)
+        $kategoriNama = $request->get('kategori');
+
+        $query = Barang::with('kategori')->where('stok', '>', 0);
+
+        if ($kategoriNama) {
+            $query->whereHas('kategori', function ($q) use ($kategoriNama) {
+                $q->where('nama', $kategoriNama);
+            });
+        }
+
+        $data = $query->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
             ->get()
             ->map(function ($item) {
                 return [
@@ -30,7 +40,7 @@ class ApiController extends Controller
             'status' => 'success',
             'message' => 'Data barang berhasil diambil',
             'data' => $data,
-        ]);
+        ], 200);
     }
 
     public function category()
@@ -67,7 +77,7 @@ class ApiController extends Controller
         $data = Barang::whereIn('id', $bestSellers->pluck('barang_id'))
             ->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
             ->get()
-            ->map(function ($item){
+            ->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'nama' => $item->nama,
