@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jual;
 use App\Services\PrintService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Smalot\PdfParser\Parser;
 
 class DashboardController extends Controller
 {
@@ -21,12 +19,12 @@ class DashboardController extends Controller
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
         $header = "-----------------------------\n"
-                . "DATE: " . now()->format('d-M-Y h:i:s A') . "\n"
-                . "CASHIER: Admin\n"
-                . "-----------------------------";
+                .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
+                ."CASHIER: Admin\n"
+                .'-----------------------------';
 
         $items = [];
-        $printService = new PrintService();
+        $printService = new PrintService;
 
         foreach ($invo->det_jual as $det) {
             $itemLine = $printService->formatItemLine(
@@ -42,11 +40,9 @@ class DashboardController extends Controller
         $totals[] = $printService->formatTotalLine('Sub Total', number_format($invo->total, 2));
         $totals[] = $printService->formatTotalLine('Discount', number_format($invo->discount, 2));
 
-        // Using PrintService to print the receipt
         $printService->printReceipt('SoloNet', $header, $items, $totals);
 
         return response()->json(['status' => 'success']);
-
     }
 
     public function edit(string $id) {}

@@ -84,7 +84,7 @@ class ApiController extends Controller
                     'kategori' => $item->kategori->nama ?? 'N/A',
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
-                    'stok' => $item->stok
+                    'stok' => $item->stok,
                 ];
             });
 

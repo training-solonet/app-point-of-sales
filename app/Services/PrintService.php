@@ -17,19 +17,19 @@ class PrintService
 
     public function printReceipt($title, $header, $items, $totals)
     {
-        $this->printer->text($title . "\n");
-        $this->printer->text($header . "\n");
+        $this->printer->text($title."\n");
+        $this->printer->text($header."\n");
 
-        $this->printer->text(str_repeat('-', 32) . "\n");
+        $this->printer->text(str_repeat('-', 32)."\n");
 
         foreach ($items as $item) {
-            $this->printer->text($item . "\n\n");
+            $this->printer->text($item."\n\n");
         }
 
-        $this->printer->text(str_repeat('-', 32) . "\n");
+        $this->printer->text(str_repeat('-', 32)."\n");
 
         foreach ($totals as $total) {
-            $this->printer->text($total . "\n");
+            $this->printer->text($total."\n");
         }
 
         $this->printer->text("\n----------THANK YOU----------\n");
@@ -43,13 +43,13 @@ class PrintService
     public function formatItemLine($name, $qty, $price, $total)
     {
         $nameLine = $name;
-        $detailLine = sprintf("%5s x %7s %10s", $qty, $price, $total);
+        $detailLine = sprintf('%5s x %7s %10s', $qty, $price, $total);
 
-        return $nameLine . "\n" . $detailLine;
+        return $nameLine."\n".$detailLine;
     }
 
     public function formatTotalLine($label, $amount)
     {
-        return sprintf("%-20s %10s", $label, $amount);
+        return sprintf('%-20s %10s', $label, $amount);
     }
 }
