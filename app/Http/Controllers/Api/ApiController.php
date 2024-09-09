@@ -16,7 +16,14 @@ class ApiController extends Controller
         $kategoriNama = $request->get('kategori');
         $barcode = $request->get('upc');
 
-        $query = Barang::with('kategori')->where('stok', '>', 0);
+        $stokData = DB::table('stok')
+            ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+            ->groupBy('barang_id');
+
+        $query = Barang::with('kategori')
+            ->joinSub($stokData, 'stok_data', function ($join) {
+                $join->on('barang.id', '=', 'stok_data.barang_id');
+            });
 
         if ($kategoriNama) {
             $query->whereHas('kategori', function ($q) use ($kategoriNama) {
@@ -28,7 +35,7 @@ class ApiController extends Controller
             $query->where('upc', $barcode);
         }
 
-        $data = $query->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
+        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'stok_data.total_stok as stok', 'barang.id_kategori', 'barang.gambar')
             ->get()
             ->map(function ($item) {
                 return [
@@ -87,31 +94,33 @@ class ApiController extends Controller
 
     public function bestSeller()
     {
-        $bestSellers = DB::table('det_jual')
-            ->select('barang_id', DB::raw('SUM(qty) as total_qty'))
-            ->groupBy('barang_id')
-            ->orderBy('total_qty', 'desc')
-            ->limit(10)
-            ->get();
+        $salesData = DB::table('det_jual')
+            ->select('barang_id', DB::raw('COUNT(barang_id) as total_sold'))
+            ->groupBy('barang_id');
 
-        $data = Barang::whereIn('id', $bestSellers->pluck('barang_id'))
-            ->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
+        $query = Barang::with('kategori')
+            ->joinSub($salesData, 'sales_data', function ($join) {
+                $join->on('barang.id', '=', 'sales_data.barang_id');
+            });
+
+        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'sales_data.total_sold as total_sold', 'barang.id_kategori', 'barang.gambar')
+            ->orderBy('total_sold', 'desc')
+            ->limit(10)
             ->get()
             ->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'nama' => $item->nama,
-                    'kategori' => $item->kategori->nama ?? 'N/A',
+                    'kategori' => $item->kategori->nama,
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
-                    'stok' => $item->stok,
                 ];
             });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data best seller berhasil diambil',
+            'message' => 'Best seller products berhasil diambil',
             'data' => $data,
-        ]);
+        ], 200);
     }
 }
