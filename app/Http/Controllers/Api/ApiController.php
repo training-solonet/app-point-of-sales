@@ -14,6 +14,7 @@ class ApiController extends Controller
     public function product(Request $request)
     {
         $kategoriNama = $request->get('kategori');
+        $barcode = $request->get('upc');
 
         $query = Barang::with('kategori')->where('stok', '>', 0);
 
@@ -21,6 +22,10 @@ class ApiController extends Controller
             $query->whereHas('kategori', function ($q) use ($kategoriNama) {
                 $q->where('nama', $kategoriNama);
             });
+        }
+
+        if ($barcode) {
+            $query->where('upc', $barcode);
         }
 
         $data = $query->select('id', 'nama', 'harga_jual', 'stok', 'id_kategori', 'gambar')
@@ -56,7 +61,22 @@ class ApiController extends Controller
 
     public function customer()
     {
+        $customerNama = request()->get('nama');
+        $customerNo = request()->get('no_hp');
+
         $data = Customer::select('id', 'nama', 'no_hp')->get();
+
+        if ($customerNama) {
+            $data = Customer::select('id', 'nama', 'no_hp')
+                ->where('nama', 'like', "%$customerNama%")
+                ->get();
+        }
+
+        if ($customerNo) {
+            $data = Customer::select('id', 'nama', 'no_hp')
+                ->where('no_hp', 'like', "%$customerNo%")
+                ->get();
+        }
 
         return response()->json([
             'status' => 'success',
