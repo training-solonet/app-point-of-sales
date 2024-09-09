@@ -1,5 +1,7 @@
 @extends('layouts.template')
 @section('css')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet" />
     <style>
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button {
@@ -40,6 +42,23 @@
                                 </button>
                             </div>
                         </div>
+
+                        <form class="mt-3 mb-3">
+                            <div class="mb-4">
+                                <label>Filter Tanggal</label>
+                                <div class="input-daterange input-group" id="datepicker6" data-date-autoclose="true"
+                                    data-provide="datepicker" data-date-container='#datepicker6'>
+                                    <input type="text" class="form-control" name="start" value="{{ date('Y-m-01') }}"
+                                        placeholder="Start Date" />
+                                    <input type="text" class="form-control" name="end" value="{{ date('Y-m-d') }}"
+                                        placeholder="End Date" />
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-secondary waves-effect waves-light align-middle me-2"
+                                id="btn-reset"><i class="bx bx-reset"></i> Reset Filter</button>
+
+                        </form>
 
                         <div class="saldo">
                             <p class="card-title-desc">Saldo : <strong id="saldo"> 0</strong>
@@ -206,6 +225,7 @@
 @endsection
 
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
         const Toast = Swal.mixin({
             toast: true,
@@ -216,13 +236,31 @@
         });
 
         $(document).ready(function() {
-            $('#table').DataTable({
-                'responsive': true,
-                'serverSide': true,
-                'processing': true,
+            $('#datepicker6').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true,
+                orientation: "bottom"
+            }).on('change', function() {
+                table.draw(); 
+            });
+
+            var table = $('#table').DataTable({
+                "responsive": true,
+                "serverSide": true,
+                "processing": true,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "scrollY": "500px",
+                "paging": false,
+                "info": false,
                 'ajax': {
                     'url': "{{ route('menu.jurnal-harian.index') }}",
-                    'type': 'GET'
+                    'type': 'GET',
+                    'data': function(d) {
+                        d.start = $('input[name="start"]').val();
+                        d.end = $('input[name="end"]').val();
+                    }
                 },
                 'columns': [{
                         data: 'DT_RowIndex',
@@ -233,15 +271,12 @@
                     {
                         data: 'tanggal',
                         name: 'tanggal',
-                        render: function(data, type, row) {
-                            if (data) {
-                                var date = new Date(data);
-                                var day = ('0' + date.getDate()).slice(-2);
-                                var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                                var year = date.getFullYear().toString();
-                                return `${day}/${month}/${year}`;
-                            }
-                            return '';
+                        render: function(data) {
+                            var date = new Date(data);
+                            var day = ('0' + date.getDate()).slice(-2);
+                            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                            var year = date.getFullYear().toString();
+                            return `${day}/${month}/${year}`;
                         }
                     },
                     {
@@ -253,14 +288,12 @@
                         name: 'debit',
                         className: "text-end",
                         render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
-
                     },
                     {
                         data: 'kredit',
                         name: 'kredit',
                         className: "text-end",
                         render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
-
                     },
                     {
                         data: 'status',
@@ -273,12 +306,19 @@
                         searchable: false
                     }
                 ],
-
             });
 
             get_saldo();
 
-            // Simpan data
+            $('input[name="start"], input[name="end"]').on('change', function() {
+                table.ajax.reload();
+            });
+
+            $('#btn-reset').on('click', function() {
+                $('#datepicker6').datepicker('clearDates');
+                table.draw();
+            });
+
             $('#store').click(function(e) {
                 e.preventDefault();
                 let nominal = $('#nominal').val();
@@ -303,8 +343,6 @@
                     success: function(response) {
                         if (response.success) {
                             $('#tanggal').val('');
-                            // $('#debit').val('');
-                            // $('#kredit').val('');
                             $('#jenis').val('');
                             $('#nominal').val('');
                             $('#keterangan').val('');
@@ -487,10 +525,8 @@
                     }
                 })
             });
-
-
-
         });
+
 
 
         function get_saldo() {

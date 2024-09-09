@@ -10,10 +10,20 @@ class JurnalHarianController extends Controller
 {
     public function index(Request $request)
     {
-        $jurnal = Jurnal_harian::all();
+        $jurnal = Jurnal_harian::query();
+
+        if ($request->has('start') && $request->has('end')) {
+            $startDate = $request->input('start');
+            $endDate = $request->input('end');
+
+            if (! empty($startDate) && ! empty($endDate)) {
+                $jurnal->whereBetween('tanggal', [$startDate, $endDate]);
+            }
+        }
+
 
         if ($request->ajax()) {
-            return datatables()->of($jurnal)
+            return datatables()->of($jurnal->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
