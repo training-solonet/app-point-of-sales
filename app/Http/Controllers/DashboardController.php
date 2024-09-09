@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Jual;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use App\Services\PrintService;
-use Smalot\PdfParser\Parser;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
