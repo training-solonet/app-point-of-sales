@@ -8,18 +8,11 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        
-    }
+    public function index() {}
 
-    public function create()
-    {
-    }
+    public function create() {}
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     public function show($id)
     {
@@ -37,7 +30,7 @@ class DashboardController extends Controller
 
         $pdf->save($pdfPath);
 
-        $parser = new Parser();
+        $parser = new Parser;
         $pdfText = $parser->parseFile($pdfPath)->getText();
 
         // Membuat instance PrintService
@@ -50,15 +43,9 @@ class DashboardController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function edit(string $id)
-    {
-    }
+    public function edit(string $id) {}
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }

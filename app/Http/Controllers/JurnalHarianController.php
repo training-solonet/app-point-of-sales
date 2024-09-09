@@ -21,7 +21,6 @@ class JurnalHarianController extends Controller
             }
         }
 
-
         if ($request->ajax()) {
             return datatables()->of($jurnal->get())
                 ->addIndexColumn()
