@@ -175,6 +175,7 @@
                 'url': "{{ route('report.penjualan.index') }}",
                 'type': 'GET',
                 'data': function (d) {
+                    d.filter = $('#filter').val(); 
                     d.filter_customer = $('select[name="filter_customer"]').val();
                     d.start = $('input[name="start"]').val();
                     d.end = $('input[name="end"]').val();

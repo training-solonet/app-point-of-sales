@@ -12,29 +12,60 @@ class JurnalHarianController extends Controller
     {
         $jurnal = Jurnal_harian::query();
 
+        // Filter berdasarkan rentang tanggal
         if ($request->has('start') && $request->has('end')) {
             $startDate = $request->input('start');
             $endDate = $request->input('end');
 
-            if (! empty($startDate) && ! empty($endDate)) {
+            if (!empty($startDate) && !empty($endDate)) {
                 $jurnal->whereBetween('tanggal', [$startDate, $endDate]);
             }
         }
 
+        // Filter tambahan yang ditangani melalui AJAX request
         if ($request->ajax()) {
+            // Cek apakah filter diterapkan
+            if ($request->has('filter')) {
+                $filter = $request->get('filter');
+
+                switch ($filter) {
+                    case 'kredit':
+                        // Filter jurnal dengan kredit > 0
+                        $jurnal->where('kredit', '>', 0);
+                        break;
+                    case 'debit':
+                        // Filter jurnal dengan debit > 0
+                        $jurnal->where('debit', '>', 0);
+                        break;
+                    case 'bank':
+                        // Filter jurnal dengan status bank
+                        $jurnal->where('status', 'bank');
+                        break;
+                    case 'cash':
+                        // Filter jurnal dengan status cash
+                        $jurnal->where('status', 'cash');
+                        break;
+                    default:
+                        // Default sorting jika tidak ada filter yang dipilih
+                        $jurnal->orderBy('id', 'asc');
+                        break;
+                }
+            }
+
+            // Eksekusi query dan kirim hasil melalui DataTables
             return datatables()->of($jurnal->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
-
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
                     return $button;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
 
+        // Kembalikan view dengan data jurnal jika bukan AJAX request
         return view('menu.jurnal-harian.index');
     }
 
