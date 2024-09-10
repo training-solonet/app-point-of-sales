@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Satuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -63,7 +64,6 @@ class BarangController extends Controller
         }
 
         $data = $request->all();
-        $data['stok'] = 0;
 
         Barang::create($data);
 
@@ -115,6 +115,17 @@ class BarangController extends Controller
 
     public function destroy(string $id, Request $request)
     {
+        
+        $barangcount1 = DB::table('det_jual')->where('barang_id', $id)->count();
+        $barangcount2 = DB::table('detail_purchase_orders')->where('kode_barang', $id)->count();
+
+        if ($barangcount1 > 0 || $barangcount2 > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat dihapus, Data masih digunakan',
+            ]);
+        }
+
         Barang::where('id', $id)->delete();
 
         if ($request->ajax()) {
