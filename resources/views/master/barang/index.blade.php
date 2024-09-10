@@ -58,13 +58,12 @@
                         <table id="table" class="table table-bordered dt-responsive  nowrap w-100">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Kode</th>
                                     <th>Part Number</th>
                                     <th>Nama</th>
                                     <th>Kategori</th>
                                     <th>Satuan</th>
-                                    <th>Stok</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -261,10 +260,6 @@
                 {
                     data: 'satuan.nama',
                     name: 'satuan.nama'
-                },
-                {
-                    data: 'stok',
-                    name: 'stok'
                 },
                 {
                     data: 'action',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\Satuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -107,6 +108,15 @@ class SatuanController extends Controller
 
     public function destroy($id, Request $request)
     {
+        $satuanCount = Barang::where('id_satuan', $id)->count();
+
+        if ($satuanCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat dihapus, Data masih digunakan',
+            ]);
+        }
+
         Satuan::find($id)->delete();
 
         if ($request->ajax()) {

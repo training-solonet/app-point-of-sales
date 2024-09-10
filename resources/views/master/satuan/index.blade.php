@@ -319,6 +319,11 @@
                                 });
 
                                 $('#table').DataTable().ajax.reload();
+                            },
+                            error: function(error) {
+                                Toast.fire({
+                                    title: error.responseJSON.message
+                                });
                             }
                         });
                     }

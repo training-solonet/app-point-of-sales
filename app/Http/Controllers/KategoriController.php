@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class KategoriController extends Controller
@@ -16,9 +17,9 @@ class KategoriController extends Controller
             return datatables()->of($kategori)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="'.$data->id.'" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-bs-toggle="modal" data-id="' . $data->id . '" data-bs-target="#UpModal" class="btn btn-primary btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -106,6 +107,15 @@ class KategoriController extends Controller
 
     public function destroy($id, Request $request)
     {
+        $kategoriCount = DB::table('barang')->where('id_kategori', $id)->count();
+
+        if ($kategoriCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak dapat dihapus, Data masih digunakan',
+            ]);
+        }
+
         Kategori::where('id', $id)->delete();
 
         if ($request->ajax()) {
