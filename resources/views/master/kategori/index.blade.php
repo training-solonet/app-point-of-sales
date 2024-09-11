@@ -56,7 +56,7 @@
                         <table id="table" class="table table-bordered dt-responsive  nowrap w-100">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Nama</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -245,8 +245,17 @@
                             "_token": token,
                         },
                         success: function (response) {
-                            showToast(response.message, 'success');
+                            if (response.success) {
+                                showToast(response.message, 'success');
+                            } else {
+                                showToast(response.message, 'error');
+                            }
                             $('#table').DataTable().ajax.reload();
+                        },
+                        error: function (xhr) {
+                            if (xhr.status === 403) {
+                                showToast(xhr.responseJSON.message, 'error');
+                            }
                         }
                     });
                 }

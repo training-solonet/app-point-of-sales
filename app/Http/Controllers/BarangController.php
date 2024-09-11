@@ -63,7 +63,6 @@ class BarangController extends Controller
         }
 
         $data = $request->all();
-        $data['stok'] = 0;
 
         Barang::create($data);
 
