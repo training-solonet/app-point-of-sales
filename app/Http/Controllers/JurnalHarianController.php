@@ -17,7 +17,7 @@ class JurnalHarianController extends Controller
             $startDate = $request->input('start');
             $endDate = $request->input('end');
 
-            if (!empty($startDate) && !empty($endDate)) {
+            if (! empty($startDate) && ! empty($endDate)) {
                 $jurnal->whereBetween('tanggal', [$startDate, $endDate]);
             }
         }
@@ -56,9 +56,10 @@ class JurnalHarianController extends Controller
             return datatables()->of($jurnal->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
+
                     return $button;
                 })
                 ->rawColumns(['action'])

@@ -6,8 +6,8 @@ use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Satuan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
@@ -115,7 +115,7 @@ class BarangController extends Controller
 
     public function destroy(string $id, Request $request)
     {
-        
+
         $barangcount1 = DB::table('det_jual')->where('barang_id', $id)->count();
         $barangcount2 = DB::table('detail_purchase_orders')->where('kode_barang', $id)->count();
 

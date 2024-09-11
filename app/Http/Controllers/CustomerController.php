@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -17,9 +17,9 @@ class CustomerController extends Controller
             return datatables()->of($customer)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="' . $data->id . '" class="btn btn-warning btn-sm">Edit</a>';
+                    $button = '<a href="javascript:void(0)" id="btn-edit-post" data-id="'.$data->id.'" class="btn btn-warning btn-sm">Edit</a>';
                     $button .= '&nbsp;&nbsp;';
-                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="' . $data->id . '" class="btn btn-danger btn-sm">Delete</a>';
+                    $button .= '<a href="javascript:void(0)" id="btn-delete" data-id="'.$data->id.'" class="btn btn-danger btn-sm">Delete</a>';
 
                     return $button;
                 })
@@ -113,8 +113,8 @@ class CustomerController extends Controller
     public function destroy(string $id, Request $request)
     {
         $customercount = DB::table('jual')->where('customer_id', $id)->count();
-        
-        if ( $customercount > 0 ) {
+
+        if ($customercount > 0) {
             return response()->json([
                 'success' => false,
                 'message' => 'Tidak dapat dihapus, Data masih digunakan',
