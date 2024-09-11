@@ -7,6 +7,11 @@
         input[type=number]::-webkit-inner-spin-button {
             -webkit-appearance: none;
         }
+
+        .dropdown-menu {
+            max-height: 300px;
+            overflow-y: scroll;
+        }
     </style>
 @endsection
 @section('content')
@@ -43,29 +48,46 @@
                             </div>
                         </div>
 
-                        <form class="mt-3 mb-3">
-                            <div class="mb-4">
-                                <label>Filter Tanggal</label>
-                                <div class="input-daterange input-group" id="datepicker6" data-date-autoclose="true"
-                                    data-provide="datepicker" data-date-container='#datepicker6'>
-                                    <input type="text" class="form-control" name="start" value="{{ date('Y-m-01') }}"
-                                        placeholder="Start Date" />
-                                    <input type="text" class="form-control" name="end" value="{{ date('Y-m-d') }}"
-                                        placeholder="End Date" />
+                        <div class="table-responsive">
+                            <div class="btn-group mb-3">
+                                <button type="button" class="btn dropdown-toggle border border-black"
+                                    data-bs-toggle="dropdown" aria-expanded="false"><i
+                                        class="bx bx-filter-alt"></i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Default</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                            class="bx bx-credit-card-alt" style="font-size: 16px;"></i> Jenis Pembayaran</a>
+                                    <a class="dropdown-item" href="#" data-filter="bank">Bank</a>
+                                    <a class="dropdown-item" href="#" data-filter="cash">Cash</a>
+                                    <a class="dropdown-item disabled" href="#" aria-disabled="true"><i
+                                            class="bx bxs-bank"></i> Status Pembayaran</a>
+                                    <a class="dropdown-item" href="#" data-filter="debit">Debit</a>
+                                    <a class="dropdown-item" href="#" data-filter="kredit">Kredit</a>
                                 </div>
                             </div>
+                            <input type="hidden" id="filter" value="default">
+                            <form class="mt-3 mb-3">
+                                <div class="mb-4">
+                                    <label>Filter Tanggal</label>
+                                    <div class="input-daterange input-group" id="datepicker6" data-date-autoclose="true"
+                                        data-provide="datepicker" data-date-container='#datepicker6'>
+                                        <input type="text" class="form-control" name="start"
+                                            value="{{ date('Y-m-01') }}" placeholder="Start Date" />
+                                        <input type="text" class="form-control" name="end"
+                                            value="{{ date('Y-m-d') }}" placeholder="End Date" />
+                                    </div>
+                                </div>
 
-                            <button type="button" class="btn btn-secondary waves-effect waves-light align-middle me-2"
-                                id="btn-reset"><i class="bx bx-reset"></i> Reset Filter</button>
+                                <button type="button" class="btn btn-secondary waves-effect waves-light align-middle me-2"
+                                    id="btn-reset"><i class="bx bx-reset"></i> Reset Filter</button>
+                            </form>
 
-                        </form>
+                            <div class="saldo">
+                                <p class="card-title-desc">Saldo : <strong id="saldo"> 0</strong>
+                                </p>
+                            </div>
 
-                        <div class="saldo">
-                            <p class="card-title-desc">Saldo : <strong id="saldo"> 0</strong>
-                            </p>
-                        </div>
-
-                        <div class="table-responsive">
                             <table id="table" class="table table-bordered dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
@@ -190,13 +212,15 @@
                             <div class="col-lg-12">
                                 <label for="nominal" class="form-label">Nominal</label>
                                 <input type="number" class="form-control" id="nominal-edit" name="nominal">
-                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nominal-edit"></div>
+                                <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nominal-edit">
+                                </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="keterangan-edit" class="form-label">Keterangan</label>
                             <input type="text" class="form-control" id="keterangan-edit" name="keterangan">
-                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan-edit"></div>
+                            <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-keterangan-edit">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="status-edit" class="form-label">Pilih status</label>
@@ -242,7 +266,7 @@
                 todayHighlight: true,
                 orientation: "bottom"
             }).on('change', function() {
-                table.draw(); 
+                table.draw();
             });
 
             var table = $('#table').DataTable({
@@ -258,6 +282,7 @@
                     'url': "{{ route('menu.jurnal-harian.index') }}",
                     'type': 'GET',
                     'data': function(d) {
+                        d.filter = $('#filter').val();
                         d.start = $('input[name="start"]').val();
                         d.end = $('input[name="end"]').val();
                     }
@@ -310,11 +335,18 @@
 
             get_saldo();
 
+            $('.dropdown-menu a').on('click', function() {
+                var filterValue = $(this).data('filter');
+                $('#filter').val(filterValue);
+                table.ajax.reload();
+            });
+
             $('input[name="start"], input[name="end"]').on('change', function() {
                 table.ajax.reload();
             });
 
             $('#btn-reset').on('click', function() {
+                $('#filter').val('default');
                 $('#datepicker6').datepicker('clearDates');
                 table.draw();
             });

@@ -102,7 +102,7 @@
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="nama" name="nama"
-                                placeholder="Masukkan part number barang">
+                                placeholder="Masukkan nama barang">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-nama"></div>
                         </div>
                         <div class="mb-3">

@@ -12,6 +12,7 @@ class JurnalHarianController extends Controller
     {
         $jurnal = Jurnal_harian::query();
 
+        // Filter berdasarkan rentang tanggal
         if ($request->has('start') && $request->has('end')) {
             $startDate = $request->input('start');
             $endDate = $request->input('end');
@@ -21,7 +22,37 @@ class JurnalHarianController extends Controller
             }
         }
 
+        // Filter tambahan yang ditangani melalui AJAX request
         if ($request->ajax()) {
+            // Cek apakah filter diterapkan
+            if ($request->has('filter')) {
+                $filter = $request->get('filter');
+
+                switch ($filter) {
+                    case 'kredit':
+                        // Filter jurnal dengan kredit > 0
+                        $jurnal->where('kredit', '>', 0);
+                        break;
+                    case 'debit':
+                        // Filter jurnal dengan debit > 0
+                        $jurnal->where('debit', '>', 0);
+                        break;
+                    case 'bank':
+                        // Filter jurnal dengan status bank
+                        $jurnal->where('status', 'bank');
+                        break;
+                    case 'cash':
+                        // Filter jurnal dengan status cash
+                        $jurnal->where('status', 'cash');
+                        break;
+                    default:
+                        // Default sorting jika tidak ada filter yang dipilih
+                        $jurnal->orderBy('id', 'asc');
+                        break;
+                }
+            }
+
+            // Eksekusi query dan kirim hasil melalui DataTables
             return datatables()->of($jurnal->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
@@ -35,6 +66,7 @@ class JurnalHarianController extends Controller
                 ->make(true);
         }
 
+        // Kembalikan view dengan data jurnal jika bukan AJAX request
         return view('menu.jurnal-harian.index');
     }
 
