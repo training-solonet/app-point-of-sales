@@ -44,6 +44,7 @@ class ApiController extends Controller
                     'harga' => $item->harga_jual,
                     'stok' => $item->stok,
                 ];
+
                 return $carry;
             }, []);
 
@@ -63,6 +64,7 @@ class ApiController extends Controller
                     'id' => $item->id,
                     'nama' => $item->nama,
                 ];
+
                 return $carry;
             }, []);
 
@@ -86,6 +88,7 @@ class ApiController extends Controller
                     'nama' => $item->nama,
                     'no_hp' => $item->no_hp,
                 ];
+
                 return $carry;
             }, []);
 
@@ -99,6 +102,7 @@ class ApiController extends Controller
                         'nama' => $item->nama,
                         'no_hp' => $item->no_hp,
                     ];
+
                     return $carry;
                 }, []);
         }
@@ -113,6 +117,7 @@ class ApiController extends Controller
                         'nama' => $item->nama,
                         'no_hp' => $item->no_hp,
                     ];
+
                     return $carry;
                 }, []);
         }
@@ -147,6 +152,7 @@ class ApiController extends Controller
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
                 ];
+
                 return $carry;
             }, []);
 
