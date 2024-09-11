@@ -35,8 +35,8 @@ class ApiController extends Controller
 
         $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'stok_data.total_stok as stok', 'barang.id_kategori', 'barang.gambar')
             ->get()
-            ->reduce(function ($carry, $item) {
-                $carry[$item->id] = [
+            ->map(function ($item) {
+                return [
                     'id' => $item->id,
                     'nama' => $item->nama,
                     'kategori' => $item->kategori->nama,
@@ -44,9 +44,7 @@ class ApiController extends Controller
                     'harga' => $item->harga_jual,
                     'stok' => $item->stok,
                 ];
-
-                return $carry;
-            }, []);
+            });
 
         return response()->json([
             'status' => 'success',
@@ -59,14 +57,12 @@ class ApiController extends Controller
     {
         $data = Kategori::select('id', 'nama')
             ->get()
-            ->reduce(function ($carry, $item) {
-                $carry[$item->id] = [
+            ->map(function ($item) {
+                return [
                     'id' => $item->id,
                     'nama' => $item->nama,
                 ];
-
-                return $carry;
-            }, []);
+            });
 
         return response()->json([
             'status' => 'success',
@@ -82,44 +78,38 @@ class ApiController extends Controller
 
         $data = Customer::select('id', 'nama', 'no_hp')
             ->get()
-            ->reduce(function ($carry, $item) {
-                $carry[$item->id] = [
+            ->map(function ($item) {
+                return [
                     'id' => $item->id,
                     'nama' => $item->nama,
                     'no_hp' => $item->no_hp,
                 ];
-
-                return $carry;
-            }, []);
+            });
 
         if ($customerNama) {
             $data = Customer::select('id', 'nama', 'no_hp')
                 ->where('nama', 'like', "%$customerNama%")
                 ->get()
-                ->reduce(function ($carry, $item) {
-                    $carry[$item->id] = [
+                ->map(function ($item) {
+                    return [
                         'id' => $item->id,
                         'nama' => $item->nama,
                         'no_hp' => $item->no_hp,
                     ];
-
-                    return $carry;
-                }, []);
+                });
         }
 
         if ($customerNo) {
             $data = Customer::select('id', 'nama', 'no_hp')
                 ->where('no_hp', 'like', "%$customerNo%")
                 ->get()
-                ->reduce(function ($carry, $item) {
-                    $carry[$item->id] = [
+                ->map(function ($item) {
+                    return [
                         'id' => $item->id,
                         'nama' => $item->nama,
                         'no_hp' => $item->no_hp,
                     ];
-
-                    return $carry;
-                }, []);
+                });
         }
 
         return response()->json([
@@ -144,17 +134,16 @@ class ApiController extends Controller
             ->orderBy('total_sold', 'desc')
             ->limit(10)
             ->get()
-            ->reduce(function ($carry, $item) {
-                $carry[$item->id] = [
+            ->map(function ($item) {
+                return [
                     'id' => $item->id,
                     'nama' => $item->nama,
                     'kategori' => $item->kategori->nama,
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
+                    'total_sold' => $item->total_sold,
                 ];
-
-                return $carry;
-            }, []);
+            });
 
         return response()->json([
             'status' => 'success',
