@@ -49,19 +49,19 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-3">Stok Barang</h4>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <h3>0</h3>
+                                    <div class="col-8">
+                                        <h3>{{ $totalStok }}</h3>
                                     </div>
                                 </div>
 
                                 <p class="text-muted mt-2">Total Aset</p>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <h3>0</h3>
+                                    <div class="col-10">
+                                        <h3>{{ number_format($totalAset, 0, ',', '.') }}</h3>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mt-2">
-                                    <a href="{{ route('report.penjualan.index') }}"
+                                    <a href="{{ route('report.stok-barang.index') }}"
                                         class="btn btn-primary waves-effect waves-light btn-sm">View Detail <i
                                             class="mdi mdi-arrow-right ms-1"></i></a>
                                 </div>
@@ -76,7 +76,7 @@
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Customer</p>
-                                            <h4 class="mb-0">0</h4>
+                                            <h4 class="mb-0">{{ number_format($totalCustomer) }}</h4>
                                         </div>
                                         <div class="flex-shrink-0 align-self-center">
                                             <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
@@ -96,7 +96,7 @@
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Saldo Jurnal Harian</p>
-                                            <h4 class="mb-0">0</h4>
+                                            <h4 class="mb-0" id="saldo">0</h4>
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center">
@@ -118,53 +118,6 @@
 
         <div class="row">
             <div id="container" style="width:100%; height:400px;"></div>
-            {{-- <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap align-items-start">
-                            <h5 class="card-title me-2">Visitors</h5>
-                            <div class="ms-auto">
-                                <div class="toolbar d-flex flex-wrap gap-2 text-end">
-                                    <button type="button" class="btn btn-light btn-sm">ALL</button>
-                                    <button type="button" class="btn btn-light btn-sm">1M</button>
-                                    <button type="button" class="btn btn-light btn-sm">6M</button>
-                                    <button type="button" class="btn btn-light btn-sm">1Y</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row text-center">
-                            <div class="col-lg-4">
-                                <div class="mt-4">
-                                    <p class="text-muted mb-1">Today</p>
-                                    <h5>1024</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <div class="mt-4">
-                                    <p class="text-muted mb-1">This Month</p>
-                                    <h5>12356</h5>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <div class="mt-4">
-                                    <p class="text-muted mb-1">This Year</p>
-                                    <h5>102354</h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="mb-4">
-
-                        <canvas id="myChart"></canvas>
-
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
         </div>
 
     </div>
@@ -191,26 +144,45 @@
                 yAxis: {
                     title: {
                         text: 'Total Laba'
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value / 1000000 + ' jt';
+                        }
                     }
                 },
                 series: [{
-                    name: 'Penjualan',
-                        data: @json($dataPenjualan) // Mengambil data penjualan dari controller
+                        name: 'Penjualan',
+                        data: @json($penjualanData).map(Number)
                     },
                     {
                         name: 'Pembelian',
-                        data: @json($dataPembelian) // Mengambil data pembelian dari controller
+                        data: @json($pembelianData).map(Number)
                     }
                 ]
             });
         });
 
-        // const namaBulan = [
-        // "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        // "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        // ];
+        function updateSaldo() {
+            $.ajax({
+                url: '{{ route('jurnal-harian.saldo') }}',
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#saldo').text(response.saldo);
+                    } else {
+                        console.error('Failed to fetch saldo');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                }
+            });
+        }
 
-        // const currentMonth = new Date().getMonth();
-        // document.getElementById('bulanRT').textContent = namaBulan[currentMonth];
+        $(document).ready(function() {
+            updateSaldo(); // Call the function on page load
+        });
     </script>
 @endsection

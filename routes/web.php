@@ -26,6 +26,8 @@ Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
     Route::resource('barang-masuk', BarangMasukController::class);
 });
 
+Route::get('jurnal-harian/saldo', [JurnalHarianController::class, 'create'])->name('jurnal-harian.saldo');
+
 Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
     Route::resource('penjualan', ReportPenjualanController::class);
     Route::resource('pembayaran-piutang', ReportPembayaranPiutangController::class);

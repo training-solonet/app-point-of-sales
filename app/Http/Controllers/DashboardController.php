@@ -3,39 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jual;
+use App\Models\Customer;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
 use App\Models\DetJual;
-use Carbon\Carbon;
+use App\Models\Stok;
+// use Illuminate\Container\Attributes\DB;
+use Illuminate\Support\Facades\DB;  // Pastikan ini ada di bagian atas file
+
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $penjualan = DetJual::with(['jual']);
-        $pembelian = DetJual::with(['jual']);
 
-        $penjualan = DetJual::selectRaw('MONTH(tanggal) as bulan, SUM(qty * harga_jual) as total_penjualan')
-            ->groupBy('bulan')
-            ->pluck('total_penjualan', 'bulan')
-            ->toArray();
+        // Menghitung jumlah total
+        $totalCustomer = Customer::count();
+        $totalStok = Stok::count();
+        $totalAset = Stok::sum('harga_beli');
+        // $totalAset = Stok::sum(DB::raw('harga_beli * jumlah'));
 
-        $pembelian = DetJual::selectRaw('MONTH(tanggal) as bulan, SUM(qty * harga_beli) as total_pembelian')
-            ->groupBy('bulan')
-            ->pluck('total_pembelian', 'bulan')
-            ->toArray();
+        // grafik penjualan dan pembelian
+        $penjualanData = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
+            ->selectRaw('SUM(det_jual.harga_jual * det_jual.qty) as total_penjualan')
+            ->groupByRaw('MONTH(jual.tanggal)')
+            ->orderByRaw('MONTH(jual.tanggal)')
+            ->pluck('total_penjualan');
 
-        // Mengisi data dari Januari hingga Desember
-        $bulan = range(1, 12);
-        $dataPenjualan = [];
-        $dataPembelian = [];
+        $pembelianData = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
+            ->selectRaw('SUM(det_jual.harga_beli * det_jual.qty) as total_pembelian')
+            ->groupByRaw('MONTH(jual.tanggal)')
+            ->orderByRaw('MONTH(jual.tanggal)')
+            ->pluck('total_pembelian');
 
-        // foreach ($bulan as $b) {
-        //     $dataPenjualan[] = $penjualan[$b] ?? 0;  
-        //     $dataPembelian[] = $pembelian[$b] ?? 0;  
-        // }
+        $penjualanData = $penjualanData->map(function ($item) {
+            return (float) $item;
+        });
 
-        return view('menu.dashboard.index', compact('dataPenjualan', 'dataPembelian'));
+        $pembelianData = $pembelianData->map(function ($item) {
+            return (float) $item;
+        });
+        //grafik penjualan dan pembelian end
+
+        return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalCustomer', 'totalStok', 'totalAset'));
+
     }
 
     public function create()
@@ -79,6 +90,7 @@ class DashboardController extends Controller
 
     public function edit(string $id)
     {
+
     }
 
     public function update(Request $request, string $id)
