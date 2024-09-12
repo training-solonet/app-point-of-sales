@@ -162,20 +162,22 @@ class ApiController extends Controller
             'products.*.barang_id' => 'required|integer|exists:barang,id',
             'products.*.qty' => 'required|integer|min:1',
             'payment_method' => 'required|string|in:cash,bank,piutang',
+            'alamat' => 'nullable|string',
+            'no_hp' => 'nullable|string',
         ]);
 
         $customer = Customer::where('nama', $request->customer_name)->first();
 
         if (! $customer) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Customer tidak ditemukan',
-            ], 404);
+            $customer = new Customer;
+            $customer->nama = $request->customer_name;
+            $customer->no_hp = $request->input('no_hp') ?? null;
+            $customer->alamat = $request->input('alamat') ?? null;
+            $customer->save();
         }
 
-        // Jual Record
         $jual = new Jual;
-        $jual->no_faktur = 'INV-'.time();
+        $jual->no_faktur = 'INV-'.now();
         $jual->customer_id = $customer->id;
         $jual->tanggal = now();
         $jual->diskon = 0;
