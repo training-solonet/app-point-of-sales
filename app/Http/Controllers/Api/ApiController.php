@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Customer;
+use App\Models\DetJual;
+use App\Models\Jual;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -150,6 +152,69 @@ class ApiController extends Controller
             'message' => 'Best seller products berhasil diambil',
             'data' => $data,
         ], 200);
+    }
 
+    public function order(Request $request)
+    {
+        $request->validate([
+            'customer_name' => 'required|string',
+            'products' => 'required|array',
+            'products.*.barang_id' => 'required|integer|exists:barang,id',
+            'products.*.qty' => 'required|integer|min:1',
+            'payment_method' => 'required|string|in:cash,bank,piutang',
+        ]);
+
+        $customer = Customer::where('nama', $request->customer_name)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Customer tidak ditemukan',
+            ], 404);
+        }
+
+        // Jual Record
+        $jual = new Jual();
+        $jual->no_faktur = 'INV-' . time();
+        $jual->customer_id = $customer->id;
+        $jual->tanggal = now();
+        $jual->diskon = 0;
+        $jual->status = $request->input('payment_method');
+        $jual->total = 0;
+        $jual->bayar = 0;
+        $jual->ppn = 0;
+        $jual->save();
+
+        $total = 0;
+
+        foreach ($request->input('products') as $product) {
+            $barang = Barang::find($product['barang_id']);
+            $harga_jual = $barang->harga_jual + 4000;
+
+            $detJual = new DetJual();
+            $detJual->jual_id = $jual->id;
+            $detJual->barang_id = $product['barang_id'];
+            $detJual->qty = $product['qty'];
+            $detJual->harga_jual = $harga_jual;
+            $detJual->diskon = 0;
+            $detJual->harga_beli = $barang->harga_jual;
+            $detJual->save();
+
+            $total += $harga_jual * $product['qty'];
+        }
+
+        $jual->total = $total;
+        $jual->bayar = $total;
+        $jual->ppn = $total * 0.11;
+        $jual->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Order placed successfully',
+            'data' => [
+                'jual' => $jual,
+                'details' => $jual->detJual()->get(),
+            ],
+        ], 200);
     }
 }
