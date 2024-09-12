@@ -27,6 +27,11 @@ class Jual extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function detJual()
+    {
+        return $this->hasMany(DetJual::class, 'jual_id', 'id');
+    }
+
     public function det_jual()
     {
         return $this->hasMany(DetJual::class, 'jual_id');

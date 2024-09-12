@@ -22,7 +22,7 @@ class DetJual extends Model
 
     public function jual()
     {
-        return $this->belongsTo(Jual::class, 'jual_id');
+        return $this->belongsTo(Jual::class, 'jual_id', 'id');
     }
 
     public function barang()
