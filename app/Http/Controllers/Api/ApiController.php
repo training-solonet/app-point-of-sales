@@ -166,7 +166,7 @@ class ApiController extends Controller
 
         $customer = Customer::where('nama', $request->customer_name)->first();
 
-        if (!$customer) {
+        if (! $customer) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Customer tidak ditemukan',
@@ -174,8 +174,8 @@ class ApiController extends Controller
         }
 
         // Jual Record
-        $jual = new Jual();
-        $jual->no_faktur = 'INV-' . time();
+        $jual = new Jual;
+        $jual->no_faktur = 'INV-'.time();
         $jual->customer_id = $customer->id;
         $jual->tanggal = now();
         $jual->diskon = 0;
@@ -191,7 +191,7 @@ class ApiController extends Controller
             $barang = Barang::find($product['barang_id']);
             $harga_jual = $barang->harga_jual + 4000;
 
-            $detJual = new DetJual();
+            $detJual = new DetJual;
             $detJual->jual_id = $jual->id;
             $detJual->barang_id = $product['barang_id'];
             $detJual->qty = $product['qty'];
