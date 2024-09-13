@@ -8,44 +8,55 @@ use App\Services\PrintService;
 use Illuminate\Http\Request;
 use App\Models\DetJual;
 use App\Models\Stok;
-// use Illuminate\Container\Attributes\DB;
-use Illuminate\Support\Facades\DB;  // Pastikan ini ada di bagian atas file
-
 
 class DashboardController extends Controller
 {
     public function index()
     {
-
         // Menghitung jumlah total
         $totalCustomer = Customer::count();
         $totalStok = Stok::count();
         $totalAset = Stok::sum('harga_beli');
-        // $totalAset = Stok::sum(DB::raw('harga_beli * jumlah'));
+        $currentMonth = now()->month; // Mendapatkan bulan saat ini
+        $penjualanBulanan = Jual::whereMonth('tanggal', $currentMonth)->count(); // Menghitung jumlah penjualan
 
-        // grafik penjualan dan pembelian
-        $penjualanData = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
-            ->selectRaw('SUM(det_jual.harga_jual * det_jual.qty) as total_penjualan')
+
+        // Grafik laba dan penjualan pembelian
+        $penjualanData = array_fill(0, 12, 0);
+        $pembelianData = array_fill(0, 12, 0);
+        $totalLaba = array_fill(0, 12, 0);
+
+        $penjualan = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
+            ->selectRaw('MONTH(jual.tanggal) as bulan, SUM(det_jual.harga_jual * det_jual.qty) as total_penjualan')
             ->groupByRaw('MONTH(jual.tanggal)')
             ->orderByRaw('MONTH(jual.tanggal)')
-            ->pluck('total_penjualan');
+            ->get();
 
-        $pembelianData = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
-            ->selectRaw('SUM(det_jual.harga_beli * det_jual.qty) as total_pembelian')
+        $pembelian = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
+            ->selectRaw('MONTH(jual.tanggal) as bulan, SUM(det_jual.harga_beli * det_jual.qty) as total_pembelian')
             ->groupByRaw('MONTH(jual.tanggal)')
             ->orderByRaw('MONTH(jual.tanggal)')
-            ->pluck('total_pembelian');
+            ->get();
 
-        $penjualanData = $penjualanData->map(function ($item) {
-            return (float) $item;
-        });
+        $laba = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
+            ->selectRaw('MONTH(jual.tanggal) as bulan, SUM((det_jual.harga_jual - det_jual.harga_beli) * det_jual.qty) as total_laba')
+            ->groupByRaw('MONTH(jual.tanggal)')
+            ->orderByRaw('MONTH(jual.tanggal)')
+            ->get();
 
-        $pembelianData = $pembelianData->map(function ($item) {
-            return (float) $item;
-        });
-        //grafik penjualan dan pembelian end
+        foreach ($penjualan as $data) {
+            $penjualanData[$data->bulan - 1] = (float) $data->total_penjualan; 
+        }
 
-        return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalCustomer', 'totalStok', 'totalAset'));
+        foreach ($pembelian as $data) {
+            $pembelianData[$data->bulan - 1] = (float) $data->total_pembelian;
+        }
+
+        foreach ($laba as $data) {
+            $totalLaba[$data->bulan - 1] = (float) $data->total_laba;
+        }
+
+        return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalLaba', 'totalCustomer', 'totalStok', 'totalAset', 'penjualanBulanan'));
 
     }
 

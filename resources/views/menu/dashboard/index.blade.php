@@ -21,32 +21,6 @@
                     <div class="col-xl-3">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title mb-4">Penjualan Bulanan</h4>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p class="text-muted" id="bulanRT">bulan ini</p>
-                                        <h3>0</h3>
-                                        <div class="mt-4">
-                                            <a href="{{ route('report.penjualan.index') }}"
-                                                class="btn btn-primary waves-effect waves-light btn-sm">View Detail <i
-                                                    class="mdi mdi-arrow-right ms-1"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mt-4 mt-sm-0">
-                                            <div id="radialBar-chart" data-colors='["--bs-primary"]' class="apex-charts">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="text-muted mb-2">List penjualan secara keseluruhan.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
                                 <h4 class="card-title mb-3">Stok Barang</h4>
                                 <div class="row">
                                     <div class="col-8">
@@ -64,6 +38,33 @@
                                     <a href="{{ route('report.stok-barang.index') }}"
                                         class="btn btn-primary waves-effect waves-light btn-sm">View Detail <i
                                             class="mdi mdi-arrow-right ms-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 mt-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Penjualan Bulanan</h4>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h3>{{$penjualanBulanan}}</h3>
+                                        <p class="text-muted  mb-2">Penjualan pada bulan <span
+                                                id="bulanRT">ini</span> </p>
+                                        <div class="mt-4">
+
+                                            <a href="{{ route('report.penjualan.index') }}"
+                                                class="btn btn-primary waves-effect waves-light btn-sm">View Detail <i
+                                                    class="mdi mdi-arrow-right ms-1"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="mt-4 mt-sm-0">
+                                            <div id="radialBar-chart" data-colors='["--bs-primary"]' class="apex-charts">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -116,20 +117,26 @@
             </div>
         </div>
 
-        <div class="row">
-            <div id="container" style="width:100%; height:400px;"></div>
-        </div>
-
+        <div class="mb-4" id="grafik-one" style="width:100%; height:400px;"></div>
+        <div class="mb-4" id="grafik-two" style="width:100%; height:400px;"></div>
+        
     </div>
 @endsection
 
 @section('js')
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
     <script>
+        const namaBulan = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        const currentMonth = new Date().getMonth();
+        document.getElementById('bulanRT').textContent = namaBulan[currentMonth];
+
         document.addEventListener('DOMContentLoaded', function() {
-            const chart = Highcharts.chart('container', {
+            const chart = Highcharts.chart('grafik-one', {
                 chart: {
                     type: 'line'
                 },
@@ -137,13 +144,13 @@
                     text: 'Grafik Penjualan dan Pembelian'
                 },
                 xAxis: {
-                    categories: ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                    categories: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+                        "September", "Oktober", "November", "Desember"
                     ]
                 },
                 yAxis: {
                     title: {
-                        text: 'Total Laba'
+                        text: ' '
                     },
                     labels: {
                         formatter: function() {
@@ -158,9 +165,43 @@
                     {
                         name: 'Pembelian',
                         data: @json($pembelianData).map(Number)
-                    }
+                    },
                 ]
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const chart = Highcharts.chart('grafik-two', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Grafik Laba'
+                },
+                xAxis: {
+                    categories: ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+                        "September", "Oktober", "November", "Desember"
+                    ]
+                },
+                yAxis: {
+                    title: {
+                        text: 'ntah'
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value / 1000000 + ' jt';
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Laba',
+                    data: @json($totalLaba).map(Number)
+                }, ]
+            });
+        });
+
+        $(document).ready(function() {
+            updateSaldo();
         });
 
         function updateSaldo() {
@@ -172,17 +213,10 @@
                     if (response.success) {
                         $('#saldo').text(response.saldo);
                     } else {
-                        console.error('Failed to fetch saldo');
+                        console.error('Gagal');
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', status, error);
                 }
             });
         }
-
-        $(document).ready(function() {
-            updateSaldo(); // Call the function on page load
-        });
     </script>
 @endsection
