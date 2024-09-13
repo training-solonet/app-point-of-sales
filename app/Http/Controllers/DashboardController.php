@@ -17,9 +17,8 @@ class DashboardController extends Controller
         $totalCustomer = Customer::count();
         $totalStok = Stok::count();
         $totalAset = Stok::sum('harga_beli');
-        $currentMonth = now()->month; // Mendapatkan bulan saat ini
-        $penjualanBulanan = Jual::whereMonth('tanggal', $currentMonth)->count(); // Menghitung jumlah penjualan
-
+        $currentMonth = now()->month;
+        $penjualanBulanan = Jual::whereMonth('tanggal', $currentMonth)->count();
 
         // Grafik laba dan penjualan pembelian
         $penjualanData = array_fill(0, 12, 0);
