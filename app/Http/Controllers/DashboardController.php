@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jual;
 use App\Models\Customer;
+use App\Models\DetJual;
+use App\Models\Jual;
+use App\Models\Stok;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
-use App\Models\DetJual;
-use App\Models\Stok;
 
 class DashboardController extends Controller
 {
@@ -44,7 +44,7 @@ class DashboardController extends Controller
             ->get();
 
         foreach ($penjualan as $data) {
-            $penjualanData[$data->bulan - 1] = (float) $data->total_penjualan; 
+            $penjualanData[$data->bulan - 1] = (float) $data->total_penjualan;
         }
 
         foreach ($pembelian as $data) {
@@ -59,22 +59,18 @@ class DashboardController extends Controller
 
     }
 
-    public function create()
-    {
-    }
+    public function create() {}
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     public function show($id)
     {
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
         $header = "-----------------------------\n"
-            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
-            . "CASHIER: Admin\n"
-            . '-----------------------------';
+            .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
+            ."CASHIER: Admin\n"
+            .'-----------------------------';
 
         $items = [];
         $printService = new PrintService;
@@ -98,17 +94,9 @@ class DashboardController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function edit(string $id)
-    {
+    public function edit(string $id) {}
 
-    }
+    public function update(Request $request, string $id) {}
 
-    public function update(Request $request, string $id)
-    {
-    }
-
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }
-
