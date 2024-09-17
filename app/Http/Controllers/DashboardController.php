@@ -8,7 +8,8 @@ use App\Models\Jual;
 use App\Models\Stok;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\User;
 class DashboardController extends Controller
 {
     public function index()
@@ -56,10 +57,12 @@ class DashboardController extends Controller
         }
 
         return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalLaba', 'totalCustomer', 'totalStok', 'totalAset', 'penjualanBulanan'));
-
     }
 
-    public function create() {}
+    public function create()
+    {
+        // 
+    }
 
     public function store(Request $request) {}
 
@@ -68,9 +71,9 @@ class DashboardController extends Controller
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
         $header = "-----------------------------\n"
-            .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
-            ."CASHIER: Admin\n"
-            .'-----------------------------';
+            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
+            . "CASHIER: Admin\n"
+            . '-----------------------------';
 
         $items = [];
         $printService = new PrintService;
@@ -94,7 +97,29 @@ class DashboardController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function edit(string $id) {}
+    public function edit(string $id) {
+        // Ambil user dari database berdasarkan ID
+        $user = User::find(1); // Mengambil user dengan ID 1
+
+        // Pastikan user ditemukan
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Data klaim tambahan (optional)
+        $customClaims = [
+            'name' => $user->name, // Ambil nama user dari database
+            'iat' => now()->timestamp, // Waktu pembuatan token
+            'exp' => now()->addHour()->timestamp // Masa berlaku token (1 jam)
+        ];
+
+        // Buat token dari user yang diambil
+        $token = JWTAuth::fromUser($user, $customClaims);
+
+        return response()->json([
+            'token' => $token
+        ]);
+    }
 
     public function update(Request $request, string $id) {}
 
