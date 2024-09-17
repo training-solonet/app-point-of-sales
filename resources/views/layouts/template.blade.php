@@ -138,7 +138,7 @@
                         <li class="menu-title" key="t-menu">Menu</li>
 
                         <li>
-                            <a href="#" class="waves-effect">
+                            <a href="{{ route('menu.dashboard.index') }}" class="waves-effect">
                                 <i class="fas fa-tachometer-alt"></i>
                                 <span>Dashboards</span>
                             </a>
