@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -17,13 +15,14 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validateData['name'],
             'email' => $validateData['email'],
-            'password' => bcrypt($validateData['password'])
+            'password' => bcrypt($validateData['password']),
         ]);
 
         $token = auth('api')->login($user);
 
         return $this->respondWithToken($token);
     }
+
     public function login()
     {
         $credentials = request(['email', 'password']);
@@ -57,7 +56,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->setTTL(43200)->getTTL() * 60
+            'expires_in' => auth('api')->factory()->setTTL(43200)->getTTL() * 60,
         ]);
     }
 }

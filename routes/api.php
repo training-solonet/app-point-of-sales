@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\ApiController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
@@ -18,7 +18,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('category', [ApiController::class, 'category']);
     Route::get('customer', [ApiController::class, 'customer']);
     Route::get('best-seller-product', [ApiController::class, 'bestSeller']);
-    
+
     Route::post('/order', [ApiController::class, 'order']);
 });
-
