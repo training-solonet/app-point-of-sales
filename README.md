@@ -14,7 +14,7 @@ php artisan jwt:secret
 ```
 
 # Dashboard Screenshoot
-![App Screenshot](resources/css/Screenshot 2024-09-18 133432.png)
+![screenshot](/resources/css/Screenshot%202024-09-18%20133432.png)
 
 # API Usage POST Order
 
