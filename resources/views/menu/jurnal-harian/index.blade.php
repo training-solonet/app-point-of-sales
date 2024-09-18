@@ -124,8 +124,8 @@
                         @csrf
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal"
-                                value="{{ date('Y-m-d') }}" placeholder="Enter date">
+                            <input type="date" class="form-control" id="date" name="tanggal"
+                                placeholder="Enter date">
                             <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-tanggal"></div>
                         </div>
 
@@ -251,6 +251,11 @@
 @section('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
+         function setDateToday() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -260,6 +265,7 @@
         });
 
         $(document).ready(function() {
+            setDateToday();
             $('#datepicker6').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
@@ -351,6 +357,7 @@
                 table.draw();
             });
 
+            // create
             $('#store').click(function(e) {
                 e.preventDefault();
                 let nominal = $('#nominal').val();

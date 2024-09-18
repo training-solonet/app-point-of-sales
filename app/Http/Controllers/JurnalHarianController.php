@@ -12,7 +12,6 @@ class JurnalHarianController extends Controller
     {
         $jurnal = Jurnal_harian::query();
 
-        // Filter berdasarkan rentang tanggal
         if ($request->has('start') && $request->has('end')) {
             $startDate = $request->input('start');
             $endDate = $request->input('end');
@@ -22,37 +21,29 @@ class JurnalHarianController extends Controller
             }
         }
 
-        // Filter tambahan yang ditangani melalui AJAX request
         if ($request->ajax()) {
-            // Cek apakah filter diterapkan
             if ($request->has('filter')) {
                 $filter = $request->get('filter');
 
                 switch ($filter) {
                     case 'kredit':
-                        // Filter jurnal dengan kredit > 0
                         $jurnal->where('kredit', '>', 0);
                         break;
                     case 'debit':
-                        // Filter jurnal dengan debit > 0
                         $jurnal->where('debit', '>', 0);
                         break;
                     case 'bank':
-                        // Filter jurnal dengan status bank
                         $jurnal->where('status', 'bank');
                         break;
                     case 'cash':
-                        // Filter jurnal dengan status cash
                         $jurnal->where('status', 'cash');
                         break;
                     default:
-                        // Default sorting jika tidak ada filter yang dipilih
                         $jurnal->orderBy('id', 'asc');
                         break;
                 }
             }
 
-            // Eksekusi query dan kirim hasil melalui DataTables
             return datatables()->of($jurnal->get())
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
@@ -66,7 +57,6 @@ class JurnalHarianController extends Controller
                 ->make(true);
         }
 
-        // Kembalikan view dengan data jurnal jika bukan AJAX request
         return view('menu.jurnal-harian.index');
     }
 
@@ -83,6 +73,8 @@ class JurnalHarianController extends Controller
 
     public function store(Request $request)
     {
+        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
+
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'jenis' => 'required|in:Pemasukan,Pengeluaran',
@@ -93,6 +85,12 @@ class JurnalHarianController extends Controller
             'kredit' => 'required|numeric',
         ]);
 
+        $validator->after(function ($validator) use ($request, $saldo) {
+            if ($request->jenis === 'Pengeluaran' && $request->nominal > $saldo) {
+                $validator->errors()->add('nominal', 'Pengeluaran melebihi saldo yang tersedia!');
+            }
+        });
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -100,6 +98,7 @@ class JurnalHarianController extends Controller
         $debit = $request->input('jenis') === 'Pemasukan' ? $request->input('nominal') : 0;
         $kredit = $request->input('jenis') === 'Pengeluaran' ? $request->input('nominal') : 0;
 
+    
         $data = [
             'tanggal' => $request->input('tanggal'),
             'keterangan' => $request->input('keterangan'),
@@ -135,6 +134,8 @@ class JurnalHarianController extends Controller
 
     public function update(Request $request, $id)
     {
+        $saldo = Jurnal_harian::where('status', 'cash')->sum('debit') - Jurnal_harian::where('status', 'cash')->sum('kredit');
+
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
             'jenis' => 'required|in:Pemasukan,Pengeluaran',
@@ -146,6 +147,12 @@ class JurnalHarianController extends Controller
 
         ]);
 
+        $validator->after(function ($validator) use ($request, $saldo) {
+            if ($request->jenis === 'Pengeluaran' && $request->nominal > $saldo) {
+                $validator->errors()->add('nominal', 'Pengeluaran melebihi saldo yang tersedia!');
+            }
+        });
+        
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
