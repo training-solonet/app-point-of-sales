@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\DetJual;
 use App\Models\Jual;
+use App\Models\Stok;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,7 @@ class ApiController extends Controller
         $kategoriId = $request->get('kategori');
         $barcode = $request->get('upc');
 
-        $stokData = DB::table('stok')
-            ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+        $stokData = Stok::select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
             ->groupBy('barang_id');
 
         $query = Barang::with('kategori')
@@ -123,8 +123,7 @@ class ApiController extends Controller
 
     public function bestSeller()
     {
-        $salesData = DB::table('det_jual')
-            ->select('barang_id', DB::raw('COUNT(barang_id) as total_sold'))
+        $salesData = DetJual:: select('barang_id', DB::raw('COUNT(barang_id) as total_sold'))
             ->groupBy('barang_id');
 
         $query = Barang::with('kategori')

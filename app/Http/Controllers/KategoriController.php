@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -107,7 +108,7 @@ class KategoriController extends Controller
 
     public function destroy($id, Request $request)
     {
-        $kategoriCount = DB::table('barang')->where('id_kategori', $id)->count();
+        $kategoriCount = Barang::where('id_kategori', $id)->count();
 
         if ($kategoriCount > 0) {
             return response()->json([

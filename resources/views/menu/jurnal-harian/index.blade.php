@@ -551,7 +551,7 @@
                                 });
 
                                 $('#table').DataTable().ajax.reload();
-                                get_saldo;
+                                get_saldo();
                             }
                         });
                     }

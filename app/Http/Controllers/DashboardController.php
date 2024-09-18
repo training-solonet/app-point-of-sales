@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\DetJual;
+use App\Models\Pembelian;
+use App\Models\DetailPembelian;
 use App\Models\Jual;
 use App\Models\Stok;
 use App\Models\User;
@@ -33,11 +35,12 @@ class DashboardController extends Controller
             ->orderByRaw('MONTH(jual.tanggal)')
             ->get();
 
-        $pembelian = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
-            ->selectRaw('MONTH(jual.tanggal) as bulan, SUM(det_jual.harga_beli * det_jual.qty) as total_pembelian')
-            ->groupByRaw('MONTH(jual.tanggal)')
-            ->orderByRaw('MONTH(jual.tanggal)')
+        $pembelian = DetailPembelian::join('pembelian', 'detail_pembelian.no_invoice', '=', 'pembelian.no_invoice')
+            ->selectRaw('MONTH(pembelian.tgl_beli) as bulan, SUM(detail_pembelian.harga_satuan * detail_pembelian.qty) as total_pembelian')
+            ->groupByRaw('MONTH(pembelian.tgl_beli)')
+            ->orderByRaw('MONTH(pembelian.tgl_beli)')
             ->get();
+
 
         $laba = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
             ->selectRaw('MONTH(jual.tanggal) as bulan, SUM((det_jual.harga_jual - det_jual.harga_beli) * det_jual.qty) as total_laba')
@@ -65,16 +68,18 @@ class DashboardController extends Controller
         //
     }
 
-    public function store(Request $request) {}
+    public function store(Request $request)
+    {
+    }
 
     public function show($id)
     {
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
         $header = "-----------------------------\n"
-            .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
-            ."CASHIER: Admin\n"
-            .'-----------------------------';
+            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
+            . "CASHIER: Admin\n"
+            . '-----------------------------';
 
         $items = [];
         $printService = new PrintService;
@@ -104,7 +109,7 @@ class DashboardController extends Controller
         $user = User::find(1); // Mengambil user dengan ID 1
 
         // Pastikan user ditemukan
-        if (! $user) {
+        if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
@@ -123,7 +128,11 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id) {}
+    public function update(Request $request, string $id)
+    {
+    }
 
-    public function destroy(string $id) {}
+    public function destroy(string $id)
+    {
+    }
 }
