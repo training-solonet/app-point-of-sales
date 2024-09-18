@@ -1,6 +1,19 @@
 # app-point-of-sales
 
-# API Usage POST
+# Requirement
+
+'''bash
+    composer require mike42/escpos-php
+    composer require tymon/jwt-auth
+'''
+
+Secret key for JWT
+
+'''bash
+    php artisan jwt:secret
+'''
+
+# API Usage POST Order
 
 Postman (recommend using raw body)
 
@@ -21,7 +34,7 @@ Postman (recommend using raw body)
 }
 ```
 
-# API Usage POST if it new customer
+# API Usage POST if it new customer Order
 
 ```json
 {

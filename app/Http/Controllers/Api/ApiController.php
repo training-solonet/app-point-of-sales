@@ -165,9 +165,8 @@ class ApiController extends Controller
             'alamat' => 'nullable|string',
             'no_hp' => 'nullable|string',
         ]);
-
+    
         $customer = Customer::where('nama', $request->customer_name)->first();
-
         if (! $customer) {
             $customer = new Customer;
             $customer->nama = $request->customer_name;
@@ -175,9 +174,9 @@ class ApiController extends Controller
             $customer->alamat = $request->input('alamat') ?? null;
             $customer->save();
         }
-
+    
         $jual = new Jual;
-        $jual->no_faktur = 'INV-'.now();
+        $jual->no_faktur = 'INV-' . now();
         $jual->customer_id = $customer->id;
         $jual->tanggal = now();
         $jual->diskon = 0;
@@ -186,13 +185,31 @@ class ApiController extends Controller
         $jual->bayar = 0;
         $jual->ppn = 0;
         $jual->save();
-
+    
         $total = 0;
-
+    
         foreach ($request->input('products') as $product) {
             $barang = Barang::find($product['barang_id']);
             $harga_jual = $barang->harga_jual + 4000;
-
+    
+            $availableStock = DB::table('stok')
+                ->where('barang_id', $product['barang_id'])
+                ->whereNull('jual_id')
+                ->orderBy('tanggal_masuk', 'asc')
+                ->limit($product['qty'])
+                ->get();
+    
+            if ($availableStock->count() < $product['qty']) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Not enough stock for product: ' . $barang->nama,
+                ], 400);
+            }
+    
+            DB::table('stok')
+                ->whereIn('id', $availableStock->pluck('id')->toArray())
+                ->delete();
+    
             $detJual = new DetJual;
             $detJual->jual_id = $jual->id;
             $detJual->barang_id = $product['barang_id'];
@@ -201,18 +218,18 @@ class ApiController extends Controller
             $detJual->diskon = 0;
             $detJual->harga_beli = $barang->harga_jual;
             $detJual->save();
-
+    
             $total += $harga_jual * $product['qty'];
         }
-
+    
         $jual->total = $total;
         $jual->bayar = $total;
         $jual->ppn = $total * 0.11;
         $jual->save();
-
+    
         return response()->json([
             'status' => 'success',
-            'message' => 'Order placed successfully',
+            'message' => 'Order placed successfully and stock updated',
             'data' => [
                 'jual' => $jual,
                 'details' => $jual->detJual()->get(),
