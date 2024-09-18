@@ -2,16 +2,16 @@
 
 # Requirement
 
-'''bash
+```bash
     composer require mike42/escpos-php
     composer require tymon/jwt-auth
-'''
+```
 
 Secret key for JWT
 
-'''bash
+```bash
     php artisan jwt:secret
-'''
+```
 
 # API Usage POST Order
 
