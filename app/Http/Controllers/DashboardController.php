@@ -100,26 +100,23 @@ class DashboardController extends Controller
 
     public function edit(string $id)
     {
-        // Ambil user dari database berdasarkan ID
-        $user = User::find(1); // Mengambil user dengan ID 1
+        $user = User::find(1);
 
-        // Pastikan user ditemukan
         if (! $user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Data klaim tambahan (optional)
         $customClaims = [
-            'name' => $user->name, // Ambil nama user dari database
-            'iat' => now()->timestamp, // Waktu pembuatan token
-            'exp' => now()->addHour()->timestamp, // Masa berlaku token (1 jam)
+            'name' => $user->name,
+            'iat' => now()->timestamp,
+            'exp' => now()->addDay()->timestamp,
         ];
 
-        // Buat token dari user yang diambil
         $token = JWTAuth::fromUser($user, $customClaims);
 
         return response()->json([
             'token' => $token,
+            'detail' => $customClaims,
         ]);
     }
 
