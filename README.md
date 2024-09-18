@@ -13,6 +13,9 @@ Secret key for JWT
 php artisan jwt:secret
 ```
 
+# Dashboard Screenshoot
+![App Screenshot](resources/css/Screenshot 2024-09-18 133432.png)
+
 # API Usage POST Order
 
 Postman (recommend using raw body)
