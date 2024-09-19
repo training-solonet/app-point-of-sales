@@ -26,6 +26,7 @@ class BarangMasukController extends Controller
             )
             ->join('detail_pembelian', 'detail_pembelian.no_invoice', '=', 'pembelian.no_invoice')
             ->groupBy('pembelian.id', 'pembelian.no_invoice', 'pembelian.tgl_beli', 'pembelian.kode_po', 'pembelian.pengguna')
+            ->orderBy('is_stock_added', 'asc')
             ->orderBy('id', 'desc')
             ->get();
 
@@ -33,9 +34,13 @@ class BarangMasukController extends Controller
             return datatables()->of($pembelian)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    $button = '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light '.($data->is_stock_added ? 'disabled' : '').'">Detail</a>';
+                    // Only show the button if stock has not been added
+                    if ($data->is_stock_added) {
+                        return '<button class="btn btn-outline-secondary waves-effect waves-light" disabled>Data sudah dimasukkan</button>';
+                    }
 
-                    return $button;
+                    // Otherwise, show 'Detail' button
+                    return '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light">Detail</a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

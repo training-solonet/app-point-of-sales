@@ -166,7 +166,6 @@ class ApiController extends Controller
         ]);
 
         $customer = Customer::where('nama', $request->customer_name)->first();
-
         if (! $customer) {
             $customer = new Customer;
             $customer->nama = $request->customer_name;
@@ -192,6 +191,24 @@ class ApiController extends Controller
             $barang = Barang::find($product['barang_id']);
             $harga_jual = $barang->harga_jual + 4000;
 
+            $availableStock = DB::table('stok')
+                ->where('barang_id', $product['barang_id'])
+                ->whereNull('jual_id')
+                ->orderBy('tanggal_masuk', 'asc')
+                ->limit($product['qty'])
+                ->get();
+
+            if ($availableStock->count() < $product['qty']) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Not enough stock for product: '.$barang->nama,
+                ], 400);
+            }
+
+            DB::table('stok')
+                ->whereIn('id', $availableStock->pluck('id')->toArray())
+                ->delete();
+
             $detJual = new DetJual;
             $detJual->jual_id = $jual->id;
             $detJual->barang_id = $product['barang_id'];
@@ -211,7 +228,7 @@ class ApiController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Order placed successfully',
+            'message' => 'Order placed successfully and stock updated',
             'data' => [
                 'jual' => $jual,
                 'details' => $jual->detJual()->get(),
