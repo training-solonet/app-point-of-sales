@@ -98,7 +98,6 @@ class JurnalHarianController extends Controller
         $debit = $request->input('jenis') === 'Pemasukan' ? $request->input('nominal') : 0;
         $kredit = $request->input('jenis') === 'Pengeluaran' ? $request->input('nominal') : 0;
 
-    
         $data = [
             'tanggal' => $request->input('tanggal'),
             'keterangan' => $request->input('keterangan'),
@@ -152,7 +151,7 @@ class JurnalHarianController extends Controller
                 $validator->errors()->add('nominal', 'Pengeluaran melebihi saldo yang tersedia!');
             }
         });
-        
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Detail_purchase_order;
+use App\Models\DetJual;
 use App\Models\Kategori;
 use App\Models\Satuan;
-use App\Models\DetJual;
-use App\Models\Detail_purchase_order;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;

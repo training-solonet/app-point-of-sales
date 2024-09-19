@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\DetJual;
-use App\Models\Pembelian;
 use App\Models\DetailPembelian;
+use App\Models\DetJual;
 use App\Models\Jual;
+use App\Models\Pembelian;
+use App\Models\Piutang;
 use App\Models\Stok;
 use App\Models\User;
-use App\Models\Piutang;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -76,25 +76,21 @@ class DashboardController extends Controller
         ));
     }
 
-
-
     public function create()
     {
         //
     }
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     public function show($id)
     {
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
         $header = "-----------------------------\n"
-            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
-            . "CASHIER: Admin\n"
-            . '-----------------------------';
+            .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
+            ."CASHIER: Admin\n"
+            .'-----------------------------';
 
         $items = [];
         $printService = new PrintService;
@@ -122,7 +118,6 @@ class DashboardController extends Controller
     {
         $user = User::find(1);
 
-
         if (! $user) {
             return response()->json(['error' => 'User not found'], 404);
         }
@@ -141,11 +136,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }
