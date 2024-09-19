@@ -9,6 +9,7 @@ use App\Models\DetailPembelian;
 use App\Models\Jual;
 use App\Models\Stok;
 use App\Models\User;
+use App\Models\Piutang;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -17,10 +18,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Menghitung jumlah total
+
+        // Menghitung total
         $totalCustomer = Customer::count();
         $totalStok = Stok::count();
         $totalAset = Stok::sum('harga_beli');
+        $piutang = Piutang::count();
+        $utangLunas = Piutang::where('keterangan', 'cash')->count();
         $currentMonth = now()->month;
         $penjualanBulanan = Jual::whereMonth('tanggal', $currentMonth)->count();
 
@@ -41,7 +45,6 @@ class DashboardController extends Controller
             ->orderByRaw('MONTH(pembelian.tgl_beli)')
             ->get();
 
-
         $laba = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
             ->selectRaw('MONTH(jual.tanggal) as bulan, SUM((det_jual.harga_jual - det_jual.harga_beli) * det_jual.qty) as total_laba')
             ->groupByRaw('MONTH(jual.tanggal)')
@@ -60,8 +63,20 @@ class DashboardController extends Controller
             $totalLaba[$data->bulan - 1] = (float) $data->total_laba;
         }
 
-        return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalLaba', 'totalCustomer', 'totalStok', 'totalAset', 'penjualanBulanan'));
+        return view('menu.dashboard.index', compact(
+            'penjualanData',
+            'pembelianData',
+            'totalLaba',
+            'totalCustomer',
+            'totalStok',
+            'totalAset',
+            'penjualanBulanan',
+            'piutang',
+            'utangLunas'
+        ));
     }
+
+
 
     public function create()
     {

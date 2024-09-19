@@ -25,45 +25,13 @@
                     <h4 class="mb-sm-0 font-size-18">Dashboards</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item active" id="current-date">Menu/dashboard</li>
+                            <li class="breadcrumb-item active" id="tanggal">Menu/dashboard</li>
 
                         </ol>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xl-3">
-                        <div class="card overflow-hidden">
-                            <div class="bg-primary-subtle">
-                                <div class="row p-3">
-                                    <div class="col-12 ">
-                                        <h5 class="text-primary">Welcome</h5>
-                                        <h2 class="text-center" style="font-weight: lighter" id="current-time"> </h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mini-stats-wid">
-                            <a href="{{ route('master.customer.index') }}" style="color: inherit; text-decoration: none;">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">Piutang Lunas</p>
-                                            <h4 class="mb-0">{{ number_format($totalCustomer) }}</h4>
-                                        </div>
-                                        <div class="flex-shrink-0 align-self-center">
-                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
-                                                <span class="avatar-title">
-                                                    <i class="bx bx-copy-alt font-size-24"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
                     <div class="col-xl-3">
                         <div class="card mini-stats-wid">
                             <a href="{{ route('master.customer.index') }}" style="color: inherit; text-decoration: none;">
@@ -98,6 +66,50 @@
                                             <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
                                                 <span class="avatar-title">
                                                     <i class="bx bx-transfer font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <div class="card mini-stats-wid">
+                            <a href="{{ route('menu.jurnal-piutang.index') }}"
+                                style="color: inherit; text-decoration: none;">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">Piutang</p>
+                                            <h4 class="mb-0">{{ $piutang }}</h4>
+                                        </div>
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                                <span class="avatar-title">
+                                                    <i class="bx bx-copy-alt font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card mini-stats-wid">
+                            <a href="{{ route('report.pembayaran-piutang.index') }}"
+                                style="color: inherit; text-decoration: none;">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">Piutang Lunas</p>
+                                            <h4 class="mb-0">{{ $utangLunas }}</h4>
+                                        </div>
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                                <span class="avatar-title">
+                                                    <i class="bx bxs-calendar-check font-size-24"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -168,31 +180,40 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
     <script>
-        function updateDateTime() {
+        // function updateDateTime() {
+        //     const now = new Date();
+
+        //     // Format tanggal
+        //    
+
+        //     // Format waktu
+        //     const timeOptions = {
+        //         hour: '2-digit',
+        //         minute: '2-digit',
+        //         second: '2-digit',
+        //         hour12: true
+        //     };
+        //     const formattedTime = now.toLocaleTimeString(undefined, timeOptions);
+        //     document.getElementById('current-time').textContent = formattedTime;
+        // }
+
+        // setInterval(updateDateTime, 1000);
+        // updateDateTime();
+
+        function tanggal() {
             const now = new Date();
 
-            // Format tanggal
             const dateOptions = {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             };
             const formattedDate = now.toLocaleDateString(undefined, dateOptions);
-            document.getElementById('current-date').textContent = formattedDate;
-
-            // Format waktu
-            const timeOptions = {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
-            const formattedTime = now.toLocaleTimeString(undefined, timeOptions);
-            document.getElementById('current-time').textContent = formattedTime;
+            document.getElementById('tanggal').textContent = formattedDate;
         }
 
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
+        tanggal();
+
 
         const namaBulan = [
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
