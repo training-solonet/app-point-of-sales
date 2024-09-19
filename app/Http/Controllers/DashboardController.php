@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\DetailPembelian;
 use App\Models\DetJual;
 use App\Models\Jual;
+use App\Models\Pembelian;
+use App\Models\Piutang;
 use App\Models\Stok;
 use App\Models\User;
 use App\Services\PrintService;
@@ -15,10 +18,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Menghitung jumlah total
+
+        // Menghitung total
         $totalCustomer = Customer::count();
         $totalStok = Stok::count();
         $totalAset = Stok::sum('harga_beli');
+        $piutang = Piutang::count();
+        $utangLunas = Piutang::where('keterangan', 'cash')->count();
         $currentMonth = now()->month;
         $penjualanBulanan = Jual::whereMonth('tanggal', $currentMonth)->count();
 
@@ -33,10 +39,10 @@ class DashboardController extends Controller
             ->orderByRaw('MONTH(jual.tanggal)')
             ->get();
 
-        $pembelian = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
-            ->selectRaw('MONTH(jual.tanggal) as bulan, SUM(det_jual.harga_beli * det_jual.qty) as total_pembelian')
-            ->groupByRaw('MONTH(jual.tanggal)')
-            ->orderByRaw('MONTH(jual.tanggal)')
+        $pembelian = DetailPembelian::join('pembelian', 'detail_pembelian.no_invoice', '=', 'pembelian.no_invoice')
+            ->selectRaw('MONTH(pembelian.tgl_beli) as bulan, SUM(detail_pembelian.harga_satuan * detail_pembelian.qty) as total_pembelian')
+            ->groupByRaw('MONTH(pembelian.tgl_beli)')
+            ->orderByRaw('MONTH(pembelian.tgl_beli)')
             ->get();
 
         $laba = DetJual::join('jual', 'det_jual.jual_id', '=', 'jual.id')
@@ -57,7 +63,17 @@ class DashboardController extends Controller
             $totalLaba[$data->bulan - 1] = (float) $data->total_laba;
         }
 
-        return view('menu.dashboard.index', compact('penjualanData', 'pembelianData', 'totalLaba', 'totalCustomer', 'totalStok', 'totalAset', 'penjualanBulanan'));
+        return view('menu.dashboard.index', compact(
+            'penjualanData',
+            'pembelianData',
+            'totalLaba',
+            'totalCustomer',
+            'totalStok',
+            'totalAset',
+            'penjualanBulanan',
+            'piutang',
+            'utangLunas'
+        ));
     }
 
     public function create()

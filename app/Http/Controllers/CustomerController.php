@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Jual;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -112,7 +112,7 @@ class CustomerController extends Controller
 
     public function destroy(string $id, Request $request)
     {
-        $customercount = DB::table('jual')->where('customer_id', $id)->count();
+        $customercount = Jual::where('customer_id', $id)->count();
 
         if ($customercount > 0) {
             return response()->json([
