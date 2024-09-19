@@ -38,8 +38,9 @@ class BarangMasukController extends Controller
                     if ($data->is_stock_added) {
                         return '<button class="btn btn-outline-secondary waves-effect waves-light" disabled>Data sudah dimasukkan</button>';
                     }
+
                     // Otherwise, show 'Detail' button
-                    return '<a href="/menu/barang-masuk/' . $data->id . '" class="btn btn-info waves-effect waves-light">Detail</a>';
+                    return '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light">Detail</a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
