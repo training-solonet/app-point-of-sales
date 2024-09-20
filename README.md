@@ -1,9 +1,9 @@
-#  Point of Sales App
-Point of Sales (POS) application designed to simplify sales transactions. This application supports maintenance of customers, products and payment methods.
+# Point of Sales App
 
-## Dashboard Menu (Example)
+#### Dashboard Menu (Example)✨
 ![screenshot](<resources/css/Screenshot 2024-09-19 113152.png>)
 
+Point of Sales (POS) application designed to simplify sales transactions. This application supports maintenance of customers, products and payment methods.
 
 ## Local Installation
 ```bash
