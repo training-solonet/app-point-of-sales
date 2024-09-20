@@ -1,10 +1,8 @@
 #  Point of Sales App
-Aplikasi Point of Sales (POS) yang dirancang untuk mempermudah transaksi penjualan. Aplikasi ini mendukung pengelolaan pelanggan, produk, dan metode pembayaran.
-
-
+Point of Sales (POS) application designed to simplify sales transactions. This application supports maintenance of customers, products and payment methods.
 
 ## Dashboard Menu (Example)
-![screenshot](/resources/css/Screenshot%202024-09-18%20133432.png)
+![screenshot](<resources/css/Screenshot 2024-09-19 113152.png>)
 
 
 ## Local Installation
@@ -20,8 +18,7 @@ Aplikasi Point of Sales (POS) yang dirancang untuk mempermudah transaksi penjual
 
 
 ### Requirement
-Pastikan Anda telah menginstal beberapa dependensi berikut sebelum menjalankan aplikasi:
-
+Make sure you have the following installed before running the application:
 ```bash
 composer require mike42/escpos-php
 composer require tymon/jwt-auth
