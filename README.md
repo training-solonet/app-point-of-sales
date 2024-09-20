@@ -1,22 +1,38 @@
-# app-point-of-sales
+#  Point of Sales App
+Aplikasi Point of Sales (POS) yang dirancang untuk mempermudah transaksi penjualan. Aplikasi ini mendukung pengelolaan pelanggan, produk, dan metode pembayaran.
 
-# Requirement
+
+
+## Dashboard Menu (Example)
+![screenshot](/resources/css/Screenshot%202024-09-18%20133432.png)
+
+
+## Local Installation
+```bash
+1. git clone https://github.com/training-solonet/app-point-of-sales.git
+2. cd app-point-of-sales
+3. composer install
+4. copy .env.example to .env
+5. set up your database in .env
+6. php artisan key:generate
+  Enjoy Your App 🎉
+```
+
+
+### Requirement
+Pastikan Anda telah menginstal beberapa dependensi berikut sebelum menjalankan aplikasi:
 
 ```bash
 composer require mike42/escpos-php
 composer require tymon/jwt-auth
 ```
 
-Secret key for JWT
-
+### Secret key for JWT 🔑
 ```bash
 php artisan jwt:secret
 ```
 
-# Dashboard Screenshoot (Example)
-![screenshot](/resources/css/Screenshot%202024-09-18%20133432.png)
-
-# API Usage POST Order
+## 🔥API Usage POST Order
 
 Postman (recommend using raw body)
 
@@ -37,7 +53,7 @@ Postman (recommend using raw body)
 }
 ```
 
-# API Usage POST if it new customer Order
+## 🔥API Usage POST if it new customer Order
 
 ```json
 {
