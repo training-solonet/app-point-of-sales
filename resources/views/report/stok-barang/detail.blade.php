@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Detail Stok</h4>
-                    <p class="card-title-desc">Detail stok barang dengan ID: {{ $id }}</p>
+                    <p class="card-title-desc">Detail stok nama barang: {{ $barangName }}</p>
 
                     <div class="table-responsive">
                         <table id="table" class="table table-bordered dt-responsive nowrap w-100">

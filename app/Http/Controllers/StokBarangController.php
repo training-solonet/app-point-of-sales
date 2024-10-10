@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\Pembelian;
 use App\Models\Stok;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class StokBarangController extends Controller
         if ($request->ajax()) {
             $stok = Stok::select('barang_id', DB::raw('SUM(harga_beli) as total_harga_beli'))
                 ->with(['barang'])
+                ->whereNull('jual_id')
                 ->groupBy('barang_id')
                 ->get();
 
@@ -23,7 +25,9 @@ class StokBarangController extends Controller
                     return $row->barang->nama;
                 })
                 ->addColumn('stok', function ($row) {
-                    $jml_stok = Stok::where('barang_id', $row->barang_id)->count();
+                    $jml_stok = Stok::where('barang_id', $row->barang_id)
+                    ->whereNull('jual_id')
+                    ->count();
 
                     return $jml_stok;
                 })
@@ -47,6 +51,7 @@ class StokBarangController extends Controller
 
         if ($request->ajax()) {
             $stok = Stok::where('barang_id', $id)
+                ->whereNull('jual_id')
                 ->with(['pembelian.purchase_orders.distributor'])
                 ->get();
 
@@ -61,9 +66,17 @@ class StokBarangController extends Controller
                 ->make(true);
         }
 
+        $barang = Barang::find($id);
+
+        if (!$barang) {
+            abort(404);
+        }
+
+        $barangName = $barang->nama;
+
         $pembelian = Pembelian::all();
 
-        return view('report.stok-barang.detail', compact('id'));
+        return view('report.stok-barang.detail', compact('barangName', 'id'));
 
     }
 

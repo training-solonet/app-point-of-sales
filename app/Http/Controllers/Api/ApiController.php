@@ -189,7 +189,7 @@ class ApiController extends Controller
 
         foreach ($request->input('products') as $product) {
             $barang = Barang::find($product['barang_id']);
-            $harga_jual = $barang->harga_jual + 4000;
+            $harga_jual = $barang->harga_jual;
 
             $availableStock = DB::table('stok')
                 ->where('barang_id', $product['barang_id'])
@@ -207,7 +207,11 @@ class ApiController extends Controller
 
             DB::table('stok')
                 ->whereIn('id', $availableStock->pluck('id')->toArray())
-                ->delete();
+                ->update([
+                    'jual_id' => $jual->id,
+                    'harga_jual' => $harga_jual,
+                    'tanggal_keluar' => now(),
+                ]);
 
             $detJual = new DetJual;
             $detJual->jual_id = $jual->id;
