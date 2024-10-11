@@ -126,12 +126,19 @@ class ApiController extends Controller
         $salesData = DetJual::select('barang_id', DB::raw('COUNT(barang_id) as total_sold'))
             ->groupBy('barang_id');
 
+        $stockData = Stok::select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+            ->whereNull('tanggal_keluar')
+            ->groupBy('barang_id');
+
         $query = Barang::with('kategori')
             ->joinSub($salesData, 'sales_data', function ($join) {
                 $join->on('barang.id', '=', 'sales_data.barang_id');
+            })
+            ->leftJoinSub($stockData, 'stock_data', function ($join) {
+                $join->on('barang.id', '=', 'stock_data.barang_id');
             });
 
-        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'sales_data.total_sold as total_sold', 'barang.id_kategori', 'barang.gambar')
+        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'sales_data.total_sold as total_sold', 'barang.id_kategori', 'barang.gambar', 'stock_data.total_stok')
             ->orderBy('total_sold', 'desc')
             ->limit(10)
             ->get()
@@ -143,6 +150,7 @@ class ApiController extends Controller
                     'gambar' => $item->gambar,
                     'harga' => $item->harga_jual,
                     'total_sold' => $item->total_sold,
+                    'stok' => $item->total_stok,
                 ];
             });
 
