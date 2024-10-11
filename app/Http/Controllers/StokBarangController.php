@@ -26,8 +26,8 @@ class StokBarangController extends Controller
                 })
                 ->addColumn('stok', function ($row) {
                     $jml_stok = Stok::where('barang_id', $row->barang_id)
-                    ->whereNull('jual_id')
-                    ->count();
+                        ->whereNull('jual_id')
+                        ->count();
 
                     return $jml_stok;
                 })
@@ -68,7 +68,7 @@ class StokBarangController extends Controller
 
         $barang = Barang::find($id);
 
-        if (!$barang) {
+        if (! $barang) {
             abort(404);
         }
 

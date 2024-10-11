@@ -37,7 +37,8 @@ class BarangMasukController extends Controller
                     if ($data->is_stock_added) {
                         return '<button class="btn btn-outline-secondary waves-effect waves-light" disabled>Data sudah dimasukkan</button>';
                     }
-                    return '<a href="/menu/barang-masuk/' . $data->id . '" class="btn btn-info waves-effect waves-light">Detail</a>';
+
+                    return '<a href="/menu/barang-masuk/'.$data->id.'" class="btn btn-info waves-effect waves-light">Detail</a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -58,7 +59,7 @@ class BarangMasukController extends Controller
     {
         $stok = Pembelian::with(['detail_pembelian.barang'])->find($request->pembelian_id);
 
-        if (!$stok) {
+        if (! $stok) {
             return response()->json(['status' => 'error', 'message' => 'Data not found'], 404);
         }
 
@@ -88,7 +89,7 @@ class BarangMasukController extends Controller
                 ->where('id', $id)
                 ->first();
 
-            if (!$pembelian) {
+            if (! $pembelian) {
                 return response()->json(['error' => 'data not found'], 404);
             }
 
@@ -115,11 +116,7 @@ class BarangMasukController extends Controller
         //
     }
 
-    public function update(Request $request, string $id)
-    {
-    }
+    public function update(Request $request, string $id) {}
 
-    public function destroy(string $id)
-    {
-    }
+    public function destroy(string $id) {}
 }
