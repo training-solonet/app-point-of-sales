@@ -131,40 +131,39 @@ class ApiController extends Controller
     public function bestSeller()
     {
         $salesData = DetJual::select('barang_id', DB::raw('COUNT(barang_id) as total_sold'))
-            ->groupBy('barang_id');
-
-        $stockData = Stok::select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
-            ->whereNull('tanggal_keluar')
-            ->groupBy('barang_id');
-
-        $query = Barang::with('kategori')
-            ->joinSub($salesData, 'sales_data', function ($join) {
-                $join->on('barang.id', '=', 'sales_data.barang_id');
-            })
-            ->leftJoinSub($stockData, 'stock_data', function ($join) {
-                $join->on('barang.id', '=', 'stock_data.barang_id');
-            });
-
-        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'sales_data.total_sold as total_sold', 'barang.id_kategori', 'barang.gambar', 'stock_data.total_stok')
+            ->groupBy('barang_id')
             ->orderBy('total_sold', 'desc')
             ->limit(10)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'nama' => $item->nama,
-                    'kategori' => $item->kategori->nama,
-                    'gambar' => $item->gambar,
-                    'harga' => $item->harga_jual,
-                    'total_sold' => $item->total_sold,
-                    'stok' => $item->total_stok,
-                ];
-            });
+            ->pluck('barang_id')
+            ->toArray();
+
+        $stokData = Stok::with([
+                'barang' => function ($query)  {
+                    $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc');
+                },
+                'barang.kategori',
+        ])
+        ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+        ->whereNull('tanggal_keluar')
+        ->whereIn('barang_id', $salesData)
+        ->groupBy('barang_id')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'id' => $item->barang->id,
+                'nama' => $item->barang->nama,
+                'kategori' => $item->barang->kategori->nama,
+                'gambar' => $item->barang->gambar,
+                'harga' => $item->barang->harga_jual,
+                'stok' => $item->total_stok,
+                'upc' => $item->barang->upc,
+            ];
+        });
 
         return response()->json([
             'status' => 'success',
             'message' => 'Best seller products berhasil diambil',
-            'data' => $data,
+            'data' => $stokData,
         ], 200);
     }
 
