@@ -18,12 +18,16 @@ class ApiController extends Controller
     {
         $kategoriId = $request->get('kategori');
         $barcode = $request->get('upc');
+        $nama = $request->get('nama');
 
         $stokData = Stok::with([
-            'barang' => function ($query) use ($kategoriId, $barcode) {
+            'barang' => function ($query) use ($kategoriId, $barcode, $nama) {
                 $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc')
                     ->when($kategoriId, function ($query) use ($kategoriId) {
                         return $query->where('id_kategori', $kategoriId);
+                    })
+                    ->when($nama, function ($query) use ($nama) {
+                        return $query->where('nama', 'like', $nama);
                     })
                     ->when($barcode, function ($query) use ($barcode) {
                         return $query->where('upc', $barcode);
@@ -31,10 +35,13 @@ class ApiController extends Controller
             },
             'barang.kategori',
         ])
-            ->whereHas('barang', function ($query) use ($kategoriId, $barcode) {
+            ->whereHas('barang', function ($query) use ($kategoriId, $barcode, $nama) {
                 $query->when($kategoriId, function ($query) use ($kategoriId) {
                     return $query->where('id_kategori', $kategoriId);
                 })
+                    ->when($nama, function ($query) use ($nama) {
+                        return $query->where('nama', 'like', $nama);
+                    })
                     ->when($barcode, function ($query) use ($barcode) {
                         return $query->where('upc', $barcode);
                     });
