@@ -27,7 +27,7 @@ class ApiController extends Controller
                         return $query->where('id_kategori', $kategoriId);
                     })
                     ->when($nama, function ($query) use ($nama) {
-                        return $query->where('nama', 'like', $nama);
+                        return $query->where('nama', 'like', '%'.$nama.'%');
                     })
                     ->when($barcode, function ($query) use ($barcode) {
                         return $query->where('upc', $barcode);
@@ -40,7 +40,7 @@ class ApiController extends Controller
                     return $query->where('id_kategori', $kategoriId);
                 })
                     ->when($nama, function ($query) use ($nama) {
-                        return $query->where('nama', 'like', $nama);
+                        return $query->where('nama', 'like', '%'.$nama.'%');
                     })
                     ->when($barcode, function ($query) use ($barcode) {
                         return $query->where('upc', $barcode);
