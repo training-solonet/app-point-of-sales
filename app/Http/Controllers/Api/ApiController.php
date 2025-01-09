@@ -138,27 +138,27 @@ class ApiController extends Controller
             ->toArray();
 
         $stokData = Stok::with([
-                'barang' => function ($query)  {
-                    $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc');
-                },
-                'barang.kategori',
+            'barang' => function ($query) {
+                $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc');
+            },
+            'barang.kategori',
         ])
-        ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
-        ->whereNull('tanggal_keluar')
-        ->whereIn('barang_id', $salesData)
-        ->groupBy('barang_id')
-        ->get()
-        ->map(function ($item) {
-            return [
-                'id' => $item->barang->id,
-                'nama' => $item->barang->nama,
-                'kategori' => $item->barang->kategori->nama,
-                'gambar' => $item->barang->gambar,
-                'harga' => $item->barang->harga_jual,
-                'stok' => $item->total_stok,
-                'upc' => $item->barang->upc,
-            ];
-        });
+            ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+            ->whereNull('tanggal_keluar')
+            ->whereIn('barang_id', $salesData)
+            ->groupBy('barang_id')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->barang->id,
+                    'nama' => $item->barang->nama,
+                    'kategori' => $item->barang->kategori->nama,
+                    'gambar' => $item->barang->gambar,
+                    'harga' => $item->barang->harga_jual,
+                    'stok' => $item->total_stok,
+                    'upc' => $item->barang->upc,
+                ];
+            });
 
         return response()->json([
             'status' => 'success',
