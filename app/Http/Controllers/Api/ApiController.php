@@ -20,24 +20,24 @@ class ApiController extends Controller
         $barcode = $request->get('upc');
 
         $stokData = Stok::with([
-                    'barang' => function ($query) use ($kategoriId, $barcode) {
-                        $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc')
-                        ->when($kategoriId, function ($query) use ($kategoriId) {
-                            return $query->where('id_kategori', $kategoriId);
-                        })
-                        ->when($barcode, function ($query) use ($barcode) {
-                            return $query->where('upc', $barcode);
-                        });
-                    },
-                    'barang.kategori',
-            ])
+            'barang' => function ($query) use ($kategoriId, $barcode) {
+                $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc')
+                    ->when($kategoriId, function ($query) use ($kategoriId) {
+                        return $query->where('id_kategori', $kategoriId);
+                    })
+                    ->when($barcode, function ($query) use ($barcode) {
+                        return $query->where('upc', $barcode);
+                    });
+            },
+            'barang.kategori',
+        ])
             ->whereHas('barang', function ($query) use ($kategoriId, $barcode) {
                 $query->when($kategoriId, function ($query) use ($kategoriId) {
                     return $query->where('id_kategori', $kategoriId);
                 })
-                ->when($barcode, function ($query) use ($barcode) {
-                    return $query->where('upc', $barcode);
-                });
+                    ->when($barcode, function ($query) use ($barcode) {
+                        return $query->where('upc', $barcode);
+                    });
             })
             ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
             ->whereNull('tanggal_keluar')
