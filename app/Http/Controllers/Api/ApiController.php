@@ -19,39 +19,46 @@ class ApiController extends Controller
         $kategoriId = $request->get('kategori');
         $barcode = $request->get('upc');
 
-        $stokData = Stok::select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
-            ->groupBy('barang_id');
-
-        $query = Barang::with('kategori')
-            ->joinSub($stokData, 'stok_data', function ($join) {
-                $join->on('barang.id', '=', 'stok_data.barang_id');
-            });
-
-        if ($kategoriId) {
-            $query->where('id_kategori', $kategoriId);
-        }
-
-        if ($barcode) {
-            $query->where('upc', $barcode);
-        }
-
-        $data = $query->select('barang.id', 'barang.nama', 'barang.harga_jual', 'stok_data.total_stok as stok', 'barang.id_kategori', 'barang.gambar')
+        $stokData = Stok::with([
+                    'barang' => function ($query) use ($kategoriId, $barcode) {
+                        $query->select('id', 'nama', 'harga_jual', 'id_kategori', 'gambar', 'upc')
+                        ->when($kategoriId, function ($query) use ($kategoriId) {
+                            return $query->where('id_kategori', $kategoriId);
+                        })
+                        ->when($barcode, function ($query) use ($barcode) {
+                            return $query->where('upc', $barcode);
+                        });
+                    },
+                    'barang.kategori',
+            ])
+            ->whereHas('barang', function ($query) use ($kategoriId, $barcode) {
+                $query->when($kategoriId, function ($query) use ($kategoriId) {
+                    return $query->where('id_kategori', $kategoriId);
+                })
+                ->when($barcode, function ($query) use ($barcode) {
+                    return $query->where('upc', $barcode);
+                });
+            })
+            ->select('barang_id', DB::raw('COUNT(barang_id) as total_stok'))
+            ->whereNull('tanggal_keluar')
+            ->groupBy('barang_id')
             ->get()
             ->map(function ($item) {
                 return [
-                    'id' => $item->id,
-                    'nama' => $item->nama,
-                    'kategori' => $item->kategori->nama,
-                    'gambar' => $item->gambar,
-                    'harga' => $item->harga_jual,
-                    'stok' => $item->stok,
+                    'id' => $item->barang->id,
+                    'nama' => $item->barang->nama,
+                    'kategori' => $item->barang->kategori->nama,
+                    'gambar' => $item->barang->gambar,
+                    'harga' => $item->barang->harga_jual,
+                    'stok' => $item->total_stok,
+                    'upc' => $item->barang->upc,
                 ];
             });
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data barang berhasil diambil',
-            'data' => $data,
+            'data' => $stokData,
         ], 200);
     }
 
