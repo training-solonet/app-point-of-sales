@@ -11,6 +11,7 @@ use App\Models\Kategori;
 use App\Models\Stok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\PrintService;
 
 class ApiController extends Controller
 {
@@ -180,6 +181,7 @@ class ApiController extends Controller
         ]);
 
         $customer = Customer::where('nama', $request->customer_name)->first();
+        
         if (! $customer) {
             $customer = new Customer;
             $customer->nama = $request->customer_name;
@@ -244,6 +246,9 @@ class ApiController extends Controller
         $jual->ppn = $total * 0.11;
         $jual->save();
 
+        // print receipt
+        $this->printReceipt('901');
+
         return response()->json([
             'status' => 'success',
             'message' => 'Order placed successfully and stock updated',
@@ -252,5 +257,50 @@ class ApiController extends Controller
                 'details' => $jual->detJual()->get(),
             ],
         ], 200);
+    }
+
+    public function printReceipt($id)
+    {
+        $invo = Jual::with(['det_jual.barang'])->find($id);
+
+        if (!$invo) {
+            return response()->json(['status' => 'error', 'message' => 'Invoice not found'], 404);
+        }
+
+        $printService = new PrintService;
+
+        // date timezone
+        date_default_timezone_set('Asia/Jakarta');
+
+        // Header
+        $title = 'SOLONET SHOP';
+        $header = $printService->centerAlignText($title) . "\n"
+            . "-----------------------------\n"
+            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
+            . "CASHIER: Admin\n"
+            . "-----------------------------";
+
+        // Items
+        $items = [];
+        foreach ($invo->det_jual as $det) {
+            $itemLine = $printService->formatItemLine(
+                $det->barang->nama,
+                $det->qty,
+                number_format($det->harga_jual),
+                number_format($det->qty * $det->harga_jual)
+            );
+            $items[] = $itemLine;
+        }
+
+        // Totals
+        $totals = [];
+        $totals[] = $printService->formatTotalLine('Sub Total', number_format($invo->total));
+        $totals[] = $printService->formatTotalLine('Discount', number_format($invo->discount));
+        $totals[] = $printService->formatTotalLine('Grand Total', number_format($invo->total));
+
+        // Print Receipt
+        $printService->printReceipt($header, $items, $totals);
+
+        return response()->json(['status' => 'success']);
     }
 }

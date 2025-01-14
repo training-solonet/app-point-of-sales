@@ -20,4 +20,5 @@ Route::get('customer', [ApiController::class, 'customer']);
 Route::get('best-seller-product', [ApiController::class, 'bestSeller']);
 
 Route::post('order', [ApiController::class, 'order']);
+Route::get('print-receipt/{id}', [ApiController::class, 'printReceipt']);
 // });

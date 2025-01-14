@@ -73,10 +73,7 @@
                                         <th>Nama</th>
                                         <th>Tanggal</th>
                                         <th>Total</th>
-                                        <th>Bayar</th>
-                                        <th>Diskon</th>
-                                        <th>PPN</th>
-                                        <th>Status</th>
+                                        <th>Kekurangan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -233,20 +230,6 @@
                         data: 'bayar',
                         name: 'bayar',
                         render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
-                    },
-                    {
-                        data: 'diskon',
-                        name: 'diskon',
-                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
-                    },
-                    {
-                        data: 'ppn',
-                        name: 'ppn',
-                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
                     },
                     {
                         data: 'action',

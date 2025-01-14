@@ -15,41 +15,76 @@ class PrintService
         $this->printer = new Printer($connector);
     }
 
-    public function printReceipt($title, $header, $items, $totals)
+    protected $lineWidth = 30;
+
+    /**
+     * Center align text within the line width.
+     *
+     * @param string $text
+     * @return string
+     */
+    public function centerAlignText($text)
     {
-        $this->printer->text($title."\n");
-        $this->printer->text($header."\n");
-
-        $this->printer->text(str_repeat('-', 32)."\n");
-
-        foreach ($items as $item) {
-            $this->printer->text($item."\n\n");
-        }
-
-        $this->printer->text(str_repeat('-', 32)."\n");
-
-        foreach ($totals as $total) {
-            $this->printer->text($total."\n");
-        }
-
-        $this->printer->text("\n----------THANK YOU----------\n");
-        $this->printer->text("\n\n");
-
-        $this->printer->cut();
-        $this->printer->feed(3);
-        $this->printer->close();
+        $padding = ($this->lineWidth - strlen($text)) / 2;
+        return str_repeat(' ', max(0, floor($padding))) . $text;
     }
 
-    public function formatItemLine($name, $qty, $price, $total)
-    {
-        $nameLine = $name;
-        $detailLine = sprintf('%5s x %7s %10s', $qty, $price, $total);
-
-        return $nameLine."\n".$detailLine;
-    }
-
+    /**
+     * Format total line for the receipt.
+     *
+     * @param string $label
+     * @param string $amount
+     * @return string
+     */
     public function formatTotalLine($label, $amount)
     {
-        return sprintf('%-20s %10s', $label, $amount);
+        return sprintf("%-20s %10s", $label, $amount);
+    }
+
+    /**
+     * Format item line for the receipt with justified alignment.
+     *
+     * @param string $name
+     * @param int $qty
+     * @param string $price
+     * @param string $total
+     * @return string
+     */
+    public function formatItemLine($name, $qty, $price, $total)
+    {
+        // Nama barang pada baris pertama
+        $itemLine = sprintf("%-30s", $name);
+
+        // Detail qty, harga satuan, dan total harga pada baris kedua
+        $detailsLine = sprintf(
+            "%3d x %-10s %12s",
+            $qty,
+            $price,
+            $total
+        );
+
+        return $itemLine . "\n  " . $detailsLine;
+    }
+
+    /**
+     * Print the receipt to a file (simulate printer output).
+     *
+     * @param string $title
+     * @param string $header
+     * @param array $items
+     * @param array $totals
+     */
+    public function printReceipt($header, $items, $totals)
+    {
+        $receipt = $header . "\n\n";
+        $receipt .= implode("\n", $items) . "\n\n";
+        $receipt .= implode("\n", $totals) . "\n";
+        $receipt .= "-----------------------------\n";
+        $receipt .= $this->centerAlignText("Thank You!") . "\n";
+        
+        // Start printing
+        $this->printer->text($receipt);
+        $this->printer->cut();
+        $this->printer->close();
     }
 }

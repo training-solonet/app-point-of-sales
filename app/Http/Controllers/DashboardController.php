@@ -87,29 +87,43 @@ class DashboardController extends Controller
     {
         $invo = Jual::with(['det_jual.barang'])->find($id);
 
-        $header = "-----------------------------\n"
-            .'DATE: '.now()->format('d-M-Y h:i:s A')."\n"
-            ."CASHIER: Admin\n"
-            .'-----------------------------';
+        if (!$invo) {
+            return response()->json(['status' => 'error', 'message' => 'Invoice not found'], 404);
+        }
 
-        $items = [];
         $printService = new PrintService;
 
+        // date timezone
+        date_default_timezone_set('Asia/Jakarta');
+
+        // Header
+        $title = 'SOLONET SHOP';
+        $header = $printService->centerAlignText($title) . "\n"
+            . "-----------------------------\n"
+            . 'DATE: ' . now()->format('d-M-Y h:i:s A') . "\n"
+            . "CASHIER: Admin\n"
+            . "-----------------------------";
+
+        // Items
+        $items = [];
         foreach ($invo->det_jual as $det) {
             $itemLine = $printService->formatItemLine(
                 $det->barang->nama,
                 $det->qty,
-                number_format($det->harga_jual, 2),
-                number_format($det->qty * $det->harga_jual, 2)
+                number_format($det->harga_jual),
+                number_format($det->qty * $det->harga_jual)
             );
             $items[] = $itemLine;
         }
 
+        // Totals
         $totals = [];
-        $totals[] = $printService->formatTotalLine('Sub Total', number_format($invo->total, 2));
-        $totals[] = $printService->formatTotalLine('Discount', number_format($invo->discount, 2));
+        $totals[] = $printService->formatTotalLine('Sub Total', number_format($invo->total));
+        $totals[] = $printService->formatTotalLine('Discount', number_format($invo->discount));
+        $totals[] = $printService->formatTotalLine('Grand Total', number_format($invo->total));
 
-        $printService->printReceipt('SoloNet', $header, $items, $totals);
+        // Print Receipt
+        $printService->printReceipt($header, $items, $totals);
 
         return response()->json(['status' => 'success']);
     }
